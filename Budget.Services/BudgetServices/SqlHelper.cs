@@ -32,6 +32,8 @@ namespace Budget.Services.BudgetServices
                 {
                     connection.Dispose();
                 }
+
+                throw;
             }
             return connection;
         }

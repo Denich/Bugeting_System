@@ -9,17 +9,17 @@ namespace Budget.Services.BudgetServices.DataServices
 {
     public class ComlexBudgetDatabaseService
     {
-        public YearComplexBudget GetYearComplexBudget(string administrativeUnitName, int year, BudgetType type)
+        public YearComplexBudget GetYearComplexBudget(string administrativeUnitName, int year)
         {
             throw new NotImplementedException();
         }
 
-        public QuarterComplexBudget GetQuarterComplexBudget(string administrativeUnitName, int year, int quarter, BudgetType type)
+        public QuarterComplexBudget GetQuarterComplexBudget(string administrativeUnitName, int year, int quarter)
         {
             throw new NotImplementedException();
         }
 
-        public MonthComplexBudget GetMonthComplexBudget(string administrativeUnitName, int year, int month, BudgetType type)
+        public MonthComplexBudget GetMonthComplexBudget(string administrativeUnitName, int year, int month)
         {
             throw new NotImplementedException();
         }

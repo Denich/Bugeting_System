@@ -1,7 +1,13 @@
-﻿namespace Budget.Services.BudgetModel
+﻿using System.Collections.Generic;
+
+namespace Budget.Services.BudgetModel
 {
-    public class CompanyInfo
+    public class CompanyInfo : AdministrativeUnit
     {
-        public string CompanyName { get; set; }
+        public int AccountNumber { get; set; }
+
+        public int Edrpou { get; set; }
+
+        public ICollection<FinancialCenter> FinancialCenters { get; set; }
     }
 }

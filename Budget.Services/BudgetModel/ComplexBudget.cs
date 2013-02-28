@@ -6,8 +6,6 @@ namespace Budget.Services.BudgetModel
     {
         public AdministrativeUnit Unit { get; set; }
 
-        public BudgetType Type { get; set; }
-
         public ICollection<BudgetCategory> Categories { get; set; }
     }
 }

@@ -44,8 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BudgetTest.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="AdministrativeUnitDataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Budget.Services\Budget.Services.csproj">
+      <Project>{bf7df1ca-bb5b-4a2a-9443-2d70d22294c4}</Project>
+      <Name>Budget.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

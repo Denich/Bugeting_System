@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -39,33 +40,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetModel\IBudgetProject.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
     <Compile Include="BudgetModel\CompanyPosition.cs" />
     <Compile Include="BudgetModel\FinancialCenterType.cs" />
     <Compile Include="BudgetModel\EmployeContacts.cs" />
     <Compile Include="BudgetModel\MonthComplexBudget.cs" />
+    <Compile Include="BudgetModel\MonthComplexBudgetProject.cs" />
     <Compile Include="BudgetModel\QuarterComplexBudget.cs" />
+    <Compile Include="BudgetModel\QuarterComplexBudgetProject.cs" />
     <Compile Include="BudgetModel\YearComplexBudget.cs" />
     <Compile Include="BudgetModel\AdministrativeUnit.cs" />
     <Compile Include="BudgetModel\BudgetCategoryInfo.cs" />
     <Compile Include="BudgetModel\BudgetItemInfo.cs" />
-    <Compile Include="BudgetModel\BudgetType.cs" />
-    <Compile Include="BudgetModel\Company.cs" />
+    <Compile Include="BudgetModel\CompanyInfo.cs" />
     <Compile Include="BudgetModel\TargetBudget.cs" />
     <Compile Include="BudgetModel\ComplexBudget.cs" />
     <Compile Include="BudgetModel\BudgetItem.cs" />
     <Compile Include="BudgetModel\BudgetCategory.cs" />
-    <Compile Include="BudgetModel\CompanyInfo.cs" />
     <Compile Include="BudgetModel\FinancialCenter.cs" />
     <Compile Include="BudgetModel\TargetBudgetInfo.cs" />
+    <Compile Include="BudgetModel\YearComplexBudgetProject.cs" />
     <Compile Include="BudgetServices\BudgetDatabaseService.cs" />
     <Compile Include="BudgetServices\BudgetService.cs" />
+    <Compile Include="BudgetServices\DataServices\AdministrativeUnitDatabaseService.cs" />
     <Compile Include="BudgetServices\DataServices\ComlexBudgetDatabaseService.cs" />
     <Compile Include="BudgetServices\DataServices\BudgetTemplateDatabaseService.cs" />
     <Compile Include="BudgetServices\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

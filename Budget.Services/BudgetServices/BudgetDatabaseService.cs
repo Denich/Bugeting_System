@@ -3,7 +3,7 @@
     public class BudgetDatabaseService
     {
         //Todo: add to resources
-        private const string _connString = "user id=sa; password=123asdQ; Data Source=.; Inital Catalog=MyCompany_BudgetDatabase;";
+        private const string _connString = "user id=sa; password=123asdQ; Data Source=.; Inital Catalog=MyCompany_Database;";
 
 
         /*public ComplexBudget GetBudgetTemplate()
