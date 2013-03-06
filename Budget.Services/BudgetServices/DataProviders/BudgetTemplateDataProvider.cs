@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Budget.Services.BudgetModel;
 
-namespace Budget.Services.BudgetServices.DataServices
+namespace Budget.Services.BudgetServices.DataProviders
 {
-    class BudgetTemplateDatabaseService
+    class BudgetTemplateDataProvider
     {
-        public ICollection<BudgetCategoryInfo> GetTemplateBudgetCategories()
+        public IEnumerable<BudgetCategoryInfo> GetTemplateBudgetCategories()
         {
             throw new NotImplementedException();
         }
@@ -19,7 +16,7 @@ namespace Budget.Services.BudgetServices.DataServices
             throw new NotImplementedException();
         }
 
-        public ICollection<TargetBudgetInfo> GetTargetBudgetTemplates(string budgetCategoryName)
+        public IEnumerable<TargetBudgetInfo> GetTargetBudgetTemplates(string budgetCategoryName)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +26,7 @@ namespace Budget.Services.BudgetServices.DataServices
             throw new NotImplementedException();
         }
 
-        public ICollection<BudgetItem> GetTemplateBudgetItems(string budgetCategoryName, string targetBudgetName)
+        public IEnumerable<BudgetItem> GetTemplateBudgetItems(string budgetCategoryName, string targetBudgetName)
         {
             throw new NotImplementedException();
         }

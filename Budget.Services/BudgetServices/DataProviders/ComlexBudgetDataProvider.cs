@@ -7,7 +7,7 @@ using Budget.Services.BudgetModel;
 
 namespace Budget.Services.BudgetServices.DataServices
 {
-    public class ComlexBudgetDatabaseService
+    public class ComlexBudgetDataProvider
     {
         public YearComplexBudget GetYearComplexBudget(string administrativeUnitName, int year)
         {

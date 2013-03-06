@@ -8,6 +8,6 @@ namespace Budget.Services.BudgetModel
 
         public double Value { get; set; }
 
-        public ICollection<BudgetItem> BudgetItems { get; set; }
+        public IEnumerable<BudgetItem> BudgetItems { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Budget.Services.BudgetServices
 {
@@ -62,6 +63,30 @@ namespace Budget.Services.BudgetServices
             return command;
         }
 
+        public static SqlDataReader ExecuteReader(this SqlConnection connection, string commandText, CommandType commandType, params SqlParameter[] sqlParameters)
+        {
+            SqlCommand sqlCommand = connection.GetCommand(commandText, commandType);
+
+            if (sqlParameters != null && sqlParameters.Length != 0)
+            {
+                sqlCommand.Parameters.AddRange(sqlParameters);
+            }
+
+            return sqlCommand.ExecuteReader();
+        }
+
+        public static int ExecuteNonQuery(this SqlConnection connection, string commandText, CommandType commandType, params SqlParameter[] sqlParameters)
+        {
+            SqlCommand sqlCommand = connection.GetCommand(commandText, commandType);
+
+            if (sqlParameters != null && sqlParameters.Length != 0)
+            {
+                sqlCommand.Parameters.AddRange(sqlParameters);
+            }
+
+            return sqlCommand.ExecuteNonQuery();
+        }
+
         /// <summary>
         /// Adds a parameter to the command parameter array.
         /// </summary>
@@ -85,6 +110,11 @@ namespace Budget.Services.BudgetServices
             }
             command.Parameters.Add(parameterName, parameterSqlType);
             command.Parameters[parameterName].Value = parameterValue;
+        }
+
+        public static object GetSqlValue(object value)
+        {
+            return value ?? DBNull.Value;
         }
     }
 }

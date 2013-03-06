@@ -1,7 +1,11 @@
-﻿namespace Budget.Services.BudgetModel
+﻿using System.Data;
+
+namespace Budget.Services.BudgetModel
 {
     public class Employe
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string SecondName { get; set; }

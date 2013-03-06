@@ -8,7 +8,7 @@ namespace Budget.Services.BudgetModel
 
         public string Description { get; set; }
 
-        public ICollection<TargetBudgetInfo> TargetBudgetInfos { get; set; }
+        public IEnumerable<TargetBudgetInfo> TargetBudgetInfos { get; set; }
 
         public bool IsActive { get; set; }
     }

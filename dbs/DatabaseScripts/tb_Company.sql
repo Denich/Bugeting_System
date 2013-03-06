@@ -17,7 +17,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Company](
-	[AdministrativeUnitID] [nvarchar](100) NOT NULL,
+	[AdministrativeUnitID] [int] NOT NULL,
 	[AccountNumber] [nvarchar](150) NULL,
 	[EDRPOU] [nvarchar](150) NULL,
  CONSTRAINT [PK_Company] PRIMARY KEY CLUSTERED 

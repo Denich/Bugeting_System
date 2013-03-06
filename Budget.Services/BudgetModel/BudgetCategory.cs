@@ -8,7 +8,7 @@ namespace Budget.Services.BudgetModel
 
         public double Value { get; set; }
 
-        public ICollection<TargetBudget> Budgets { get; set; }
+        public IEnumerable<TargetBudget> Budgets { get; set; }
 
         public Employe ResponsibleEmploye { get; set; }
     }

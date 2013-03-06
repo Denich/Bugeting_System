@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
     <Compile Include="BudgetModel\IBudgetProject.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
     <Compile Include="BudgetModel\CompanyPosition.cs" />
@@ -63,9 +64,10 @@
     <Compile Include="BudgetModel\YearComplexBudgetProject.cs" />
     <Compile Include="BudgetServices\BudgetDatabaseService.cs" />
     <Compile Include="BudgetServices\BudgetService.cs" />
-    <Compile Include="BudgetServices\DataServices\AdministrativeUnitDatabaseService.cs" />
-    <Compile Include="BudgetServices\DataServices\ComlexBudgetDatabaseService.cs" />
-    <Compile Include="BudgetServices\DataServices\BudgetTemplateDatabaseService.cs" />
+    <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\ComlexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\BudgetTemplateDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IEmployeDataProvider.cs" />
     <Compile Include="BudgetServices\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
