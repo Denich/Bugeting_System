@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Budget.Web.Models.FinancialCenterModel>
+
+@{
+    ViewBag.Title = "Центри фінансової відповідальності";
+}
+<h2>Центри фінансової відповідальності</h2>
+<div>
+    <table>
+        <tr>
+            <td>Назва</td>
+            <td>Тип</td>
+            <td>Адреса</td>
+            <td>Телефон</td>
+            <td>Керівник</td>
+            <td>Додаткова інформація</td>
+        </tr>
+        @foreach (var fcentr in Model)
+        {
+            <tr>
+                <td>@fcentr.Name</td>
+                <td>@fcentr.Type</td>
+                <td>@fcentr.Adress</td>
+                <td>@fcentr.Phone</td>
+                <td>@fcentr.DirectorName</td>
+                <td>@fcentr.Description</td>
+                <td>@Html.ActionLink("Редагувати", "Edit", new { id = fcentr.Id })</td>
+                <td>@Html.ActionLink("Видалити", "Delete", new { id = fcentr.Id })</td>
+            </tr>
+        }
+
+    </table>
+    <div>
+        @Html.ActionLink("Додати новий ЦФВ", "Create")
+    </div>
+</div>

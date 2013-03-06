@@ -2,6 +2,11 @@
 {
     public class FinancialCenter : AdministrativeUnit
     {
+        public FinancialCenter()
+        {
+            
+        }
+
         public FinancialCenter(string name, FinancialCenterType type)
             : base(name)
         {

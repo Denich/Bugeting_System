@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
-using Budget.Services.BudgetServices.DataServices;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
@@ -61,13 +60,17 @@ namespace Budget.Services.BudgetServices.DataProviders
                 {
                     if (!reader.HasRows)
                     {
-                        yield return null;
+                        return null;
                     }
+
+                    var fcenters = new List<FinancialCenter>();
 
                     while (reader.Read())
                     {
-                        yield return GetFinancialCenterFromReader(reader);
+                        fcenters.Add(GetFinancialCenterFromReader(reader));
                     }
+
+                    return fcenters;
                 }
             }
         }
@@ -148,11 +151,11 @@ namespace Budget.Services.BudgetServices.DataProviders
                     new SqlParameter("Adress", SqlHelper.GetSqlValue(administrativeUnit.Adress)),
                     new SqlParameter("Phone", SqlHelper.GetSqlValue(administrativeUnit.Phone)),
                     new SqlParameter("Description", SqlHelper.GetSqlValue(administrativeUnit.Description)),
-                    new SqlParameter("DirectorId", administrativeUnit.Director == null ? -1 : SqlHelper.GetSqlValue(administrativeUnit.Director.Id))
+                    new SqlParameter("DirectorId", SqlHelper.GetSqlValue(administrativeUnit.DirectorId))
                 };
 
-            //note: it financial center is new, its id = -1
-            if (administrativeUnit.Id != -1)
+            //note: it financial center is new, its id = 0
+            if (administrativeUnit.Id != 0)
             {
                 sqlParams.Add(new SqlParameter("Id", administrativeUnit.Id));
             }

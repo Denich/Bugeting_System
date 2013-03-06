@@ -10,6 +10,6 @@ namespace Budget.Services.BudgetModel
 
         public IEnumerable<TargetBudgetInfo> TargetBudgetInfos { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

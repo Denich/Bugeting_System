@@ -6,13 +6,18 @@ namespace Budget.Services.BudgetModel
     {
         private Employe _director;
 
-        protected AdministrativeUnit(string name)
-            : this(-1, name)
+        protected AdministrativeUnit()
         {
             EmployeDataProvider = new EmployeDataProvider(); //todo: change for DI
         }
 
-        protected AdministrativeUnit(int id, string name)
+        protected AdministrativeUnit(string name)
+            : this(0, name)
+        {
+            
+        }
+
+        protected AdministrativeUnit(int id, string name) :this()
         {
             Id = id;
             Name = name;

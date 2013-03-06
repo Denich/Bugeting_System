@@ -1,0 +1,41 @@
+﻿@model Budget.Web.Models.FinancialCenterModel 
+
+@{
+    ViewBag.Title = "Створення центру фінансової відповідальності";
+}
+
+<h2>Створення центру фінансової відповідальності</h2>
+
+<div>
+    <form action="@Url.Action("Create")" method="POST" >
+        <fieldset>
+            <div>
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Type)
+                @Html.TextBoxFor(m => m.Type)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.DirectorId)
+                @Html.TextBoxFor(m => m.DirectorId)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Adress)
+                @Html.TextBoxFor(m => m.Adress)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Phone)
+                @Html.TextBoxFor(m => m.Phone)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+            <div>
+                <button name="Save">Save</button>
+            </div>
+        </fieldset>
+    </form>
+</div>

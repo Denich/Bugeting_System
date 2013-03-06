@@ -1,0 +1,14 @@
+﻿@model Budget.Web.Models.FinancialCenterModel
+
+@{
+    ViewBag.Title = "Видалення центру фінансової відповідальності";
+}
+
+<h2>Видалення центру фінансової відповідальності</h2>
+<div>
+    <form action="@Url.Action("Delete")" method = "POST">
+        <p>Ви дійсно бажаєте видалити ЦФВ @(Model.Name) ?</p>
+        <button name="Confirm">Так</button>
+    </form>
+</div>
+
