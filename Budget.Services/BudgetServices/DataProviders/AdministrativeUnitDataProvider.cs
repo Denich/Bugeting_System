@@ -8,18 +8,11 @@ using Budget.Services.BudgetServices.DataServices;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class AdministrativeUnitDataProvider
+    public class AdministrativeUnitDataProvider : IAdministrativeUnitDataProvider
     {
-        public IEmployeDataProvider EmployeDataProvider { get; set; }
+       private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
 
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
-
-        public AdministrativeUnitDataProvider()
-        {
-            EmployeDataProvider = new EmployeDataProvider();
-        }
-
-        public CompanyInfo GetCompany()
+        public Company GetCompany()
         {
             using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
             {
@@ -36,7 +29,7 @@ namespace Budget.Services.BudgetServices.DataProviders
             }
         }
 
-        public int UpdateCompany(CompanyInfo company)
+        public int UpdateCompany(Company company)
         {
             using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
             {
@@ -44,7 +37,7 @@ namespace Budget.Services.BudgetServices.DataProviders
             }
         }
 
-        public int AddCompany(CompanyInfo company)
+        public int AddCompany(Company company)
         {
             using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
             {
@@ -121,7 +114,7 @@ namespace Budget.Services.BudgetServices.DataProviders
             }
         }
 
-        private SqlParameter[] GetSqlParametersFromCompany(CompanyInfo company)
+        private SqlParameter[] GetSqlParametersFromCompany(Company company)
         {
             var sqlParams = new List<SqlParameter>
                 {
@@ -167,17 +160,16 @@ namespace Budget.Services.BudgetServices.DataProviders
             return sqlParams.ToArray();
         }
 
-        private CompanyInfo GetCompanyFromReader(SqlDataReader reader)
+        private Company GetCompanyFromReader(SqlDataReader reader)
         {
-            return new CompanyInfo(Convert.ToInt32(reader["Id"]), Convert.ToString(reader["Name"]))
+            return new Company(Convert.ToInt32(reader["Id"]), Convert.ToString(reader["Name"]))
             {
                 AccountNumber = Convert.ToInt32(reader["AccountNumber"]),
                 Edrpou = Convert.ToInt32(reader["EDRPOU"]),
                 Description = Convert.ToString(reader["Description"]),
                 Adress = Convert.ToString(reader["Adress"]),
                 Phone = Convert.ToString(reader["Phone"]),
-                Director = reader["DirectorId"] == null ? null : EmployeDataProvider.GetEmploye(Convert.ToInt32(reader["DirectorId"])),
-                FinancialCenters = GetFinancialCenters()
+                DirectorId = Convert.ToInt32(reader["DirectorId"]),
             };
         }
 
@@ -189,7 +181,7 @@ namespace Budget.Services.BudgetServices.DataProviders
                 Adress = Convert.ToString(reader["Adress"]),
                 Phone = Convert.ToString(reader["Phone"]),
                 Description = Convert.ToString(reader["Description"]),
-                Director = reader["DirectorId"] == null ? null : EmployeDataProvider.GetEmploye(Convert.ToInt32(reader["DirectorId"])),
+                DirectorId = Convert.ToInt32(reader["DirectorId"])
             };
         }
     }

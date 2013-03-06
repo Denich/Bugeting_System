@@ -13,14 +13,14 @@ namespace Budget.Services.Tests
     [TestFixture]
     public class AdministrativeUnitDataTest
     {
-        private CompanyInfo _company;
+        private Company _company;
         private FinancialCenter _financialCenter;
         private string _changedName;
 
         [SetUp]
         public void SetUp()
         {
-            _company = new CompanyInfo("TestCompany")
+            _company = new Company("TestCompany")
                 {
                     AccountNumber = 1111,
                     Adress = "My adress",
