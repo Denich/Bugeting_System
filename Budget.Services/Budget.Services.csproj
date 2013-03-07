@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetServices\DataProviders\BudgetItemInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
     <Compile Include="BudgetModel\IBudgetProject.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
@@ -67,9 +68,13 @@
     <Compile Include="BudgetServices\BudgetService.cs" />
     <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\ComlexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\BudgetTemplateDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\BudgetCategoryInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IAdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IBudgetCategoryInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IBudgetItemInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IEmployeDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\ITargetBudgetInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\TargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

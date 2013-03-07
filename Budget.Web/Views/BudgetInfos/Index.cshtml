@@ -1,0 +1,40 @@
+﻿@model System.Collections.Generic.IEnumerable<Budget.Web.Models.BudgetCategoryInfoModel>
+
+@{
+    ViewBag.Title = "Довідник бюджетних показників";
+}
+
+<h2>Довідник бюджетних показників</h2>
+<div>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@item.Name</li>
+
+            if (item.TargetBudgetInfoModels == null)
+            {
+                continue;
+            }
+            
+            <ul>
+                @foreach (var subItem in item.TargetBudgetInfoModels)
+                {
+                    <li>@subItem.Name</li>
+                    
+                    if (subItem.BudgetItemInfoModels == null)
+                    {
+                        continue;
+                    }
+                    
+                    <ul>
+                        @foreach (var subSubItem in subItem.BudgetItemInfoModels)
+                        {
+                            <li>@subSubItem.Name</li>
+                        }
+                    </ul>
+                }
+            </ul>
+        }
+    </ul>
+</div>
+@Html.ActionLink("Додати нову бюджетну категорію","Create")

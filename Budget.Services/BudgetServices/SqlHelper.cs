@@ -24,7 +24,7 @@ namespace Budget.Services.BudgetServices
                 connection = new SqlConnection(connectionString);
                 connection.Open();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //ex should be written into a error log
 

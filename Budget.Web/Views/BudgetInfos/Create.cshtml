@@ -1,0 +1,24 @@
+﻿@model Budget.Web.Models.BudgetCategoryInfoModel
+
+@{
+    ViewBag.Title = "Створення нової бюджетної категорії";
+}
+
+<h2>Створення нової бюджетної категорії</h2>
+<div>
+    <form action="@Url.Action("Create")" method="POST" >
+        <fieldset>
+            <div>
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+            <div>
+                <button name="Save">Save</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
