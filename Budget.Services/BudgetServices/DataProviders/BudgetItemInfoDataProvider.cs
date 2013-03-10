@@ -87,7 +87,8 @@ namespace Budget.Services.BudgetServices.DataProviders
                 TargetBudgetId = Convert.ToInt32(reader["TargetBudgetId"]),
                 IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
                 Description = Convert.ToString(reader["Description"]),
-
+                DateAdded = Convert.ToDateTime(reader["DateAdded"]),
+                Source = Convert.ToString(reader["Source"])
             };
         }
 
@@ -99,6 +100,8 @@ namespace Budget.Services.BudgetServices.DataProviders
                     new SqlParameter("Description", SqlHelper.GetSqlValue(budgetItemInfo.Description)),
                     new SqlParameter("IsDeleted", SqlHelper.GetSqlValue(budgetItemInfo.IsDeleted)),
                     new SqlParameter("TargetBudgetId", SqlHelper.GetSqlValue(budgetItemInfo.TargetBudgetId)),
+                    new SqlParameter("DateAdded", SqlHelper.GetSqlValue(budgetItemInfo.DateAdded)),
+                    new SqlParameter("Source", SqlHelper.GetSqlValue(budgetItemInfo.Source))
                 };
 
             //note: it target budget info center is new, its id = 0

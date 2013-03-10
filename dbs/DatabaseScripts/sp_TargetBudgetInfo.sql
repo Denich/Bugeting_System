@@ -14,7 +14,7 @@ AS
 
 	BEGIN TRAN
 
-	SELECT [ID], [Name], [BudgetCategoryID], [Description], [IsDeleted] 
+	SELECT *
 	FROM   [dbo].[TargetBudgetInfo] 
 	WHERE  ([ID] = @ID OR @ID IS NULL) 
 
@@ -29,18 +29,20 @@ CREATE PROC [dbo].[usp_TargetBudgetInfoInsert]
     @Name nvarchar(150),
     @BudgetCategoryID int,
     @Description nvarchar(MAX),
-    @IsDeleted bit
+    @IsDeleted bit,
+    @DateAdded date,
+    @Source nvarchar(150)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 	
 	BEGIN TRAN
 	
-	INSERT INTO [dbo].[TargetBudgetInfo] ([Name], [BudgetCategoryID], [Description], [IsDeleted])
-	SELECT @Name, @BudgetCategoryID, @Description, @IsDeleted
+	INSERT INTO [dbo].[TargetBudgetInfo] ([Name], [BudgetCategoryID], [Description], [IsDeleted], [DateAdded], [Source])
+	SELECT @Name, @BudgetCategoryID, @Description, @IsDeleted, @DateAdded, @Source
 	
 	-- Begin Return Select <- do not remove
-	SELECT [ID], [Name], [BudgetCategoryID], [Description], [IsDeleted]
+	SELECT *
 	FROM   [dbo].[TargetBudgetInfo]
 	WHERE  [ID] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -57,7 +59,9 @@ CREATE PROC [dbo].[usp_TargetBudgetInfoUpdate]
     @Name nvarchar(150),
     @BudgetCategoryID int,
     @Description nvarchar(MAX),
-    @IsDeleted bit
+    @IsDeleted bit,
+    @DateAdded date,
+    @Source nvarchar(150)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -65,11 +69,11 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[TargetBudgetInfo]
-	SET    [Name] = @Name, [BudgetCategoryID] = @BudgetCategoryID, [Description] = @Description, [IsDeleted] = @IsDeleted
+	SET    [Name] = @Name, [BudgetCategoryID] = @BudgetCategoryID, [Description] = @Description, [IsDeleted] = @IsDeleted, [DateAdded] = @DateAdded, [Source] = @Source
 	WHERE  [ID] = @ID
 	
 	-- Begin Return Select <- do not remove
-	SELECT [ID], [Name], [BudgetCategoryID], [Description], [IsDeleted]
+	SELECT *
 	FROM   [dbo].[TargetBudgetInfo]
 	WHERE  [ID] = @ID	
 	-- End Return Select <- do not remove

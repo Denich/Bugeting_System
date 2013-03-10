@@ -78,14 +78,15 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         private BudgetCategoryInfo GetBudgetCategoryInfoFromReader(SqlDataReader reader)
         {
-            return new BudgetCategoryInfo()
-            {
-                Id = Convert.ToInt32(reader["Id"]),
-                Name = Convert.ToString(reader["Name"]),
-                IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
-                Description = Convert.ToString(reader["Description"]),
-                
-            };
+            return new BudgetCategoryInfo
+                {
+                    Id = Convert.ToInt32(reader["Id"]),
+                    Name = Convert.ToString(reader["Name"]),
+                    IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
+                    Description = Convert.ToString(reader["Description"]),
+                    DateAdded = Convert.ToDateTime(reader["DateAdded"]),
+                    Source = Convert.ToString(reader["Source"])
+                };
         }
 
         private SqlParameter[] GetSqlParametersFromBudgetCategoryInfo(BudgetCategoryInfo budgetCategoryInfo)
@@ -95,6 +96,8 @@ namespace Budget.Services.BudgetServices.DataProviders
                     new SqlParameter("Name", SqlHelper.GetSqlValue(budgetCategoryInfo.Name)),
                     new SqlParameter("Description", SqlHelper.GetSqlValue(budgetCategoryInfo.Description)),
                     new SqlParameter("IsDeleted", SqlHelper.GetSqlValue(budgetCategoryInfo.IsDeleted)),
+                    new SqlParameter("DateAdded", SqlHelper.GetSqlValue(budgetCategoryInfo.DateAdded)),
+                    new SqlParameter("Source", SqlHelper.GetSqlValue(budgetCategoryInfo.Source))
                 };
 
             //note: it budget category info center is new, its id = 0

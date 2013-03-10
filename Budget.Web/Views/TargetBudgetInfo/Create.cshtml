@@ -1,0 +1,28 @@
+﻿@model Budget.Web.Models.TargetBudgetInfoModel
+
+@{
+    ViewBag.Title = "Створення нового бюджету";
+}
+
+<h2>Створення нового бюджету</h2>
+<div>
+    <form action="@Url.Action("Create")" method="POST" >
+        <fieldset>
+            <div>
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.BudgetCategoryName)
+                @Html.DropDownList("BudgetCategoryId")
+            </div>
+            <div>
+                <button name="Save">Save</button>
+            </div>
+        </fieldset>
+    </form>
+</div>

@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
-namespace Budget.Services.BudgetModel
+namespace Budget.Web.Models
 {
-    public class BudgetItemInfo
+    public class BudgetCategoryInfoModel
     {
         public int Id { get; set; }
-
-        public int TargetBudgetId { get; set; }
 
         public string Name { get; set; }
 
@@ -17,5 +18,7 @@ namespace Budget.Services.BudgetModel
         public DateTime DateAdded { get; set; }
 
         public string Source { get; set; }
+
+        public IEnumerable<TargetBudgetInfoModel> TargetBudgetInfoModels { get; set; }
     }
 }

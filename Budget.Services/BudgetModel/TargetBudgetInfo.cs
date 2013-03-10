@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Budget.Services.BudgetServices.DataProviders;
 using System.Linq;
 
@@ -23,15 +24,26 @@ namespace Budget.Services.BudgetModel
 
         public string Description { get; set; }
 
+        public bool IsDeleted { get; set; }
+
+        public DateTime DateAdded { get; set; }
+
+        public string Source { get; set; }
+
         public IEnumerable<BudgetItemInfo> BudgetItemInfos
         {
             get
             {
-                return _budgetItemInfos ?? BudgetItemInfoDataProvider.GetBudgetItemInfos().Where(b => b.TargetBudgetId == Id);
+                if (_budgetItemInfos != null)
+                {
+                    return _budgetItemInfos;
+                }
+
+                var budgetItems = BudgetItemInfoDataProvider.GetBudgetItemInfos();
+
+                return budgetItems == null ? null : budgetItems.Where(t => t.TargetBudgetId == Id);
             }
             set { _budgetItemInfos = value; }
         }
-
-        public bool IsDeleted { get; set; }
     }
 }

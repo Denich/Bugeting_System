@@ -1,7 +1,7 @@
 USE [MyCompany_Database]
 GO
 
-/****** Object:  Table [dbo].[TargetBudgetInfo]    Script Date: 03/06/2013 22:34:58 ******/
+/****** Object:  Table [dbo].[TargetBudgetInfo]    Script Date: 03/10/2013 22:15:33 ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TargetBudgetInfo]') AND type in (N'U'))
 DROP TABLE [dbo].[TargetBudgetInfo]
 GO
@@ -9,7 +9,7 @@ GO
 USE [MyCompany_Database]
 GO
 
-/****** Object:  Table [dbo].[TargetBudgetInfo]    Script Date: 03/06/2013 22:34:58 ******/
+/****** Object:  Table [dbo].[TargetBudgetInfo]    Script Date: 03/10/2013 22:15:33 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -22,6 +22,8 @@ CREATE TABLE [dbo].[TargetBudgetInfo](
 	[BudgetCategoryID] [int] NOT NULL,
 	[Description] [nvarchar](max) NULL,
 	[IsDeleted] [bit] NOT NULL,
+	[DateAdded] [date] NULL,
+	[Source] [nvarchar](150) NULL,
  CONSTRAINT [PK_TargetBudgetInfo] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

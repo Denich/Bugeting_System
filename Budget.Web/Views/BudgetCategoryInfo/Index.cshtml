@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Budget.Web.Models.BudgetHierarchyEntityModel>
+
+@{
+    ViewBag.Title = "Довідник бюджетних показників";
+}
+
+@section JavaScript
+{
+    <script type="text/javascript" src="@Url.Content("~/scripts/jquery.unobtrusive-ajax.js")"></script>
+}
+
+<h2>Довідник бюджетних показників</h2>
+<div>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@Ajax.ActionLink((@item.Name), "Details", new {id = item.Id}, new AjaxOptions()
+                    {
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "budgetInfoDetails"
+                    })</li>
+
+            if (item.ChildEntityes == null)
+            {
+                continue;
+            }
+            
+            <ul>
+                @foreach (var subItem in item.ChildEntityes)
+                {
+                    <li>@Ajax.ActionLink((@subItem.Name), "Details", "TargetBudgetInfo",  new { id = subItem.Id }, new AjaxOptions()
+                            {
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "budgetInfoDetails"
+                            })</li>
+                    
+                    if (subItem.ChildEntityes == null)
+                    {
+                        continue;
+                    }
+                    
+                    <ul>
+                        @foreach (var subSubItem in subItem.ChildEntityes)
+                        {
+                            <li>@Ajax.ActionLink((@subSubItem.Name), "Details", "BudgetItemInfo", new { id = subSubItem.Id }, new AjaxOptions()
+                                    {
+                                        InsertionMode = InsertionMode.Replace,
+                                        UpdateTargetId = "budgetInfoDetails"
+                                    })</li>
+                        }
+                    </ul>
+                }
+            </ul>
+        }
+    </ul>
+</div>
+<div id="budgetInfoDetails"></div>
+<div id ="budgetInfoControllPanel">
+    @Html.ActionLink("Додати інформацію про нову бюджетну категорію", "Create")<br/>
+    @Html.ActionLink("Додати інформацію про новый бюджет", "Create", "TargetBudgetInfo")<br/>
+    @Html.ActionLink("Додати інформацію про нову бюджетну статтю", "Create", "BudgetItemInfo")<br/>
+</div>

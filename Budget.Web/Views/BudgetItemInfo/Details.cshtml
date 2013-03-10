@@ -1,0 +1,23 @@
+﻿@model Budget.Web.Models.BudgetItemInfoModel
+
+@{
+    ViewBag.Title = "Інформація про бюджетну статтю";
+}
+
+<h5>Інформація про бюджетну статтю</h5>
+<div>
+    @Html.LabelFor(m => m.Name);
+    @Html.DisplayFor(m => m.Name);
+</div>
+<div>
+    @Html.LabelFor(m => m.Description);
+    @Html.DisplayFor(m => m.Description);
+</div>
+<div>
+    @Html.LabelFor(m => m.DateAdded);
+    @Html.DisplayFor(m => m.DateAdded);
+</div>
+<div>
+    @Html.LabelFor(m => m.Source);
+    @Html.DisplayFor(m => m.Source);
+</div>

@@ -1,12 +1,14 @@
 ﻿using System;
 
-namespace Budget.Services.BudgetModel
+namespace Budget.Web.Models
 {
-    public class BudgetItemInfo
+    public class BudgetItemInfoModel
     {
         public int Id { get; set; }
 
         public int TargetBudgetId { get; set; }
+
+        public string TargetBudgetName { get; set; }
 
         public string Name { get; set; }
 

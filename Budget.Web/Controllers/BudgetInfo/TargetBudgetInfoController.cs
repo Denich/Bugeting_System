@@ -9,58 +9,66 @@ using Budget.Web.Models;
 
 namespace Budget.Web.Controllers
 {
-    public class BudgetInfosController : Controller
+    public class TargetBudgetInfoController : Controller
     {
+        public ITargetBudgetInfoDataProvider TargetBudgetInfoDataProvider { get; set; }
+
         public IBudgetCategoryInfoDataProvider BudgetCategoryInfoDataProvider { get; set; }
 
-        public BudgetInfosController()
+        public TargetBudgetInfoController()
         {
             BudgetCategoryInfoDataProvider = new BudgetCategoryInfoDataProvider();//todo: change for DI
-        }
 
-//
-        // GET: /BudgetInfos/
-
-        public ActionResult Index()
-        {
-            var budgetCategories = BudgetCategoryInfoDataProvider.GetBudgetCategorieInfos();
-            
-            if (budgetCategories == null || !budgetCategories.Any())
-            {
-                return View("EmptyBudgetInfos");
-            }
-            var model = budgetCategories.Select(b => b.ToModel());
-
-            return View(model);
+            TargetBudgetInfoDataProvider = new TargetBudgetInfoDataProvider();//todo: change for DI
         }
 
         //
-        // GET: /BudgetInfos/Details/5
+        // GET: /TargetBudgetInfo/Details/5
 
         public ActionResult Details(int id)
         {
-            return View();
+            var targetBudgetInfoModel = TargetBudgetInfoDataProvider.GetTargetBudgetInfoById(id).ToModel();
+
+            if (targetBudgetInfoModel == null)
+            {
+                return HttpNotFound();
+            }
+
+            targetBudgetInfoModel.BudgetCategoryName =
+                BudgetCategoryInfoDataProvider.GetBudgetCategoryInfoById(targetBudgetInfoModel.BudgetCategoryId).Name;
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(targetBudgetInfoModel);
+            }
+
+            return View(targetBudgetInfoModel);
         }
 
         //
-        // GET: /BudgetInfos/Create
+        // GET: /TargetBudgetInfo/Create
 
         public ActionResult Create()
         {
+            ViewBag.BudgetCategoryId =
+                new SelectList(BudgetCategoryInfoDataProvider.GetBudgetCategorieInfos().Select(o => o.ToModel()), "Id",
+                               "Name");
             return View();
         } 
 
         //
-        // POST: /BudgetInfos/Create
+        // POST: /TargetBudgetInfo/Create
 
         [HttpPost]
-        public ActionResult Create(BudgetCategoryInfoModel model)
+        public ActionResult Create(TargetBudgetInfoModel model)
         {
             try
             {
-                BudgetCategoryInfoDataProvider.AddBudgetCategoryInfo(model.ToObj());
+                model.DateAdded = DateTime.Now;
+                model.Source = User.Identity.Name;
+                TargetBudgetInfoDataProvider.AddTargetBudgetInfo(model.ToObj());
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "BudgetCategoryInfo");
             }
             catch
             {
@@ -69,7 +77,7 @@ namespace Budget.Web.Controllers
         }
         
         //
-        // GET: /BudgetInfos/Edit/5
+        // GET: /TargetBudgetInfo/Edit/5
  
         public ActionResult Edit(int id)
         {
@@ -77,7 +85,7 @@ namespace Budget.Web.Controllers
         }
 
         //
-        // POST: /BudgetInfos/Edit/5
+        // POST: /TargetBudgetInfo/Edit/5
 
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
@@ -95,7 +103,7 @@ namespace Budget.Web.Controllers
         }
 
         //
-        // GET: /BudgetInfos/Delete/5
+        // GET: /TargetBudgetInfo/Delete/5
  
         public ActionResult Delete(int id)
         {
@@ -103,7 +111,7 @@ namespace Budget.Web.Controllers
         }
 
         //
-        // POST: /BudgetInfos/Delete/5
+        // POST: /TargetBudgetInfo/Delete/5
 
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)

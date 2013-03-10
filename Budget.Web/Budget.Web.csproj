@@ -99,17 +99,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\BudgetInfosController.cs" />
+    <Compile Include="Controllers\BudgetInfo\BudgetCategoryInfoController.cs" />
+    <Compile Include="Controllers\BudgetInfo\BudgetItemInfoController.cs" />
     <Compile Include="Controllers\FinancialCentersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\BudgetInfo\TargetBudgetInfoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Converters\BudgetTemlateConverter.cs" />
+    <Compile Include="Helpers\Converters\BudgetInfoConverter.cs" />
     <Compile Include="Helpers\Converters\DefaultConverter.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\AdministrativeUnitModels.cs" />
-    <Compile Include="Models\BudgetTemplateModel.cs" />
+    <Compile Include="Models\BudgetInfoModels\BudgetCategoryInfoModels.cs" />
+    <Compile Include="Models\BudgetInfoModels\BudgetHierarchyEntityModels.cs" />
+    <Compile Include="Models\BudgetInfoModels\BudgetItemInfoModels.cs" />
+    <Compile Include="Models\BudgetInfoModels\TargetBudgetInfoModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +218,14 @@
     <Content Include="Views\FinancialCenters\Create.cshtml" />
     <Content Include="Views\FinancialCenters\Edit.cshtml" />
     <Content Include="Views\FinancialCenters\Delete.cshtml" />
-    <Content Include="Views\BudgetInfos\Index.cshtml" />
-    <Content Include="Views\BudgetInfos\EmptyBudgetInfos.cshtml" />
-    <Content Include="Views\BudgetInfos\Create.cshtml" />
+    <Content Include="Views\BudgetCategoryInfo\Index.cshtml" />
+    <Content Include="Views\BudgetCategoryInfo\EmptyBudgetCategoryInfo.cshtml" />
+    <Content Include="Views\BudgetCategoryInfo\Create.cshtml" />
+    <Content Include="Views\BudgetCategoryInfo\Details.cshtml" />
+    <Content Include="Views\TargetBudgetInfo\Details.cshtml" />
+    <Content Include="Views\TargetBudgetInfo\Create.cshtml" />
+    <Content Include="Views\BudgetItemInfo\Details.cshtml" />
+    <Content Include="Views\BudgetItemInfo\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
