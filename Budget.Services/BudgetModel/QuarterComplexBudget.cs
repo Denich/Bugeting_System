@@ -11,6 +11,22 @@ namespace Budget.Services.BudgetModel
 {
     public class QuarterComplexBudget : ComplexBudget
     {
+        public QuarterComplexBudget() { }
+
+        public QuarterComplexBudget(int id, int administrativeUnitId, int quarterNumber, int year) : base(id, administrativeUnitId)
+        {
+            QuarterNumber = quarterNumber;
+            Year = year;
+        }
+
+        public QuarterComplexBudget(QuarterComplexBudget quarterComplexBudget)
+            : this(
+                quarterComplexBudget.Id, quarterComplexBudget.AdministrativeUnitId, quarterComplexBudget.QuarterNumber,
+                quarterComplexBudget.Year)
+        {
+            
+        }
+
         public int QuarterNumber { get; set; }
 
         public int Year { get; set; }
@@ -26,7 +42,7 @@ namespace Budget.Services.BudgetModel
                 };
         }
 
-        public SqlParameter[] SqlParameters
+        public virtual SqlParameter[] SqlParameters
         {
             get
             {

@@ -12,6 +12,13 @@ namespace Budget.Services.BudgetModel
             AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();    
         }
 
+        public ComplexBudget(int id, int administrativeUnitId)
+        {
+            AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();
+            Id = id;
+            AdministrativeUnitId = administrativeUnitId;
+        }
+
         public AdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
 
         public int Id { get; set; }

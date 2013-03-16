@@ -12,6 +12,22 @@ namespace Budget.Services.BudgetModel
 
         public int Month { get; set; }
 
+        public MonthComplexBudget()
+        {
+        }
+
+        public MonthComplexBudget(int id, int administrativeUnitId, int year, int month) : base(id, administrativeUnitId)
+        {
+            Year = year;
+            Month = month;
+        }
+
+        public MonthComplexBudget(MonthComplexBudget monthComplexBudget)
+            : this(monthComplexBudget.Id, monthComplexBudget.AdministrativeUnitId, monthComplexBudget.Year, monthComplexBudget.Month)
+        {
+            
+        }
+
         public static MonthComplexBudget Create(IDataReader record)
         {
             return new MonthComplexBudget
@@ -23,7 +39,7 @@ namespace Budget.Services.BudgetModel
             };
         }
 
-        public SqlParameter[] SqlParameters
+        public virtual SqlParameter[] SqlParameters
         {
             get
             {

@@ -45,8 +45,12 @@
     <Compile Include="BudgetModel\ITargetBudgetsDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetCategoryDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetItemInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IMonthComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IQuarterComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IQuarterComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetProjectDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
     <Compile Include="BudgetModel\IBudgetProject.cs" />
@@ -81,7 +85,7 @@
     <Compile Include="BudgetServices\DataProviders\ITargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\TargetBudgetInfoDataProvider.cs" />
-    <Compile Include="Helpers\ReaderConverter.cs" />
+    <Compile Include="BudgetServices\DataProviders\YearComplexBudgetProjectDataProvider.cs" />
     <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

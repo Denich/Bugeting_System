@@ -11,6 +11,21 @@ namespace Budget.Services.BudgetModel
 {
     public class YearComplexBudget : ComplexBudget
     {
+        public YearComplexBudget()
+        {
+        }
+
+        public YearComplexBudget(YearComplexBudget yearComplexBudget)
+            : this(yearComplexBudget.Id, yearComplexBudget.AdministrativeUnitId, yearComplexBudget.Year)
+        {
+        }
+
+        public YearComplexBudget(int id, int administrativeUnitId, int year)
+            : base(id, administrativeUnitId)
+        {
+            Year = year;
+        }
+
         public int Year { get; set; }
 
         public static YearComplexBudget Create(IDataReader record)
@@ -23,7 +38,7 @@ namespace Budget.Services.BudgetModel
                 };
         }
 
-        public SqlParameter[] SqlParameters
+        public virtual SqlParameter[] SqlParameters
         {
             get
             {
