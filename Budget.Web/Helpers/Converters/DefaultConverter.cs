@@ -23,5 +23,19 @@ namespace Budget.Web.Helpers.Converters
         {
             return ObjectMapperManager.DefaultInstance.GetMapper<FinancialCenterModel, FinancialCenter>().Map(obj);
         }
+
+        public static AdministrativeUnitModel ToModel(this AdministrativeUnit obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<AdministrativeUnit, AdministrativeUnitModel>().Map(obj);
+
+            model.DirectorName = obj.Director != null ? obj.Director.FullName : null;
+
+            return model;
+        }
+
+        public static AdministrativeUnit ToObj(this AdministrativeUnitModel obj)
+        {
+            return ObjectMapperManager.DefaultInstance.GetMapper<AdministrativeUnitModel, AdministrativeUnit>().Map(obj);
+        }
     }
 }

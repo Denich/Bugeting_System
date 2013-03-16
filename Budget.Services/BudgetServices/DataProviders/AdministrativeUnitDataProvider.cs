@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
+using Budget.Services.Helpers;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
@@ -180,12 +181,41 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             return new FinancialCenter(Convert.ToInt32(reader["Id"]), Convert.ToString(reader["Name"]), (FinancialCenterType)Convert.ToInt32(reader["Type"]))
             {
-                CompanyId = Convert.ToInt32(reader["id"]),
+                CompanyId = Convert.ToInt32(reader["CompanyId"]),
                 Adress = Convert.ToString(reader["Adress"]),
                 Phone = Convert.ToString(reader["Phone"]),
                 Description = Convert.ToString(reader["Description"]),
                 DirectorId = Convert.ToInt32(reader["DirectorId"])
             };
+        }
+
+        /// <summary>
+        /// test method
+        /// </summary>
+        public AdministrativeUnit GetAdministrativeUnitById(int administrativeUnitId)//todo: chage it to real impl
+        {
+            var adminUnit = GetFinancialCenterById(administrativeUnitId);
+            
+            if (adminUnit != null)
+            {
+                return adminUnit;
+            }
+
+            return GetCompany();
+        }
+
+        /// <summary>
+        /// test method
+        /// </summary>
+        public IEnumerable<AdministrativeUnit> GetAdministrativeUnits()//todo: chage it to real impl
+        {
+            var adminUnits = new List<AdministrativeUnit>();
+
+            adminUnits.AddRange(GetFinancialCenters());
+
+            //adminUnits.Add(GetCompany());
+
+            return adminUnits.Count > 0 ? adminUnits : null;
         }
     }
 }

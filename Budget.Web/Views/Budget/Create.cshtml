@@ -1,0 +1,24 @@
+﻿@model Budget.Web.Models.BudgetModels.YearComplexBudgetModel
+
+@{
+    ViewBag.Title = "Створення нового комплексного бюджету";
+ }
+
+<h2>Створення нового комплексного бюджету</h2>
+<div>
+    <form action="@Url.Action("Create")" method="POST" >
+        <fieldset>
+            <div>
+                @Html.LabelFor(m => m.Year)
+                @Html.TextBoxFor(m => m.Year)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.AdminUnitName)
+                @Html.DropDownList("AdministrativeUnitId")
+            </div>
+            <div>
+                <button name="Save">Save</button>
+            </div>
+        </fieldset>
+    </form>
+</div>

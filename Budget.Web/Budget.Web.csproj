@@ -101,12 +101,14 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BudgetInfo\BudgetCategoryInfoController.cs" />
     <Compile Include="Controllers\BudgetInfo\BudgetItemInfoController.cs" />
+    <Compile Include="Controllers\Budget\BudgetController.cs" />
     <Compile Include="Controllers\FinancialCentersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\BudgetInfo\TargetBudgetInfoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Converters\BudgetConverter.cs" />
     <Compile Include="Helpers\Converters\BudgetInfoConverter.cs" />
     <Compile Include="Helpers\Converters\DefaultConverter.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="Models\BudgetInfoModels\BudgetHierarchyEntityModels.cs" />
     <Compile Include="Models\BudgetInfoModels\BudgetItemInfoModels.cs" />
     <Compile Include="Models\BudgetInfoModels\TargetBudgetInfoModels.cs" />
+    <Compile Include="Models\BudgetModels\YearBudgetModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +229,8 @@
     <Content Include="Views\TargetBudgetInfo\Create.cshtml" />
     <Content Include="Views\BudgetItemInfo\Details.cshtml" />
     <Content Include="Views\BudgetItemInfo\Create.cshtml" />
+    <Content Include="Views\Budget\Index.cshtml" />
+    <Content Include="Views\Budget\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

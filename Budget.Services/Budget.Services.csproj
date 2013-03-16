@@ -41,7 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetModel\TargetBudgetsDataProvider.cs" />
+    <Compile Include="BudgetModel\ITargetBudgetsDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\BudgetCategoryDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetItemInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IQuarterComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\YearComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
     <Compile Include="BudgetModel\IBudgetProject.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
@@ -64,18 +70,19 @@
     <Compile Include="BudgetModel\FinancialCenter.cs" />
     <Compile Include="BudgetModel\TargetBudgetInfo.cs" />
     <Compile Include="BudgetModel\YearComplexBudgetProject.cs" />
-    <Compile Include="BudgetServices\BudgetDatabaseService.cs" />
-    <Compile Include="BudgetServices\BudgetService.cs" />
     <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\ComlexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetCategoryInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IAdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IBudgetCategoryDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IBudgetCategoryInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IBudgetItemInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IEmployeDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\ITargetBudgetInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\TargetBudgetInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\SqlHelper.cs" />
+    <Compile Include="Helpers\ReaderConverter.cs" />
+    <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

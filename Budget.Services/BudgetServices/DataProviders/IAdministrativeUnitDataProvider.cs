@@ -22,5 +22,9 @@ namespace Budget.Services.BudgetServices.DataProviders
         int UpdateFinancialCenter(FinancialCenter financialCenter);
 
         int DeleteFinancialCenter(int financialCenterId);
+
+        AdministrativeUnit GetAdministrativeUnitById(int administrativeUnitId);
+
+        IEnumerable<AdministrativeUnit> GetAdministrativeUnits();
     }
 }

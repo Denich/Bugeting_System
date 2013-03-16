@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
+using Budget.Services.Helpers;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {

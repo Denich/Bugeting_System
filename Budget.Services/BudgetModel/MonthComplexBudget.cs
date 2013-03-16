@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using Budget.Services.Helpers;
+
 namespace Budget.Services.BudgetModel
 {
     public class MonthComplexBudget : ComplexBudget
@@ -5,5 +11,37 @@ namespace Budget.Services.BudgetModel
         public int Year { get; set; }
 
         public int Month { get; set; }
+
+        public static MonthComplexBudget Create(IDataReader record)
+        {
+            return new MonthComplexBudget
+            {
+                Id = Convert.ToInt32(record["Id"]),
+                AdministrativeUnitId = Convert.ToInt32(record["AdministrativeUnitId"]),
+                Year = Convert.ToInt32(record["Year"]),
+                Month = Convert.ToInt32(record["Month"]),
+            };
+        }
+
+        public SqlParameter[] SqlParameters
+        {
+            get
+            {
+                var sqlParams = new List<SqlParameter>
+                    {
+                        new SqlParameter("AdministrativeUnitId", SqlHelper.GetSqlValue(AdministrativeUnitId)),
+                        new SqlParameter("Year", SqlHelper.GetSqlValue(Year)),
+                        new SqlParameter("Month", SqlHelper.GetSqlValue(Month))
+                    };
+
+                //note: it budget category info center is new, its id = 0
+                if (Id != 0)
+                {
+                    sqlParams.Add(new SqlParameter("Id", Id));
+                }
+
+                return sqlParams.ToArray();
+            }
+        }
     }
 }

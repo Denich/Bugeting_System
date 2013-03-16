@@ -11,6 +11,11 @@ namespace Budget.Services.BudgetModel
 
         public IAdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
 
+        public Company()
+        {
+            
+        }
+
         public Company(string name): base(name)
         {
             AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();//todo: change for DI
@@ -29,7 +34,14 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                return _financialCenters ?? AdministrativeUnitDataProvider.GetFinancialCenters().Where(c => c.CompanyId == Id);
+                if (_financialCenters != null)
+                {
+                    return _financialCenters;
+                }
+
+                var targetBudgets = AdministrativeUnitDataProvider.GetFinancialCenters();
+
+                return targetBudgets == null ? null : targetBudgets.Where(t => t.CompanyId == Id);
             }
             set { _financialCenters = value; }
         }

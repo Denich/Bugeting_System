@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 
-namespace Budget.Services.BudgetServices
+namespace Budget.Services.Helpers
 {
     public static class SqlHelper
     {
