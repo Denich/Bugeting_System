@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\sdks\unity\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -41,8 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BudgetModel\TargetBudgetsDataProvider.cs" />
-    <Compile Include="BudgetModel\ITargetBudgetsDataProvider.cs" />
+    <Compile Include="BudgetModel\BudgetItemDataProvider.cs" />
+    <Compile Include="BudgetModel\BudgetProject.cs" />
+    <Compile Include="BudgetServices\DataProviders\IBudgetItemDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IEmployDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\ITargetBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\EmployeContactDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\IEmployeContactDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\EmployDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\TargetBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetCategoryDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetItemInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IMonthComplexBudgetProjectDataProvider.cs" />
@@ -52,12 +63,11 @@
     <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
-    <Compile Include="BudgetModel\IBudgetProject.cs" />
+    <Compile Include="BudgetServices\DataProviders\CustomDataProvider.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
     <Compile Include="BudgetModel\CompanyPosition.cs" />
     <Compile Include="BudgetModel\FinancialCenterType.cs" />
-    <Compile Include="BudgetModel\EmployeContacts.cs" />
+    <Compile Include="BudgetModel\EmployeContact.cs" />
     <Compile Include="BudgetModel\MonthComplexBudget.cs" />
     <Compile Include="BudgetModel\MonthComplexBudgetProject.cs" />
     <Compile Include="BudgetModel\QuarterComplexBudget.cs" />
@@ -81,11 +91,11 @@
     <Compile Include="BudgetServices\DataProviders\IBudgetCategoryInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IBudgetItemInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\IComplexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IEmployeDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\ITargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\TargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetProjectDataProvider.cs" />
+    <Compile Include="Helpers\IDataRetriever.cs" />
     <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

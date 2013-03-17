@@ -7,21 +7,21 @@ namespace Budget.Services.BudgetModel
     public class BudgetCategory
     {
         private IEnumerable<TargetBudget> _targetBudgets;
-        
+
         private Employe _responsibleEmploye;
 
         private BudgetCategoryInfo _info;
 
         public BudgetCategory()
         {
-            BudgetCategoryDataProvider = new TargetBudgetsDataProvider();
+            BudgetCategoryDataProvider = new TargetBudgetDataProvider();
 
             EmployeDataProvider = new EmployeDataProvider();
 
             BudgetCategoryInfoDataProvider = new BudgetCategoryInfoDataProvider();
         }
 
-        public ITargetBudgetsDataProvider BudgetCategoryDataProvider { get; set; }
+        public ITargetBudgetDataProvider BudgetCategoryDataProvider { get; set; }
 
         public IEmployeDataProvider EmployeDataProvider { get; set; }
 
@@ -37,10 +37,7 @@ namespace Budget.Services.BudgetModel
 
         public BudgetCategoryInfo Info
         {
-            get
-            {
-                return _info ?? BudgetCategoryInfoDataProvider.GetBudgetCategoryInfoById(InfoId);
-            }
+            get { return _info ?? BudgetCategoryInfoDataProvider.GetBudgetCategoryInfoById(InfoId); }
             set
             {
                 _info = value;
@@ -53,10 +50,7 @@ namespace Budget.Services.BudgetModel
 
         public Employe ResponsibleEmploye
         {
-            get
-            {
-                return _responsibleEmploye ?? EmployeDataProvider.GetEmploye(ResponsibleEmployeId);
-            }
+            get { return _responsibleEmploye ?? EmployeDataProvider.GetEmploye(ResponsibleEmployeId); }
             set
             {
                 _responsibleEmploye = value;

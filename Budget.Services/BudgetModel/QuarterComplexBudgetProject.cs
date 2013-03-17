@@ -7,65 +7,65 @@ using Budget.Services.Helpers;
 
 namespace Budget.Services.BudgetModel
 {
-    public class QuarterComplexBudgetProject : QuarterComplexBudget, IBudgetProject
+    public class QuarterComplexBudgetProject : QuarterComplexBudget
     {
+        private readonly BudgetProject _budgetProject = new BudgetProject();
+
+        private QuarterComplexBudgetProject(BudgetProject budgetProject, QuarterComplexBudget quarterComplexBudget)
+            : this(quarterComplexBudget)
+        {
+            _budgetProject = budgetProject;
+        }
+
         public QuarterComplexBudgetProject(QuarterComplexBudget quarterComplexBudget)
             : base(quarterComplexBudget)
         {
-            EmployeDataProvider = new EmployeDataProvider();
         }
-
-        public IEmployeDataProvider EmployeDataProvider { get; set; }
 
         public QuarterComplexBudgetProject()
         {
-            EmployeDataProvider = new EmployeDataProvider();
         }
 
-        private Employe _updatedPerson;
+        public int UpdatedPersonId
+        {
+            get { return _budgetProject.UpdatedPersonId; }
+            set { _budgetProject.UpdatedPersonId = value; }
+        }
 
-        public int UpdatedPersonId { get; set; }
+        public int Revision
+        {
+            get { return _budgetProject.Revision; }
+            set { _budgetProject.Revision = value; }
+        }
 
-        public int Revision { get; set; }
-
-        public DateTime RevisionDate { get; set; }
+        public DateTime RevisionDate
+        {
+            get { return _budgetProject.RevisionDate; }
+            set { _budgetProject.RevisionDate = value; }
+        }
 
         public Employe UpdatedPerson
         {
-            get { return _updatedPerson ?? EmployeDataProvider.GetEmploye(UpdatedPersonId); }
-            set
-            {
-                _updatedPerson = value;
-
-                UpdatedPersonId = value.Id;
-            }
+            get { return _budgetProject.UpdatedPerson; }
+            set { _budgetProject.UpdatedPerson = value; }
         }
 
-        public bool IsAccepted { get; set; }
+        public bool IsAccepted
+        {
+            get { return _budgetProject.IsAccepted; }
+            set { _budgetProject.IsAccepted = value; }
+        }
 
         public new static QuarterComplexBudgetProject Create(IDataReader record)
         {
-            return new QuarterComplexBudgetProject(QuarterComplexBudget.Create(record))
-                {
-                    Revision = Convert.ToInt32(record["Revision"]),
-                    RevisionDate = Convert.ToDateTime(record["RevisionDate"]),
-                    UpdatedPersonId = Convert.ToInt32(record["UpdatedPersonId"]),
-                    IsAccepted = Convert.ToBoolean(record["IsAccepted"]),
-                    QuarterNumber = Convert.ToInt32(record["QuarterNumber"]),
-                };
+            return new QuarterComplexBudgetProject(BudgetProject.Create(record), QuarterComplexBudget.Create(record));
         }
 
         public override SqlParameter[] SqlParameters
         {
             get
             {
-                var sqlParams = new List<SqlParameter>
-                    {
-                        new SqlParameter("Revision", SqlHelper.GetSqlValue(Revision)),
-                        new SqlParameter("RevisionDate", SqlHelper.GetSqlValue(RevisionDate)),
-                        new SqlParameter("UpdatedPersonId", SqlHelper.GetSqlValue(UpdatedPersonId)),
-                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted)),
-                    };
+                var sqlParams = new List<SqlParameter>(_budgetProject.SqlParameters);
 
                 sqlParams.AddRange(base.SqlParameters);
 
