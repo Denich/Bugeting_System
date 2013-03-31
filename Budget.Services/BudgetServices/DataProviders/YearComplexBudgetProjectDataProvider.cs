@@ -6,77 +6,46 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class YearComplexBudgetProjectDataProvider
+    public class YearComplexBudgetProjectDataProvider : IYearComplexBudgetProjectDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<YearComplexBudgetProject> _provider;
 
-        public IEnumerable<YearComplexBudgetProject> GetYearComplexBudgetProjects()
+        [InjectionConstructor]
+        public YearComplexBudgetProjectDataProvider([Dependency("ConnectionString")] string connectionString,
+                                         [Dependency("YearComplexBudgetProjectProcedures")] DbProcedureSet procedureSet)
         {
-            using (var connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (var reader = connection.ExecuteReader("usp_YearComplexBudgetProjectSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<YearComplexBudgetProject>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(YearComplexBudgetProject.Create(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<YearComplexBudgetProject>(connectionString, procedureSet);
         }
 
-        public YearComplexBudgetProject GetYearComplexBudgetProjectById(int yearComplexBudgetProjectId)
+        public IEnumerable<YearComplexBudgetProject> GetAll()
         {
-            using (var connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (var reader = connection.ExecuteReader("usp_YearComplexBudgetProjectSelect", CommandType.StoredProcedure, new SqlParameter("id", yearComplexBudgetProjectId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return YearComplexBudgetProject.Create(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddYearComplexBudgetProject(YearComplexBudgetProject yearComplexBudgetProject)
+        public YearComplexBudgetProject Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetProjectInsert", CommandType.StoredProcedure, yearComplexBudgetProject.SqlParameters);
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateYearComplexBudgetProject(YearComplexBudgetProject yearComplexBudgetProject)
+        public int Insert(YearComplexBudgetProject yearComplexBudgetProject)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetProjectUpdate", CommandType.StoredProcedure, yearComplexBudgetProject.SqlParameters);
-            }
+            return _provider.AddItem(yearComplexBudgetProject);
         }
 
-        public int DeleteYearComplexBudgetProject(int yearComplexBudgetProjectId)
+        public int Update(YearComplexBudgetProject yearComplexBudgetProject)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetProjectDelete", CommandType.StoredProcedure, new SqlParameter("id", yearComplexBudgetProjectId));
-            }
+            return _provider.UpdateItem(yearComplexBudgetProject);
+        }
+
+        public int Delete(int id)
+        {
+            return _provider.DeleteItem(id);
         }
     }
 }

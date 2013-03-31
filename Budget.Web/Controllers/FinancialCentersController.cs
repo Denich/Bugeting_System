@@ -4,27 +4,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Budget.Web.Controllers.Common;
 using Budget.Web.Models;
 using EmitMapper;
 using Budget.Web.Helpers.Converters;
 
 namespace Budget.Web.Controllers
 {
-    public class FinancialCentersController : Controller
+    public class FinancialCentersController : BaseController
     {
-        public IAdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
-        //
-        // GET: /FinancialCenters/
-
-        public FinancialCentersController()
-        {
-            AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider(); 
-        }
-
         public ActionResult Index()
         {
-            IEnumerable<FinancialCenter> financialCenters = AdministrativeUnitDataProvider.GetFinancialCenters();
+            var financialCenters = GetBudgetClient().DataManagement.FinancialCenters.GetAll();
 
             if (financialCenters == null || !financialCenters.Any())
             {
@@ -60,11 +53,11 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                AdministrativeUnitDataProvider.AddFinancialCenter(model.ToObj());
+                GetBudgetClient().DataManagement.FinancialCenters.Insert(model.ToObj());
 
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //ViewBag.Error = "Create faild: " + ex. 
                 return View();
@@ -76,7 +69,7 @@ namespace Budget.Web.Controllers
  
         public ActionResult Edit(int id)
         {
-            var model = AdministrativeUnitDataProvider.GetFinancialCenterById(id).ToModel();
+            var model = GetBudgetClient().DataManagement.FinancialCenters.Get(id).ToModel();
             return View(model);
         }
 
@@ -88,7 +81,7 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                AdministrativeUnitDataProvider.UpdateFinancialCenter(model.ToObj());
+                GetBudgetClient().DataManagement.FinancialCenters.Update(model.ToObj());
                 return RedirectToAction("Index");
             }
             catch
@@ -102,7 +95,7 @@ namespace Budget.Web.Controllers
  
         public ActionResult Delete(int id)
         {
-            var model = AdministrativeUnitDataProvider.GetFinancialCenterById(id).ToModel();
+            var model = GetBudgetClient().DataManagement.FinancialCenters.Get(id).ToModel();
             return View(model);
         }
 
@@ -114,7 +107,7 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                AdministrativeUnitDataProvider.DeleteFinancialCenter(id);
+                GetBudgetClient().DataManagement.FinancialCenters.Delete(id);
                 
                 return RedirectToAction("Index");
             }

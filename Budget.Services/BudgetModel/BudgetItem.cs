@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
-    public class BudgetItem
+    public class BudgetItem : IDataRetriever<BudgetItem>
     {
         private BudgetItemInfo _info;
 
         [Dependency]
         public IBudgetItemInfoDataProvider BudgetItemInfoDataProvider { get; set; }
-
-        public BudgetItem()
-        {
-            BudgetItemInfoDataProvider = new BudgetItemInfoDataProvider();
-        }
 
         public int Id { get; set; }
 
@@ -30,7 +26,7 @@ namespace Budget.Services.BudgetModel
 
         public BudgetItemInfo Info
         {
-            get { return _info ?? BudgetItemInfoDataProvider.GetBudgetItemInfoById(InfoId); }
+            get { return _info ?? BudgetItemInfoDataProvider.Get(InfoId); }
             set
             {
                 _info = value;
@@ -38,36 +34,35 @@ namespace Budget.Services.BudgetModel
             }
         }
 
-        public static BudgetItem Create(IDataReader record)
-        {
-            return new BudgetItem
-            {
-                Id = Convert.ToInt32(record["Id"]),
-                InfoId = Convert.ToInt32(record["InfoId"]),
-                Value = Convert.ToDouble(record["Value"]),
-                TargetBudgetId = Convert.ToInt32(record["TargetBudgetId"]),
-            };
-        }
-
-        public virtual SqlParameter[] SqlParameters
-        {
+        public ICollection<SqlParameter> InsertSqlParameters {
             get
             {
-                var sqlParams = new List<SqlParameter>
+                return new[]
                     {
                         new SqlParameter("InfoId", SqlHelper.GetSqlValue(InfoId)),
                         new SqlParameter("Value", SqlHelper.GetSqlValue(Value)),
                         new SqlParameter("TargetBudgetId", SqlHelper.GetSqlValue(TargetBudgetId)),
                     };
-
-                //note: it budget category info center is new, its id = 0
-                if (Id != 0)
-                {
-                    sqlParams.Add(new SqlParameter("Id", Id));
-                }
-
-                return sqlParams.ToArray();
             }
+        }
+
+        public ICollection<SqlParameter> UpdateSqlParameters
+        {
+            get
+            {
+                var sqlParams = InsertSqlParameters;
+                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                return sqlParams;
+            }
+        }
+
+        public BudgetItem Setup(IDataRecord record)
+        {
+            Id = Convert.ToInt32(record["Id"]);
+            InfoId = Convert.ToInt32(record["InfoId"]);
+            Value = Convert.ToDouble(record["Value"]);
+            TargetBudgetId = Convert.ToInt32(record["TargetBudgetId"]);
+            return this;
         }
     }
 }

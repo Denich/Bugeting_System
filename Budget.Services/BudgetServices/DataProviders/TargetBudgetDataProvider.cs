@@ -4,77 +4,46 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class TargetBudgetDataProvider : ITargetBudgetDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<TargetBudget> _provider;
 
-        public IEnumerable<TargetBudget> GetTargetBudgets()
+        [InjectionConstructor]
+        public TargetBudgetDataProvider([Dependency("ConnectionString")] string connectionString,
+                                         [Dependency("TargetBudgetProcedures")] DbProcedureSet procedureSet)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_TargetBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<TargetBudget>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(TargetBudget.Create(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<TargetBudget>(connectionString, procedureSet);
         }
 
-        public TargetBudget GetTargetBudgetById(int targetBudgetId)
+        public IEnumerable<TargetBudget> GetAll()
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_TargetBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", targetBudgetId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return TargetBudget.Create(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddTargetBudget(TargetBudget targetBudget)
+        public TargetBudget Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_TargetBudgetInsert", CommandType.StoredProcedure, targetBudget.SqlParameters);
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateTargetBudget(TargetBudget targetBudget)
+        public int Insert(TargetBudget targetBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_TargetBudgetUpdate", CommandType.StoredProcedure, targetBudget.SqlParameters);
-            }
+            return _provider.AddItem(targetBudget);
         }
 
-        public int DeleteTargetBudget(int targetBudgetId)
+        public int Update(TargetBudget targetBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_TargetBudgetDelete", CommandType.StoredProcedure, new SqlParameter("id", targetBudgetId));
-            }
+            return _provider.UpdateItem(targetBudget);
+        }
+
+        public int Delete(int id)
+        {
+            return _provider.DeleteItem(id);
         }
     }
 }

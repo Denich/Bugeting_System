@@ -1,82 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class QuarterComplexBudgetDataProvider : IQuarterComplexBudgetDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<QuarterComplexBudget> _provider;
 
-        public IEnumerable<QuarterComplexBudget> GetQuarterComplexBudgets()
+        [InjectionConstructor]
+        public QuarterComplexBudgetDataProvider([Dependency("ConnectionString")] string connectionString,
+                                         [Dependency("QuarterComplexBudgetProcedures")] DbProcedureSet procedureSet)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_QuarterComplexBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<QuarterComplexBudget>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(QuarterComplexBudget.Create(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<QuarterComplexBudget>(connectionString, procedureSet);
         }
 
-        public QuarterComplexBudget GetQuarterComplexBudgetById(int quarterComplexBudgetId)
+        public IEnumerable<QuarterComplexBudget> GetAll()
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_QuarterComplexBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", quarterComplexBudgetId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return QuarterComplexBudget.Create(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddQuarterComplexBudget(QuarterComplexBudget quarterComplexBudget)
+        public QuarterComplexBudget Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_QuarterComplexBudgetInsert", CommandType.StoredProcedure, quarterComplexBudget.SqlParameters);
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateQuarterComplexBudget(QuarterComplexBudget quarterComplexBudget)
+        public int Insert(QuarterComplexBudget quarterComplexBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_QuarterComplexBudgetUpdate", CommandType.StoredProcedure, quarterComplexBudget.SqlParameters);
-            }
+            return _provider.AddItem(quarterComplexBudget);
         }
 
-        public int DeleteQuarterComplexBudget(int quarterComplexBudgetId)
+        public int Update(QuarterComplexBudget quarterComplexBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_QuarterComplexBudgetDelete", CommandType.StoredProcedure, new SqlParameter("id", quarterComplexBudgetId));
-            }
+            return _provider.UpdateItem(quarterComplexBudget);
+        }
+
+        public int Delete(int id)
+        {
+            return _provider.DeleteItem(id);
         }
     }
 }

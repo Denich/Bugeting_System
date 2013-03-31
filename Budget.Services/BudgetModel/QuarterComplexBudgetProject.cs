@@ -7,24 +7,9 @@ using Budget.Services.Helpers;
 
 namespace Budget.Services.BudgetModel
 {
-    public class QuarterComplexBudgetProject : QuarterComplexBudget
+    public class QuarterComplexBudgetProject : QuarterComplexBudget, IDataRetriever<QuarterComplexBudgetProject>
     {
         private readonly BudgetProject _budgetProject = new BudgetProject();
-
-        private QuarterComplexBudgetProject(BudgetProject budgetProject, QuarterComplexBudget quarterComplexBudget)
-            : this(quarterComplexBudget)
-        {
-            _budgetProject = budgetProject;
-        }
-
-        public QuarterComplexBudgetProject(QuarterComplexBudget quarterComplexBudget)
-            : base(quarterComplexBudget)
-        {
-        }
-
-        public QuarterComplexBudgetProject()
-        {
-        }
 
         public int UpdatedPersonId
         {
@@ -56,21 +41,28 @@ namespace Budget.Services.BudgetModel
             set { _budgetProject.IsAccepted = value; }
         }
 
-        public new static QuarterComplexBudgetProject Create(IDataReader record)
+        public new QuarterComplexBudgetProject Setup(IDataRecord record)
         {
-            return new QuarterComplexBudgetProject(BudgetProject.Create(record), QuarterComplexBudget.Create(record));
+            _budgetProject.Setup(record);
+            base.Setup(record);
+            return this;
         }
 
-        public override SqlParameter[] SqlParameters
+        public override ICollection<SqlParameter> InsertSqlParameters
         {
             get
             {
                 var sqlParams = new List<SqlParameter>(_budgetProject.SqlParameters);
 
-                sqlParams.AddRange(base.SqlParameters);
+                sqlParams.AddRange(base.InsertSqlParameters);
 
                 return sqlParams.ToArray();
             }
+        }
+
+        public override ICollection<SqlParameter> UpdateSqlParameters
+        {
+            get { return InsertSqlParameters; }
         }
     }
 }

@@ -4,77 +4,46 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class EmployeContactDataProvider : IEmployeContactDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<EmployeContact> _provider;
 
-        public IEnumerable<EmployeContact> GetEmployeContacts()
+        [InjectionConstructor]
+        public EmployeContactDataProvider([Dependency("ConnectionString")] string connectionString,
+                                          [Dependency("EmployeContactProcedures")] DbProcedureSet procedureSet)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_EmployeContactSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<EmployeContact>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(EmployeContact.Create(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<EmployeContact>(connectionString, procedureSet);
         }
 
-        public EmployeContact GetEmployeContactById(int employeContactId)
+        public IEnumerable<EmployeContact> GetAll()
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_EmployeContactSelect", CommandType.StoredProcedure, new SqlParameter("id", employeContactId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return EmployeContact.Create(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddEmployeContact(EmployeContact employeContact)
+        public EmployeContact Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_EmployeContactInsert", CommandType.StoredProcedure, employeContact.SqlParameters);
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateEmployeContact(EmployeContact employeContact)
+        public int Insert(EmployeContact employeContact)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_EmployeContactUpdate", CommandType.StoredProcedure, employeContact.SqlParameters);
-            }
+            return _provider.AddItem(employeContact);
         }
 
-        public int DeleteEmployeContact(int employeContactId)
+        public int Update(EmployeContact employeContact)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_EmployeContactDelete", CommandType.StoredProcedure, new SqlParameter("id", employeContactId));
-            }
+            return _provider.UpdateItem(employeContact);
+        }
+
+        public int Delete(int id)
+        {
+            return _provider.DeleteItem(id);
         }
     }
 }

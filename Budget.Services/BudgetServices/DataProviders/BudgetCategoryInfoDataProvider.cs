@@ -4,110 +4,46 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class BudgetCategoryInfoDataProvider : IBudgetCategoryInfoDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<BudgetCategoryInfo> _provider;
 
-        public IEnumerable<BudgetCategoryInfo> GetBudgetCategorieInfos()
+        [InjectionConstructor]
+        public BudgetCategoryInfoDataProvider([Dependency("ConnectionString")] string connectionString,
+                                              [Dependency("BudgetCategoryInfoProcedures")] DbProcedureSet procedureSet)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_BudgetCategoryInfoSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<BudgetCategoryInfo>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(GetBudgetCategoryInfoFromReader(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<BudgetCategoryInfo>(connectionString, procedureSet);
         }
 
-        public BudgetCategoryInfo GetBudgetCategoryInfoById(int budgetCategoryInfoId)
+        public IEnumerable<BudgetCategoryInfo> GetAll()
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_BudgetCategoryInfoSelect", CommandType.StoredProcedure, new SqlParameter("id", budgetCategoryInfoId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return GetBudgetCategoryInfoFromReader(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddBudgetCategoryInfo(BudgetCategoryInfo budgetCategoryInfo)
+        public BudgetCategoryInfo Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetCategoryInfoInsert", CommandType.StoredProcedure, GetSqlParametersFromBudgetCategoryInfo(budgetCategoryInfo));
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateBudgetCategoryInfo(BudgetCategoryInfo budgetCategoryInfo)
+        public int Insert(BudgetCategoryInfo budgetCategoryInfo)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetCategoryInfoUpdate", CommandType.StoredProcedure, GetSqlParametersFromBudgetCategoryInfo(budgetCategoryInfo));
-            }
+            return _provider.AddItem(budgetCategoryInfo);
         }
 
-        public int DeleteBudgetCategoryInfo(int budgetCategoryInfoId)
+        public int Update(BudgetCategoryInfo budgetCategoryInfo)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetCategoryInfoDelete", CommandType.StoredProcedure, new SqlParameter("id", budgetCategoryInfoId));
-            }
+            return _provider.UpdateItem(budgetCategoryInfo);
         }
 
-        private BudgetCategoryInfo GetBudgetCategoryInfoFromReader(SqlDataReader reader)
+        public int Delete(int id)
         {
-            return new BudgetCategoryInfo
-                {
-                    Id = Convert.ToInt32(reader["Id"]),
-                    Name = Convert.ToString(reader["Name"]),
-                    IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
-                    Description = Convert.ToString(reader["Description"]),
-                    DateAdded = Convert.ToDateTime(reader["DateAdded"]),
-                    Source = Convert.ToString(reader["Source"])
-                };
-        }
-
-        private SqlParameter[] GetSqlParametersFromBudgetCategoryInfo(BudgetCategoryInfo budgetCategoryInfo)
-        {
-            var sqlParams = new List<SqlParameter>
-                {
-                    new SqlParameter("Name", SqlHelper.GetSqlValue(budgetCategoryInfo.Name)),
-                    new SqlParameter("Description", SqlHelper.GetSqlValue(budgetCategoryInfo.Description)),
-                    new SqlParameter("IsDeleted", SqlHelper.GetSqlValue(budgetCategoryInfo.IsDeleted)),
-                    new SqlParameter("DateAdded", SqlHelper.GetSqlValue(budgetCategoryInfo.DateAdded)),
-                    new SqlParameter("Source", SqlHelper.GetSqlValue(budgetCategoryInfo.Source))
-                };
-
-            //note: it budget category info center is new, its id = 0
-            if (budgetCategoryInfo.Id != 0)
-            {
-                sqlParams.Add(new SqlParameter("Id", budgetCategoryInfo.Id));
-            }
-
-            return sqlParams.ToArray();
+            return _provider.DeleteItem(id);
         }
     }
 }

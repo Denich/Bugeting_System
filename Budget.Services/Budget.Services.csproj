@@ -45,25 +45,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BudgetModel\BudgetItemDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\BudgetClient.cs" />
+    <Compile Include="BudgetServices\BudgetDataManagement.cs" />
+    <Compile Include="BudgetServices\DataProviders\BudgetItemDataProvider.cs" />
     <Compile Include="BudgetModel\BudgetProject.cs" />
-    <Compile Include="BudgetServices\DataProviders\IBudgetItemDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IEmployDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\ITargetBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\ICompanyDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IBudgetCategoryDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IBudgetCategoryInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\FinancialCenterDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IFinancialCenterDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IAdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\IBudgetDataManagement.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IBudgetItemDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IBudgetItemInfoDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IEmployDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IEmployeContactDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IMonthComplexBudgetProjectDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IQuarterComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IQuarterComplexBudgetProjectDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\ITargetBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\ITargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\EmployeContactDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IEmployeContactDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\EmployDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IMonthComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IYearComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\TargetBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetCategoryDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetItemInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IMonthComplexBudgetProjectDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IQuarterComplexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IQuarterComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\MonthComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetProjectDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\CustomDataProvider.cs" />
+    <Compile Include="BudgetServices\IBudgetClient.cs" />
+    <Compile Include="BudgetServices\BudgetServiceFactory.cs" />
+    <Compile Include="Helpers\CustomDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
+    <Compile Include="Helpers\DataRetrieverExtenssions.cs" />
     <Compile Include="BudgetModel\Employe.cs" />
     <Compile Include="BudgetModel\CompanyPosition.cs" />
     <Compile Include="BudgetModel\FinancialCenterType.cs" />
@@ -84,23 +102,18 @@
     <Compile Include="BudgetModel\FinancialCenter.cs" />
     <Compile Include="BudgetModel\TargetBudgetInfo.cs" />
     <Compile Include="BudgetModel\YearComplexBudgetProject.cs" />
-    <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviders\CompanyDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\BudgetCategoryInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IAdministrativeUnitDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IBudgetCategoryDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IBudgetCategoryInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IBudgetItemInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\IComplexBudgetDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviders\ITargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\QuarterComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\TargetBudgetInfoDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetProjectDataProvider.cs" />
+    <Compile Include="Helpers\DbProcedureSet.cs" />
+    <Compile Include="BudgetServices\IBudgetServiceFactory.cs" />
     <Compile Include="Helpers\IDataRetriever.cs" />
+    <Compile Include="Helpers\IocContainer.cs" />
+    <Compile Include="Helpers\IocSetDefault.cs" />
     <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,25 +1,16 @@
 ﻿using System.Collections.Generic;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
-    public class ComplexBudget
+    public abstract class ComplexBudget
     {
         private AdministrativeUnit _administrativeUnit;
 
-        public ComplexBudget()
-        {
-            AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();    
-        }
-
-        public ComplexBudget(int id, int administrativeUnitId)
-        {
-            AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();
-            Id = id;
-            AdministrativeUnitId = administrativeUnitId;
-        }
-
-        public AdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
+        [Dependency]
+        public IAdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
 
         public int Id { get; set; }
 
@@ -27,8 +18,7 @@ namespace Budget.Services.BudgetModel
 
         public AdministrativeUnit AdministrativeUnit
         {
-
-            get { return _administrativeUnit ?? AdministrativeUnitDataProvider.GetAdministrativeUnitById(AdministrativeUnitId); }
+            get { return _administrativeUnit ?? AdministrativeUnitDataProvider.Get(AdministrativeUnitId); }
             set
             {
                 _administrativeUnit = value;

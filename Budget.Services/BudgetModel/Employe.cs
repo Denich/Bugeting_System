@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
@@ -11,24 +12,9 @@ namespace Budget.Services.BudgetModel
     public class Employe : IDataRetriever<Employe>
     {
         private EmployeContact _contact;
-        private readonly string _selectProcedureName;
-        private readonly string _selectByIdProcedureName;
-        private readonly string _updateProcedureName;
-        private readonly string _deleteByIdProcedureName;
-        private readonly string _insertProcedureName;
 
         [Dependency]
         public IEmployeContactDataProvider EmployeContactDataProvider { get; set; }
-
-        public Employe()
-        {
-            _selectProcedureName = "usp_EmployeSelect";
-            _selectByIdProcedureName = "usp_EmployeSelect";
-            _updateProcedureName = "usp_EmployeUpdate";
-            _deleteByIdProcedureName = "usp_EmployeDelete";
-            _insertProcedureName = "usp_EmployeInsert";
-            EmployeContactDataProvider = new EmployeContactDataProvider();
-        }
 
         public int Id { get; set; }
 
@@ -44,7 +30,7 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                return _contact ?? EmployeContactDataProvider.GetEmployeContactById(Id);
+                return _contact ?? EmployeContactDataProvider.Get(Id);
             }
             set
             {
@@ -76,72 +62,36 @@ namespace Budget.Services.BudgetModel
             }
         }
 
-        public Employe Create(IDataRecord record)
-        {
-            return new Employe()
-            {
-                Id = Convert.ToInt32(record["Id"]),
-                Name = Convert.ToString(record["Name"]),
-                SecondName = Convert.ToString(record["SecondName"]),
-                MiddleName = Convert.ToString(record["MiddleName"]),
-                Position = Convert.ToString(record["Position"]),
-            };
-        }
-
-        public void FillData(IDataRecord record)
-        {
-            Id = Convert.ToInt32(record["Id"]);
-            Name = Convert.ToString(record["Name"]);
-            SecondName = Convert.ToString(record["SecondName"]);
-            MiddleName = Convert.ToString(record["MiddleName"]);
-            Position = Convert.ToString(record["Position"]);
-        }
-
-        public virtual SqlParameter[] SqlParameters
-        {
+        public ICollection<SqlParameter> InsertSqlParameters {
             get
             {
-                var sqlParams = new List<SqlParameter>
+                return new[]
                     {
                         new SqlParameter("Name", SqlHelper.GetSqlValue(Name)),
                         new SqlParameter("SecondName", SqlHelper.GetSqlValue(SecondName)),
                         new SqlParameter("MiddleName", SqlHelper.GetSqlValue(Name)),
                         new SqlParameter("Position", SqlHelper.GetSqlValue(Position)),
                     };
-
-                //note: it budget category info center is new, its id = 0
-                if (Id != 0)
-                {
-                    sqlParams.Add(new SqlParameter("Id", Id));
-                }
-
-                return sqlParams.ToArray();
+            }
+        }
+        public ICollection<SqlParameter> UpdateSqlParameters
+        {
+            get
+            {
+                var sqlParams = InsertSqlParameters;
+                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                return sqlParams;
             }
         }
 
-        public string SelectProcedureName
+        public Employe Setup(IDataRecord record)
         {
-            get { return _selectProcedureName; }
-        }
-
-        public string SelectByIdProcedureName
-        {
-            get { return _selectByIdProcedureName; }
-        }
-
-        public string UpdateProcedureName
-        {
-            get { return _updateProcedureName; }
-        }
-
-        public string DeleteByIdProcedureName
-        {
-            get { return _deleteByIdProcedureName; }
-        }
-
-        public string InsertProcedureName
-        {
-            get { return _insertProcedureName; }
+            Id = Convert.ToInt32(record["Id"]);
+            Name = Convert.ToString(record["Name"]);
+            SecondName = Convert.ToString(record["SecondName"]);
+            MiddleName = Convert.ToString(record["MiddleName"]);
+            Position = Convert.ToString(record["Position"]);
+            return this;
         }
     }
 }

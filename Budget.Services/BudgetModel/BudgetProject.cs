@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Budget.Services.BudgetServices.DataProviders;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class BudgetProject
     {
+        [Dependency]
         public IEmployeDataProvider EmployeDataProvider { get; set; }
-
-        public BudgetProject()
-        {
-            EmployeDataProvider = new EmployeDataProvider();
-        }
 
         private Employe _updatedPerson;
 
@@ -29,7 +23,7 @@ namespace Budget.Services.BudgetModel
 
         public Employe UpdatedPerson
         {
-            get { return _updatedPerson ?? EmployeDataProvider.GetEmploye(UpdatedPersonId); }
+            get { return _updatedPerson ?? EmployeDataProvider.Get(UpdatedPersonId); }
             set
             {
                 _updatedPerson = value;
@@ -40,15 +34,13 @@ namespace Budget.Services.BudgetModel
 
         public bool IsAccepted { get; set; }
 
-        public static BudgetProject Create(IDataReader record)
+        public BudgetProject Setup(IDataRecord record)
         {
-            return new BudgetProject
-                {
-                    Revision = Convert.ToInt32(record["Revision"]),
-                    RevisionDate = Convert.ToDateTime(record["RevisionDate"]),
-                    UpdatedPersonId = Convert.ToInt32(record["UpdatedPersonId"]),
-                    IsAccepted = Convert.ToBoolean(record["IsAccepted"]),
-                };
+            Revision = Convert.ToInt32(record["Revision"]);
+            RevisionDate = Convert.ToDateTime(record["RevisionDate"]);
+            UpdatedPersonId = Convert.ToInt32(record["UpdatedPersonId"]);
+            IsAccepted = Convert.ToBoolean(record["IsAccepted"]);
+            return this;
         }
 
         public SqlParameter[] SqlParameters

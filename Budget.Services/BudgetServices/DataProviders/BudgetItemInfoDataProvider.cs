@@ -6,112 +6,46 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class BudgetItemInfoDataProvider : IBudgetItemInfoDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<BudgetItemInfo> _provider;
 
-        public IEnumerable<BudgetItemInfo> GetBudgetItemInfos()
+        [InjectionConstructor]
+        public BudgetItemInfoDataProvider([Dependency("ConnectionString")] string connectionString,
+                                         [Dependency("BudgetItemInfoProcedures")] DbProcedureSet procedureSet)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_BudgetItemInfoSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<BudgetItemInfo>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(GetBudgetItemInfoFromReader(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<BudgetItemInfo>(connectionString, procedureSet);
         }
 
-        public BudgetItemInfo GetBudgetItemInfoById(int budgetItemInfoId)
+        public IEnumerable<BudgetItemInfo> GetAll()
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (SqlDataReader reader = connection.ExecuteReader("usp_BudgetItemInfoSelect", CommandType.StoredProcedure, new SqlParameter("id", budgetItemInfoId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return GetBudgetItemInfoFromReader(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddBudgetItemInfo(BudgetItemInfo budgetItemInfo)
+        public BudgetItemInfo Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetItemInfoInsert", CommandType.StoredProcedure, GetSqlParametersFromBudgetItemInfo(budgetItemInfo));
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateBudgetItemInfo(BudgetItemInfo budgetItemInfo)
+        public int Insert(BudgetItemInfo budgetItemInfo)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetItemInfoUpdate", CommandType.StoredProcedure, GetSqlParametersFromBudgetItemInfo(budgetItemInfo));
-            }
+            return _provider.AddItem(budgetItemInfo);
         }
 
-        public int DeleteBudgetItemInfo(int budgetItemInfoId)
+        public int Update(BudgetItemInfo budgetItemInfo)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_BudgetItemInfoDelete", CommandType.StoredProcedure, new SqlParameter("id", budgetItemInfoId));
-            }
+            return _provider.UpdateItem(budgetItemInfo);
         }
 
-        private BudgetItemInfo GetBudgetItemInfoFromReader(SqlDataReader reader)
+        public int Delete(int id)
         {
-            return new BudgetItemInfo()
-            {
-                Id = Convert.ToInt32(reader["Id"]),
-                Name = Convert.ToString(reader["Name"]),
-                TargetBudgetId = Convert.ToInt32(reader["TargetBudgetId"]),
-                IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
-                Description = Convert.ToString(reader["Description"]),
-                DateAdded = Convert.ToDateTime(reader["DateAdded"]),
-                Source = Convert.ToString(reader["Source"])
-            };
-        }
-
-        private SqlParameter[] GetSqlParametersFromBudgetItemInfo(BudgetItemInfo budgetItemInfo)
-        {
-            var sqlParams = new List<SqlParameter>
-                {
-                    new SqlParameter("Name", SqlHelper.GetSqlValue(budgetItemInfo.Name)),
-                    new SqlParameter("Description", SqlHelper.GetSqlValue(budgetItemInfo.Description)),
-                    new SqlParameter("IsDeleted", SqlHelper.GetSqlValue(budgetItemInfo.IsDeleted)),
-                    new SqlParameter("TargetBudgetId", SqlHelper.GetSqlValue(budgetItemInfo.TargetBudgetId)),
-                    new SqlParameter("DateAdded", SqlHelper.GetSqlValue(budgetItemInfo.DateAdded)),
-                    new SqlParameter("Source", SqlHelper.GetSqlValue(budgetItemInfo.Source))
-                };
-
-            //note: it target budget info center is new, its id = 0
-            if (budgetItemInfo.Id != 0)
-            {
-                sqlParams.Add(new SqlParameter("Id", budgetItemInfo.Id));
-            }
-
-            return sqlParams.ToArray();
+            return _provider.DeleteItem(id);
         }
     }
 }

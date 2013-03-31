@@ -1,4 +1,6 @@
-﻿using Budget.Services.BudgetServices.DataProviders;
+﻿using Budget.Services.BudgetServices.DataProviderContracts;
+using Budget.Services.BudgetServices.DataProviders;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
@@ -6,10 +8,8 @@ namespace Budget.Services.BudgetModel
     {
         private Employe _director;
 
-        protected AdministrativeUnit()
-        {
-            EmployeDataProvider = new EmployeDataProvider(); //todo: change for DI
-        }
+        [InjectionConstructor]
+        protected AdministrativeUnit() {}
 
         protected AdministrativeUnit(string name)
             : this(0, name)
@@ -23,6 +23,7 @@ namespace Budget.Services.BudgetModel
             Name = name;
         }
 
+        [Dependency]
         public IEmployeDataProvider EmployeDataProvider { get; set; }
 
         public int DirectorId { get; set; }
@@ -37,7 +38,7 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                return _director ?? EmployeDataProvider.GetEmploye(DirectorId);
+                return _director ?? EmployeDataProvider.Get(DirectorId);
             }
             set
             {

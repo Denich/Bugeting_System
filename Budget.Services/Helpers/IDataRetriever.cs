@@ -10,18 +10,10 @@ namespace Budget.Services.Helpers
 {
     public interface IDataRetriever<out T>
     {
-        string SelectProcedureName { get; }
+        ICollection<SqlParameter> InsertSqlParameters { get; }
 
-        string SelectByIdProcedureName { get; }
+        ICollection<SqlParameter> UpdateSqlParameters { get; }
 
-        string UpdateProcedureName { get; }
-
-        string DeleteByIdProcedureName { get; }
-
-        string InsertProcedureName { get; }
-
-        SqlParameter[] SqlParameters { get; }
-
-        T Create(IDataRecord record);
+        T Setup(IDataRecord record);
     }
 }

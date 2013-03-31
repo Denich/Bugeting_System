@@ -2,29 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
 
 namespace Budget.Services.BudgetModel
 {
-    public class MonthComplexBudgetProject : MonthComplexBudget
+    public class MonthComplexBudgetProject : MonthComplexBudget, IDataRetriever<MonthComplexBudgetProject>
     {
         private readonly BudgetProject _budgetProject = new BudgetProject();
-
-        private MonthComplexBudgetProject(BudgetProject budgetProject, MonthComplexBudget monthComplexBudget)
-            : this(monthComplexBudget)
-        {
-            _budgetProject = budgetProject;
-        }
-
-        public MonthComplexBudgetProject(MonthComplexBudget monthComplexBudget)
-            : base(monthComplexBudget)
-        {
-        }
-
-        public MonthComplexBudgetProject()
-        {
-        }
 
         public int UpdatedPersonId
         {
@@ -56,21 +40,28 @@ namespace Budget.Services.BudgetModel
             set { _budgetProject.IsAccepted = value; }
         }
 
-        public new static MonthComplexBudgetProject Create(IDataReader record)
-        {
-            return new MonthComplexBudgetProject(BudgetProject.Create(record), MonthComplexBudget.Create(record));
-        }
-
-        public override SqlParameter[] SqlParameters
+        public override ICollection<SqlParameter> InsertSqlParameters
         {
             get
             {
                 var sqlParams = new List<SqlParameter>(_budgetProject.SqlParameters);
 
-                sqlParams.AddRange(base.SqlParameters);
+                sqlParams.AddRange(base.InsertSqlParameters);
 
-                return sqlParams.ToArray();
+                return sqlParams;
             }
+        }
+
+        public override ICollection<SqlParameter> UpdateSqlParameters
+        {
+            get { return InsertSqlParameters; }
+        }
+
+        public new MonthComplexBudgetProject Setup(IDataRecord record)
+        {
+            _budgetProject.Setup(record); 
+            base.Setup(record);
+            return this;
         }
     }
 }

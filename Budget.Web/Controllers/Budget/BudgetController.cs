@@ -1,53 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Budget.Services.BudgetModel;
-using Budget.Services.BudgetServices.DataProviders;
+using Budget.Web.Controllers.Common;
 using Budget.Web.Helpers.Converters;
 using Budget.Web.Models.BudgetModels;
 
 namespace Budget.Web.Controllers.Budget
 {
-    public class BudgetController : Controller
+    public class BudgetController : BaseController
     {
-        public IYearComplexBudgetDataProvider ComplexBudgetDataProvider { get; set; }
-
-        public IBudgetCategoryDataProvider BudgetCategoryDataProvider { get; set; }
-
-        public IAdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
-        
-        public BudgetController()
-        {
-            ComplexBudgetDataProvider = new YearComplexBudgetDataProvider();//todo: change for DI
-
-            BudgetCategoryDataProvider = new BudgetCategoryDataProvider();
-
-            AdministrativeUnitDataProvider = new AdministrativeUnitDataProvider();
-        }
-        
         //
         // GET: /Budget/
 
         public ActionResult Index()
         {
-            var yearComplexBudgets = ComplexBudgetDataProvider.GetYearComplexBudgets();
-            
+            var yearComplexBudgets = GetBudgetClient().DataManagement.YearComplexBudgets.GetAll();
+
             if (yearComplexBudgets == null)
             {
                 return View();
             }
 
-            var model = new List<YearComplexBudgetModel>();//yearComplexBudgets.Select(b => b.ToModel());
+            var model = new List<YearComplexBudgetModel>();
 
             foreach (var yearComplexBudget in yearComplexBudgets)
             {
                 var modelItem = yearComplexBudget.ToModel();
 
                 modelItem.AdminUnitName =
-                    AdministrativeUnitDataProvider.GetAdministrativeUnitById(yearComplexBudget.AdministrativeUnitId)
-                                                  .Name;
+                    GetBudgetClient()
+                        .DataManagement.FinancialCenters.Get(yearComplexBudget.AdministrativeUnitId)
+                        .Name;
                 model.Add(modelItem);
             }
 
@@ -68,7 +51,7 @@ namespace Budget.Web.Controllers.Budget
         public ActionResult Create()
         {
             ViewBag.AdministrativeUnitId =
-                new SelectList(AdministrativeUnitDataProvider.GetAdministrativeUnits().Select(o => o.ToModel()), "Id",
+                new SelectList(GetBudgetClient().DataManagement.FinancialCenters.GetAll().Select(o => o.ToModel()), "Id",
                                "Name");
             return View();
         }
@@ -81,7 +64,7 @@ namespace Budget.Web.Controllers.Budget
         {
             try
             {
-                ComplexBudgetDataProvider.AddYearComplexBudget(model.ToObj());
+                GetBudgetClient().DataManagement.YearComplexBudgets.Insert(model.ToObj());
                 return RedirectToAction("Index");
             }
             catch

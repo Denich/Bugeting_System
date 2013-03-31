@@ -6,77 +6,46 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
     public class YearComplexBudgetDataProvider : IYearComplexBudgetDataProvider
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString;
+        private readonly CustomDataProvider<YearComplexBudget> _provider;
 
-        public IEnumerable<YearComplexBudget> GetYearComplexBudgets()
+        [InjectionConstructor]
+        public YearComplexBudgetDataProvider([Dependency("ConnectionString")] string connectionString,
+                                         [Dependency("YearComplexBudgetProcedures")] DbProcedureSet procedureSet)
         {
-            using (var connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (var reader = connection.ExecuteReader("usp_YearComplexBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var categories = new List<YearComplexBudget>();
-
-                    while (reader.Read())
-                    {
-                        categories.Add(YearComplexBudget.Create(reader));
-                    }
-
-                    return categories;
-                }
-            }
+            _provider = new CustomDataProvider<YearComplexBudget>(connectionString, procedureSet);
         }
 
-        public YearComplexBudget GetYearComplexBudgetById(int yearComplexBudgetId)
+        public IEnumerable<YearComplexBudget> GetAll()
         {
-            using (var connection = SqlHelper.GetConnection(_connectionString))
-            {
-                using (var reader = connection.ExecuteReader("usp_YearComplexBudgetSelect", CommandType.StoredProcedure, new SqlParameter("id", yearComplexBudgetId)))
-                {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    reader.Read();
-
-                    return YearComplexBudget.Create(reader);
-                }
-            }
+            return _provider.GetItems();
         }
 
-        public int AddYearComplexBudget(YearComplexBudget yearComplexBudget)
+        public YearComplexBudget Get(int id)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetInsert", CommandType.StoredProcedure, yearComplexBudget.SqlParameters);
-            }
+            return _provider.GetItem(id);
         }
 
-        public int UpdateYearComplexBudget(YearComplexBudget yearComplexBudget)
+        public int Insert(YearComplexBudget yearComplexBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetUpdate", CommandType.StoredProcedure, yearComplexBudget.SqlParameters);
-            }
+            return _provider.AddItem(yearComplexBudget);
         }
 
-        public int DeleteYearComplexBudget(int yearComplexBudgetId)
+        public int Update(YearComplexBudget yearComplexBudget)
         {
-            using (SqlConnection connection = SqlHelper.GetConnection(_connectionString))
-            {
-                return connection.ExecuteNonQuery("usp_YearComplexBudgetDelete", CommandType.StoredProcedure, new SqlParameter("id", yearComplexBudgetId));
-            }
+            return _provider.UpdateItem(yearComplexBudget);
+        }
+
+        public int Delete(int id)
+        {
+            return _provider.DeleteItem(id);
         }
     }
 }

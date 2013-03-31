@@ -3,32 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Budget.Web.Controllers.Common;
 using Budget.Web.Helpers.Converters;
 using Budget.Web.Models;
 
 namespace Budget.Web.Controllers
 {
-    public class BudgetCategoryInfoController : Controller
+    public class BudgetCategoryInfoController : BaseController
     {
-        public IBudgetCategoryInfoDataProvider BudgetCategoryInfoDataProvider { get; set; }
-
-        public BudgetCategoryInfoController()
-        {
-            BudgetCategoryInfoDataProvider = new BudgetCategoryInfoDataProvider();//todo: change for DI
-        }
-
         //
         // GET: /BudgetCategoryInfo/
 
         public ActionResult Index()
         {
-            var budgetCategories = BudgetCategoryInfoDataProvider.GetBudgetCategorieInfos();
+            var budgetCategories = GetBudgetClient().DataManagement.BudgetCategoryInfos.GetAll();
 
             if (budgetCategories == null || !budgetCategories.Any())
             {
                 return View("EmptyBudgetCategoryInfo");
             }
+
             var model = budgetCategories.Select(b => b.ToEntityModel());
 
             return View(model);
@@ -39,7 +35,7 @@ namespace Budget.Web.Controllers
 
         public ActionResult Details(int id)
         {
-            var budgetCategoryInfoModel = BudgetCategoryInfoDataProvider.GetBudgetCategoryInfoById(id).ToModel();
+            var budgetCategoryInfoModel = GetBudgetClient().DataManagement.BudgetCategoryInfos.Get(id).ToModel();
             
             if (budgetCategoryInfoModel == null)
             {
@@ -72,7 +68,7 @@ namespace Budget.Web.Controllers
             {
                 model.DateAdded = DateTime.Now;
                 model.Source = User.Identity.Name;
-                BudgetCategoryInfoDataProvider.AddBudgetCategoryInfo(model.ToObj());
+                GetBudgetClient().DataManagement.BudgetCategoryInfos.Insert(model.ToObj());
 
                 return RedirectToAction("Index");
             }

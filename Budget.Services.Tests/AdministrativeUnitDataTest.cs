@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Budget.Services.BudgetModel;
+using Budget.Services.BudgetServices;
 using Budget.Services.BudgetServices.DataProviders;
 using NUnit.Framework;
 
@@ -19,21 +21,21 @@ namespace Budget.Services.Tests
         [SetUp]
         public void SetUp()
         {
-            _company = new Company("TestCompany")
+            _company = new Company
                 {
+                    Name = "TestCompany",
                     AccountNumber = 1111,
                     Adress = "My adress",
                     Director = null,
                     Edrpou = 111,
-                    Name = "My company",
                     Phone = "1111"
                 };
 
-            _financialCenter = new FinancialCenter("Filial1", FinancialCenterType.FinancialResposibilityCenter)
+            _financialCenter = new FinancialCenter
                 {
+                    Name = "Filial1",
+                    Type = FinancialCenterType.FinancialResposibilityCenter,
                     Adress = "My adress",
-                    Director = null,
-                    Name = "My filial",
                     Phone = "1111"
                 };
             
@@ -43,45 +45,41 @@ namespace Budget.Services.Tests
         [Test]
         public void CompanyDataTest()
         {
-            var adminUnitDataProvider = new AdministrativeUnitDataProvider();
-
-            adminUnitDataProvider.AddCompany(_company);
+            var companyDataProvider =
+                new BudgetServiceFactory().GetBudgetClient(
+                    ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString).DataManagement.Company;
             
-            var company = adminUnitDataProvider.GetCompany();
-
-            Assert.AreNotEqual(_company.Id, company.Id);
+            var company = companyDataProvider.Get();
 
             company.Name = _changedName;
 
-            adminUnitDataProvider.UpdateCompany(company);
+            companyDataProvider.Update(company);
 
-            Assert.AreEqual(adminUnitDataProvider.GetCompany().Name, _changedName);
-
-            adminUnitDataProvider.DeleteCompany(company.Id);
-
-            Assert.Null(adminUnitDataProvider.GetCompany());
+            Assert.AreEqual(companyDataProvider.Get().Name, _changedName);
         }
 
         [Test]
         public void FinancialCenterDataTest()
         {
-            var adminUnitDataProvider = new AdministrativeUnitDataProvider();
+            var adminUnitDataProvider = new BudgetServiceFactory().GetBudgetClient(
+                ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString)
+                                                                  .DataManagement.FinancialCenters;
 
-            adminUnitDataProvider.AddFinancialCenter(_financialCenter);
+            adminUnitDataProvider.Insert(_financialCenter);
 
-            var finCenter = adminUnitDataProvider.GetFinancialCenters().Single(c => c.Name == _financialCenter.Name);
+            var finCenter = adminUnitDataProvider.GetAll().Single(c => c.Name == _financialCenter.Name);
 
             Assert.AreNotEqual(_financialCenter.Id, finCenter.Id);
 
             finCenter.Name = _changedName;
 
-            adminUnitDataProvider.UpdateFinancialCenter(finCenter);
+            adminUnitDataProvider.Update(finCenter);
 
-            Assert.AreEqual(adminUnitDataProvider.GetFinancialCenterById(finCenter.Id).Name, _changedName);
+            Assert.AreEqual(adminUnitDataProvider.Get(finCenter.Id).Name, _changedName);
 
-            adminUnitDataProvider.DeleteFinancialCenter(finCenter.Id);
+            adminUnitDataProvider.Delete(finCenter.Id);
 
-            Assert.Null(adminUnitDataProvider.GetFinancialCenterById(finCenter.Id));
+            Assert.Null(adminUnitDataProvider.Get(finCenter.Id));
         }
     }
 }

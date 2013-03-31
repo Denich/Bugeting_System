@@ -3,30 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Budget.Web.Controllers.Common;
 using Budget.Web.Helpers.Converters;
 using Budget.Web.Models;
 
 namespace Budget.Web.Controllers
 {
-    public class BudgetItemInfoController : Controller
+    public class BudgetItemInfoController : BaseController
     {
-        public ITargetBudgetInfoDataProvider TargetBudgetInfoDataProvider { get; set; }
-
-        public IBudgetItemInfoDataProvider BudgetItemInfoDataProvider { get; set; }
-
-        public BudgetItemInfoController()
-        {
-            TargetBudgetInfoDataProvider = new TargetBudgetInfoDataProvider();//todo: change for DI
-
-            BudgetItemInfoDataProvider = new BudgetItemInfoDataProvider();//todo: change for DI
-        }
         //
         // GET: /BudgetItemInfo/Details/5
 
         public ActionResult Details(int id)
         {
-            var budgetItemInfoModel = BudgetItemInfoDataProvider.GetBudgetItemInfoById(id).ToModel();
+            var budgetItemInfoModel = GetBudgetClient().DataManagement.BudgetItemInfos.Get(id).ToModel();
 
             if (budgetItemInfoModel == null)
             {
@@ -34,7 +26,7 @@ namespace Budget.Web.Controllers
             }
 
             budgetItemInfoModel.TargetBudgetName =
-                TargetBudgetInfoDataProvider.GetTargetBudgetInfoById(budgetItemInfoModel.TargetBudgetId).Name;
+                GetBudgetClient().DataManagement.TargetBudgetInfos.Get(budgetItemInfoModel.TargetBudgetId).Name;
 
             if (Request.IsAjaxRequest())
             {
@@ -50,8 +42,10 @@ namespace Budget.Web.Controllers
         public ActionResult Create()
         {
             ViewBag.TargetBudgetId =
-                new SelectList(TargetBudgetInfoDataProvider.GetTargetBudgetInfos().Select(o => o.ToModel()), "Id",
-                               "Name");
+                new SelectList(
+                    GetBudgetClient().DataManagement.TargetBudgetInfos.GetAll().Select(o => o.ToModel()),
+                    "Id",
+                    "Name");
             return View();
         }
 
@@ -65,7 +59,7 @@ namespace Budget.Web.Controllers
             {
                 model.DateAdded = DateTime.Now;
                 model.Source = User.Identity.Name;
-                BudgetItemInfoDataProvider.AddBudgetItemInfo(model.ToObj());
+                GetBudgetClient().DataManagement.BudgetItemInfos.Insert(model.ToObj());
 
                 return RedirectToAction("Index", "BudgetCategoryInfo");
             }
