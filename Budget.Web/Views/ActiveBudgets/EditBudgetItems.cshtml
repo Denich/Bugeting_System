@@ -1,0 +1,69 @@
+﻿@model Budget.Web.Models.EditBudgetItemsModel
+
+@{
+    ViewBag.Title = "Редагування статей бюджету";
+}
+
+<div class="page-header">
+    <h2>Редагування статей проекту бюджету на @Model.Year рік</h2>
+</div>
+<div class="row-fluid">
+    <div class="span10 offset1">
+        <form class="form-horizontal" action="@Url.Action("EditBudgetItems")" method="POST">
+            <h5>Оберіть бюджетні статті:</h5>
+            <ul>
+                @for (int i = 0; i < Model.Categories.Count; i++)
+                {
+                    <li>
+                        <label class="checkbox">
+                            @Model.Categories[i].Name
+                            @(Model.Categories[i].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].IsSelected))
+                            @Html.HiddenFor(m => m.Categories[i].Id)
+                        </label>
+                    
+
+                        @if (Model.Categories[i].Targets == null)
+                        {
+                            continue;
+                        }
+            
+                        <ul>
+                            @for (int j = 0; j < Model.Categories[i].Targets.Count; j++)
+                            {
+                                <li>
+                                    <label class="checkbox">
+                                        @Model.Categories[i].Targets[j].Name
+                                        @(Model.Categories[i].Targets[j].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsSelected))
+                                        @Html.HiddenFor(m => m.Categories[i].Targets[j].Name)
+                                    </label>
+                            
+                            
+                                    @if (Model.Categories[i].Targets[j].Items == null)
+                                    {
+                                        continue;
+                                    }
+                    
+                                    <ul>
+                                        @for (int k = 0; k < Model.Categories[i].Targets[j].Items.Count; k++)
+                                        {
+                                            <li>
+                                                <label class="checkbox">
+                                                    @Model.Categories[i].Targets[j].Items[k].Name
+                                                    @(Model.Categories[i].Targets[j].Items[k].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsSelected))
+                                                    @Html.HiddenFor(m => m.Categories[i].Targets[j].Items[k].Id)
+                                                </label>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>

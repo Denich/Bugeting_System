@@ -1,0 +1,27 @@
+﻿@using Budget.Web.Helpers
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section JavaScript
+{
+    @RenderSection("JavaScript", false)
+}
+
+<div class="row-fluid">
+    <div class="tabs-left span2">
+        <ul class="nav nav-tabs">
+            <li class="@Html.SetMenuItemClass("Index", "ActiveBudgets")">
+                <a href="@Url.Action("Index", "ActiveBudgets")">Активні бюджети</a>
+            </li>
+            <li class=@Html.SetMenuItemClass("Index", "ApprovalBudgets")>
+                <a href="@Url.Action("Index", "ApprovalBudgets")">Затвердженні бюджети</a>
+            </li>
+            <li class=@Html.SetMenuItemClass("Index", "BudgetArchive")>
+                <a href="@Url.Action("Index", "BudgetArchive")">Бюджетний архів</a>
+            </li>
+        </ul>
+    </div>
+    <div class="span10">
+        @RenderBody()
+    </div>
+</div>

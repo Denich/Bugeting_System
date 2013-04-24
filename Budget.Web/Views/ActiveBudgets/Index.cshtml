@@ -1,0 +1,15 @@
+﻿@model dynamic
+
+@{
+    Layout = "~/Views/Shared/_BudgetLayout.cshtml";
+    ViewBag.Title = "Активні бюджети";
+}
+<div class="page-header">
+    <h2>Активні бюджети</h2>
+</div>
+<div class="row-fluid">
+    <div class="btn-group">
+        <a class="btn" href="@Url.Action("NewBudget")">Новий річний бюджет</a>
+    </div>
+    <hr/>
+</div>

@@ -1,0 +1,36 @@
+﻿@model Budget.Web.Models.BudgetProjectFinancialCentersModel
+@{
+    ViewBag.Title = "Редагування ЦФВ у бюджетному проекті";
+}
+
+<div class="page-header">
+    <h2>Вибір ЦФВ для участі у бюджетному процесі на @Model.Year рік</h2>
+</div>
+<div class="row-fluid">
+    <div class="span8 offset2">
+        <form class="form-horizontal" action="@Url.Action("EditBudgetCenters")" method="POST">
+            <fieldset>
+                <legend>
+                    Список доступниъ центрів фінансової відповідальності:
+                </legend>
+                
+                @{int i = 0;}
+                @foreach (var fcenter in Model.FinancialCenters)
+                {
+                    <div class="controls">
+                        <label class="checkbox">
+                            @Html.CheckBoxFor(m => m.FinancialCenters[i].IsSeleceted)
+                            @fcenter.Name
+                        </label>
+                        @Html.HiddenFor(m => m.FinancialCenters[i].Id)
+                    </div>
+                    i++;
+                }
+            </fieldset>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Далі</button>
+            </div>
+            @Html.HiddenFor(m => m.Year)
+        </form>
+    </div>
+</div>
