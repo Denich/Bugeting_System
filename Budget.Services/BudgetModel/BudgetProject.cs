@@ -38,7 +38,7 @@ namespace Budget.Services.BudgetModel
         {
             Revision = Convert.ToInt32(record["Revision"]);
             RevisionDate = Convert.ToDateTime(record["RevisionDate"]);
-            UpdatedPersonId = Convert.ToInt32(record["UpdatedPersonId"]);
+            UpdatedPersonId = Convert.ToInt32(record["UpdatePersonId"]);
             IsAccepted = Convert.ToBoolean(record["IsAccepted"]);
             return this;
         }
@@ -52,8 +52,8 @@ namespace Budget.Services.BudgetModel
                     {
                         new SqlParameter("Revision", SqlHelper.GetSqlValue(Revision)),
                         new SqlParameter("RevisionDate", SqlHelper.GetSqlValue(RevisionDate)),
-                        new SqlParameter("UpdatedPersonId", SqlHelper.GetSqlValue(UpdatedPersonId)),
-                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted)),
+                        new SqlParameter("UpdatePersonId", SqlHelper.GetSqlValue(UpdatedPersonId)),
+                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted))
                     };
 
                 return sqlParams.ToArray();

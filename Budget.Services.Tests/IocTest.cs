@@ -18,7 +18,7 @@ namespace Budget.Services.Tests
         {
             var budgetClient = new BudgetServiceFactory().GetBudgetClient(ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString);
             
-            var finCenters = budgetClient.DataManagement.FinancialCenters.GetAll();
+            var finCenters = budgetClient.Data.FinancialCenters.GetAll();
 
             var finCenter = finCenters.First();
             //var finCenter = IocContainer.Instance.Resolve<FinancialCenter>();

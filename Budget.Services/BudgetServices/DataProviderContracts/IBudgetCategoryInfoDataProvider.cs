@@ -14,5 +14,7 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(BudgetCategoryInfo budgetCategoryInfo);
 
         int Delete(int budgetCategoryInfoId);
+
+        
     }
 }

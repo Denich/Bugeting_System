@@ -17,7 +17,7 @@ namespace Budget.Web.Controllers
     {
         public ActionResult Index()
         {
-            var financialCenters = GetBudgetClient().DataManagement.FinancialCenters.GetAll();
+            var financialCenters = GetBudgetClient().Data.FinancialCenters.GetAll();
 
             if (financialCenters == null || !financialCenters.Any())
             {
@@ -53,7 +53,7 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                GetBudgetClient().DataManagement.FinancialCenters.Insert(model.ToObj());
+                GetBudgetClient().Data.FinancialCenters.Insert(model.ToObj());
 
                 return RedirectToAction("Index");
             }
@@ -69,7 +69,7 @@ namespace Budget.Web.Controllers
  
         public ActionResult Edit(int id)
         {
-            var model = GetBudgetClient().DataManagement.FinancialCenters.Get(id).ToModel();
+            var model = GetBudgetClient().Data.FinancialCenters.Get(id).ToModel();
             return View(model);
         }
 
@@ -81,7 +81,7 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                GetBudgetClient().DataManagement.FinancialCenters.Update(model.ToObj());
+                GetBudgetClient().Data.FinancialCenters.Update(model.ToObj());
                 return RedirectToAction("Index");
             }
             catch
@@ -95,7 +95,7 @@ namespace Budget.Web.Controllers
  
         public ActionResult Delete(int id)
         {
-            var model = GetBudgetClient().DataManagement.FinancialCenters.Get(id).ToModel();
+            var model = GetBudgetClient().Data.FinancialCenters.Get(id).ToModel();
             return View(model);
         }
 
@@ -107,7 +107,7 @@ namespace Budget.Web.Controllers
         {
             try
             {
-                GetBudgetClient().DataManagement.FinancialCenters.Delete(id);
+                GetBudgetClient().Data.FinancialCenters.Delete(id);
                 
                 return RedirectToAction("Index");
             }

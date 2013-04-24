@@ -14,5 +14,7 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(MonthComplexBudgetProject monthComplexBudgetProject);
 
         int Delete(int monthComplexBudgetProjectId);
+
+        MonthComplexBudget GetFinalFor(int adminUnitId, int year, int month);
     }
 }

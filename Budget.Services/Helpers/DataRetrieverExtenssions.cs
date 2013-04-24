@@ -20,19 +20,10 @@ namespace Budget.Services.Helpers
             {
                 using (SqlDataReader reader = connection.ExecuteReader(selectProcedureName, CommandType.StoredProcedure, new SqlParameter("id", DBNull.Value)))
                 {
-                    if (!reader.HasRows)
-                    {
-                        return null;
-                    }
-
-                    var items = new List<T>();
-
                     while (reader.Read())
                     {
-                        items.Add(source.Setup(reader));
+                        yield return source.Setup(reader);
                     }
-
-                    return items;
                 }
             }
         }

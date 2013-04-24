@@ -16,6 +16,8 @@ namespace Budget.Services.BudgetModel
 
         public int AdministrativeUnitId { get; set; }
 
+        public bool IsFinal { get; set; }
+
         public AdministrativeUnit AdministrativeUnit
         {
             get { return _administrativeUnit ?? AdministrativeUnitDataProvider.Get(AdministrativeUnitId); }

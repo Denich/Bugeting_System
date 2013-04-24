@@ -17,6 +17,9 @@ namespace Budget.Services.BudgetModel
         [Dependency]
         public ITargetBudgetInfoDataProvider TargetBudgetInfoDataProvider { get; set; }
 
+        [Dependency]
+        public IYearComplexBudgetProjectDataProvider YearComplexBudgetProjectDataProvider { get; set; }
+
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -80,6 +83,17 @@ namespace Budget.Services.BudgetModel
             DateAdded = Convert.ToDateTime(record["DateAdded"]);
             Source = Convert.ToString(record["Source"]);
             return this;
+        }
+
+        public bool IsUsedInBudgetProject(int year, int adminUnitId)
+        {
+            return YearComplexBudgetProjectDataProvider.GetAll()
+                                                       .Any(
+                                                           c =>
+                                                           c.Year == year && c.AdministrativeUnitId == adminUnitId &&
+                                                           c.IsAccepted &&
+                                                           c.BudgetCategories != null &&
+                                                           c.BudgetCategories.Any(b => b.InfoId == Id));
         }
     }
 }

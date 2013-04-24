@@ -20,7 +20,8 @@ namespace Budget.Services.BudgetModel
                     {
                         new SqlParameter("AdministrativeUnitId", SqlHelper.GetSqlValue(AdministrativeUnitId)),
                         new SqlParameter("Year", SqlHelper.GetSqlValue(Year)),
-                        new SqlParameter("Month", SqlHelper.GetSqlValue(Month))
+                        new SqlParameter("Month", SqlHelper.GetSqlValue(Month)),
+                        new SqlParameter("IsFinal", SqlHelper.GetSqlValue(IsFinal))
                     };
             }
         }
@@ -41,6 +42,7 @@ namespace Budget.Services.BudgetModel
             AdministrativeUnitId = Convert.ToInt32(record["AdministrativeUnitId"]);
             Year = Convert.ToInt32(record["Year"]);
             Month = Convert.ToInt32(record["Month"]);
+            IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
         }
     }

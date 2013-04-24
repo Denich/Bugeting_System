@@ -13,8 +13,13 @@ namespace Budget.Services.BudgetModel
     {
         private EmployeContact _contact;
 
+        private CompanyPosition _position;
+
         [Dependency]
         public IEmployeContactDataProvider EmployeContactDataProvider { get; set; }
+
+        [Dependency]
+        public ICompanyPositionDataProvider CompanyPositionDataProvider { get; set; }
 
         public int Id { get; set; }
 
@@ -24,7 +29,19 @@ namespace Budget.Services.BudgetModel
 
         public string MiddleName { get; set; }
 
-        public string Position { get; set; }
+        public int PositionId { get; set; }
+
+        public CompanyPosition Position
+        {
+            get
+            {
+                return _position ?? CompanyPositionDataProvider.Get(Id);
+            }
+            set
+            {
+                _position = value;
+            }
+        }
 
         public EmployeContact Contact
         {
@@ -90,7 +107,7 @@ namespace Budget.Services.BudgetModel
             Name = Convert.ToString(record["Name"]);
             SecondName = Convert.ToString(record["SecondName"]);
             MiddleName = Convert.ToString(record["MiddleName"]);
-            Position = Convert.ToString(record["Position"]);
+            PositionId = Convert.ToInt32(record["PositionId"]);
             return this;
         }
     }

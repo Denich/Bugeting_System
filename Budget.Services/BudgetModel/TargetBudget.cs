@@ -53,7 +53,7 @@ namespace Budget.Services.BudgetModel
                     return _budgetItems;
                 }
 
-                var budgetItems = BudgetItemDataProvider.GetAll();
+                var budgetItems = BudgetItemDataProvider != null ? BudgetItemDataProvider.GetAll() : null;//todo: remove this hack
 
                 return budgetItems == null ? null : budgetItems.Where(t => t.TargetBudgetId == Id);
             }

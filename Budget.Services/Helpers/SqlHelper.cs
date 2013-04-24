@@ -83,7 +83,7 @@ namespace Budget.Services.Helpers
                 sqlCommand.Parameters.AddRange(sqlParameters);
             }
 
-            return sqlCommand.ExecuteNonQuery();
+            return (int)sqlCommand.ExecuteScalar();
         }
 
         /// <summary>

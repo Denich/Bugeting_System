@@ -18,7 +18,7 @@ namespace Budget.Web.Controllers
 
         public ActionResult Index()
         {
-            var budgetCategories = GetBudgetClient().DataManagement.BudgetCategoryInfos.GetAll();
+            var budgetCategories = GetBudgetClient().Data.BudgetCategoryInfos.GetAll();
 
             if (budgetCategories == null || !budgetCategories.Any())
             {
@@ -35,7 +35,7 @@ namespace Budget.Web.Controllers
 
         public ActionResult Details(int id)
         {
-            var budgetCategoryInfoModel = GetBudgetClient().DataManagement.BudgetCategoryInfos.Get(id).ToModel();
+            var budgetCategoryInfoModel = GetBudgetClient().Data.BudgetCategoryInfos.Get(id).ToModel();
             
             if (budgetCategoryInfoModel == null)
             {
@@ -68,7 +68,7 @@ namespace Budget.Web.Controllers
             {
                 model.DateAdded = DateTime.Now;
                 model.Source = User.Identity.Name;
-                GetBudgetClient().DataManagement.BudgetCategoryInfos.Insert(model.ToObj());
+                GetBudgetClient().Data.BudgetCategoryInfos.Insert(model.ToObj());
 
                 return RedirectToAction("Index");
             }

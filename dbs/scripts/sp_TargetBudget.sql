@@ -36,6 +36,7 @@ AS
 	BEGIN TRAN
 	
 	INSERT INTO [dbo].[TargetBudget] ([InfoId], [Value], [BudgetCategoryId])
+	OUTPUT INSERTED.ID
 	SELECT @InfoId, @Value, @BudgetCategoryId
 	
 	-- Begin Return Select <- do not remove

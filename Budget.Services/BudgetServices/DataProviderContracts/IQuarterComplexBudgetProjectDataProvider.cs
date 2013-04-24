@@ -14,5 +14,7 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(QuarterComplexBudgetProject quarterComplexBudgetProject);
 
         int Delete(int quarterComplexBudgetProjectId);
+        
+        QuarterComplexBudget GetFinalFor(int adminUnitId, int year, int quarter);
     }
 }

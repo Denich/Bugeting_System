@@ -1,4 +1,5 @@
-﻿using Budget.Services.BudgetServices.DataProviderContracts;
+﻿using System.Linq;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Microsoft.Practices.Unity;
 
@@ -26,6 +27,9 @@ namespace Budget.Services.BudgetModel
         [Dependency]
         public IEmployeDataProvider EmployeDataProvider { get; set; }
 
+        [Dependency]
+        public IYearComplexBudgetProjectDataProvider YearComplexBudgetProjectDataProvider { get; set; }
+
         public int DirectorId { get; set; }
 
         public int Id { get; set; }
@@ -51,5 +55,10 @@ namespace Budget.Services.BudgetModel
         public string Adress { get; set; }
 
         public string Phone { get; set; }
+
+        public bool IsUsedInYearBudget(int year)
+        {
+            return YearComplexBudgetProjectDataProvider.GetLatestAcceptedBudgetProject(year, Id) != null;
+        }
     }
 }

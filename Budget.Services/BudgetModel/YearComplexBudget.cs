@@ -20,6 +20,7 @@ namespace Budget.Services.BudgetModel
                     {
                         new SqlParameter("AdministrativeUnitId", SqlHelper.GetSqlValue(AdministrativeUnitId)),
                         new SqlParameter("Year", SqlHelper.GetSqlValue(Year)),
+                        new SqlParameter("IsFinal", SqlHelper.GetSqlValue(IsFinal))
                     };
             }
         }
@@ -28,8 +29,8 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                var sqlParams = InsertSqlParameters;
-                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }
         }
@@ -39,6 +40,7 @@ namespace Budget.Services.BudgetModel
             Id = Convert.ToInt32(record["Id"]);
             AdministrativeUnitId = Convert.ToInt32(record["AdministrativeUnitId"]);
             Year = Convert.ToInt32(record["Year"]);
+            IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
         }
     }

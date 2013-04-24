@@ -47,7 +47,7 @@ namespace Budget.Services.Tests
         {
             var companyDataProvider =
                 new BudgetServiceFactory().GetBudgetClient(
-                    ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString).DataManagement.Company;
+                    ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString).Data.Company;
             
             var company = companyDataProvider.Get();
 
@@ -63,7 +63,7 @@ namespace Budget.Services.Tests
         {
             var adminUnitDataProvider = new BudgetServiceFactory().GetBudgetClient(
                 ConfigurationManager.ConnectionStrings["CompanyDatabase"].ConnectionString)
-                                                                  .DataManagement.FinancialCenters;
+                                                                  .Data.FinancialCenters;
 
             adminUnitDataProvider.Insert(_financialCenter);
 

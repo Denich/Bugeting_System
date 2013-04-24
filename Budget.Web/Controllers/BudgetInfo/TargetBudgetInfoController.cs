@@ -18,7 +18,7 @@ namespace Budget.Web.Controllers
 
         public ActionResult Details(int id)
         {
-            var targetBudgetInfoModel = GetBudgetClient().DataManagement.TargetBudgetInfos.Get(id).ToModel();
+            var targetBudgetInfoModel = GetBudgetClient().Data.TargetBudgetInfos.Get(id).ToModel();
 
             if (targetBudgetInfoModel == null)
             {
@@ -26,7 +26,7 @@ namespace Budget.Web.Controllers
             }
 
             targetBudgetInfoModel.BudgetCategoryName =
-                GetBudgetClient().DataManagement.BudgetCategoryInfos.Get(targetBudgetInfoModel.BudgetCategoryId).Name;
+                GetBudgetClient().Data.BudgetCategoryInfos.Get(targetBudgetInfoModel.BudgetCategoryId).Name;
 
             if (Request.IsAjaxRequest())
             {
@@ -44,7 +44,7 @@ namespace Budget.Web.Controllers
             ViewBag.BudgetCategoryId =
                 new SelectList(
                     GetBudgetClient()
-                        .DataManagement.BudgetCategoryInfos.GetAll()
+                        .Data.BudgetCategoryInfos.GetAll()
                         .Select(o => o.ToModel()), "Id",
                     "Name");
             return View();
@@ -60,7 +60,7 @@ namespace Budget.Web.Controllers
             {
                 model.DateAdded = DateTime.Now;
                 model.Source = User.Identity.Name;
-                GetBudgetClient().DataManagement.TargetBudgetInfos.Insert(model.ToObj());
+                GetBudgetClient().Data.TargetBudgetInfos.Insert(model.ToObj());
 
                 return RedirectToAction("Index", "BudgetCategoryInfo");
             }

@@ -76,5 +76,63 @@ namespace Budget.Web.Helpers.Converters
         {
             return ObjectMapperManager.DefaultInstance.GetMapper<BudgetItemInfoModel, BudgetItemInfo>().Map(obj);
         }
+
+
+        public static BudgetCategoryInfoSelectModel ToSelectModel(this BudgetCategoryInfo obj, int year, int adminUnitId)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<BudgetCategoryInfo, BudgetCategoryInfoSelectModel>().Map(obj);
+
+            model.IsAdded = obj.IsUsedInBudgetProject(year, adminUnitId);
+
+            model.Targets = obj.TargetBudgetInfos != null
+                                ? model.Targets = obj.TargetBudgetInfos.Select(t => t.ToSelectModel(year, adminUnitId)).ToList()
+                                : null;
+            return model;
+        }
+
+        public static TargetBudgetInfoSelectModel ToSelectModel(this TargetBudgetInfo obj, int year, int adminUnitId)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<TargetBudgetInfo, TargetBudgetInfoSelectModel>().Map(obj);
+            model.IsAdded = obj.IsUsedInBudgetProject(year, adminUnitId);
+
+            model.Items = obj.BudgetItemInfos != null
+                              ? obj.BudgetItemInfos.Select(i => i.ToSelectModel(year, adminUnitId)).ToList()
+                              : null;
+
+            return model;
+        }
+
+        public static BudgetItemInfoSelectModel ToSelectModel(this BudgetItemInfo obj, int year, int adminUnitId)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<BudgetItemInfo, BudgetItemInfoSelectModel>().Map(obj);
+            model.IsAdded = obj.IsUsedInBudgetProject(year, adminUnitId);
+            return model;
+        }
+
+        public static BudgetCategory ToObj(this BudgetCategoryInfoSelectModel model)
+        {
+            return new BudgetCategory
+                {
+                    InfoId = model.Id,
+                    TargetBudgets = model.Targets != null ? model.Targets.Select(t => t.ToObj()) : null
+                };
+        }
+
+        public static TargetBudget ToObj(this TargetBudgetInfoSelectModel model)
+        {
+            return new TargetBudget
+                {
+                    InfoId = model.Id,
+                    BudgetItems = model.Items != null ? model.Items.Select(i => i.ToObj()) : null
+                };
+        }
+
+        public static BudgetItem ToObj(this BudgetItemInfoSelectModel model)
+        {
+            return new BudgetItem
+                {
+                    InfoId = model.Id,
+                };
+        }
     }
 }

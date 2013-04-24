@@ -17,7 +17,7 @@
         <text>%u0412%u0438%u0431%u0435%u0440%u0456%u0442%u044C%20%u0440%u0456%u043A%3A</text>
       </controlProperties>
     </control>
-    <control controlID="4" controlTypeID="com.balsamiq.mockups::Title" x="205" y="25" w="-1" h="-1" measuredW="953" measuredH="62" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Title" x="287" y="27" w="-1" h="-1" measuredW="953" measuredH="62" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%u0406%u043D%u0456%u0446%u0456%u0430%u043B%u0456%u0437%u0430%u0446%u0456%u044F%20%u043F%u0440%u043E%u0435%u043A%u0442%u0443%20%u0440%u0456%u0447%u043D%u043E%u0433%u043E%20%u0431%u044E%u0434%u0436%u0435%u0442%u0443%20%u043A%u043E%u043C%u043F%u0430%u043D%u0456%u0457</text>
       </controlProperties>
@@ -137,7 +137,11 @@
         <text>%24</text>
       </controlProperties>
     </control>
-    <control controlID="30" controlTypeID="com.balsamiq.mockups::Arrow" x="1164" y="154" w="173" h="158" measuredW="150" measuredH="100" zOrder="25" locked="false" isInGroup="-1"/>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Arrow" x="1164" y="154" w="173" h="158" measuredW="150" measuredH="100" zOrder="25" locked="false" isInGroup="-1">
+      <controlProperties>
+        <leftArrow>false</leftArrow>
+      </controlProperties>
+    </control>
     <control controlID="31" controlTypeID="com.balsamiq.mockups::Label" x="1277" y="333" w="-1" h="-1" measuredW="113" measuredH="40" zOrder="26" locked="false" isInGroup="-1">
       <controlProperties>
         <size>24</size>

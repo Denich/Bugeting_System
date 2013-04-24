@@ -68,7 +68,7 @@ namespace Budget.Services.BudgetModel
                     return _targetBudgets;
                 }
 
-                var targetBudgets = BudgetCategoryDataProvider.GetAll();
+                var targetBudgets = BudgetCategoryDataProvider != null ? BudgetCategoryDataProvider.GetAll() : null;
 
                 return targetBudgets == null ? null : targetBudgets.Where(t => t.BudgetCategoryId == Id);
             }
@@ -83,7 +83,7 @@ namespace Budget.Services.BudgetModel
                     {
                         new SqlParameter("InfoId", SqlHelper.GetSqlValue(InfoId)),
                         new SqlParameter("Value", SqlHelper.GetSqlValue(Value)),
-                        new SqlParameter("ResponsibleEmployeId", SqlHelper.GetSqlValue(ResponsibleEmployeId)),
+                        new SqlParameter("ResponsibleEmployeeId", SqlHelper.GetSqlValue(ResponsibleEmployeId)),
                         new SqlParameter("ComplexBudgetId", SqlHelper.GetSqlValue(ComplexBudgetId)),
                     };
             }
@@ -94,7 +94,7 @@ namespace Budget.Services.BudgetModel
             get
             {
                 var sqlParams = InsertSqlParameters;
-                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }
         }
@@ -104,7 +104,7 @@ namespace Budget.Services.BudgetModel
             Id = Convert.ToInt32(record["Id"]);
             InfoId = Convert.ToInt32(record["InfoId"]);
             Value = Convert.ToDouble(record["Value"]);
-            ResponsibleEmployeId = Convert.ToInt32(record["ResponsibleEmployeId"]);
+            ResponsibleEmployeId = Convert.ToInt32(record["ResponsibleEmployeeId"]);
             ComplexBudgetId = Convert.ToInt32(record["ComplexBudgetId"]);
             return this;
         }

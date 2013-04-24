@@ -6,19 +6,30 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Budget.Services.BudgetServices.Management;
 using Microsoft.Practices.Unity;
 
 namespace Budget.Services.Helpers
 {
     public static class IocContainerExtenssions
     {
-        //todo: parse this from xml file
+        //todo: parse this from xml
         public static UnityContainer SetDefaults(this UnityContainer unityContainer)
         {
             unityContainer.RegisterType<BudgetCategoryInfo>();
             unityContainer.RegisterType<IBudgetClient, BudgetClient>();
             unityContainer.RegisterType<IBudgetDataManagement, BudgetDataManagement>();
             unityContainer.RegisterType<IAdministrativeUnitDataProvider, AdministrativeUnitDataProvider>();
+            unityContainer.RegisterType<IBudgetOperationManagement, BudgetOperationManagement>();
+
+            unityContainer.RegisterType<ICompanyPositionDataProvider, CompanyPositionDataProvider>();
+            unityContainer.RegisterInstance("CompanyPositionProcedures",
+                                            new DbProcedureSet("usp_CompanyPositionSelect",
+                                                               "usp_CompanyPositionSelect",
+                                                               "usp_CompanyPositionUpdate",
+                                                               "usp_CompanyPositionDelete",
+                                                               "usp_CompanyPositionInsert"));
+            
 
             unityContainer.RegisterType<IQuarterComplexBudgetProjectDataProvider, QuarterComplexBudgetProjectDataProvider>();
             unityContainer.RegisterInstance("QuarterComplexBudgetProjectProcedures",

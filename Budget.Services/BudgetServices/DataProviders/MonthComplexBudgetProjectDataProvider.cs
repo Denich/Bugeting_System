@@ -47,5 +47,15 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             return _provider.DeleteItem(id);
         }
+
+        public MonthComplexBudget GetFinalFor(int adminUnitId, int year, int month)
+        {
+            var budgets = GetAll();
+
+            return budgets != null
+                       ? budgets.First(
+                           b => b.AdministrativeUnitId == adminUnitId && b.Year == year && b.Month == month && b.IsFinal)
+                       : null;
+        }
     }
 }

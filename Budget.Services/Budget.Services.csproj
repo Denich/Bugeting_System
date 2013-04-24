@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetModel\UnapproveYearBudget.cs" />
+    <Compile Include="BudgetServices\DataProviders\CompanyPositionDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\ICompanyPositionDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />
     <Compile Include="BudgetServices\BudgetClient.cs" />
     <Compile Include="BudgetServices\BudgetDataManagement.cs" />
@@ -79,6 +82,9 @@
     <Compile Include="BudgetServices\DataProviders\YearComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\IBudgetClient.cs" />
     <Compile Include="BudgetServices\BudgetServiceFactory.cs" />
+    <Compile Include="BudgetServices\Management\BudgetOperationManagement.cs" />
+    <Compile Include="BudgetServices\Management\IBudgetOperationManagement.cs" />
+    <Compile Include="BudgetServices\Management\MergeBudgetHelper.cs" />
     <Compile Include="Helpers\CustomDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\EmployeDataProvider.cs" />
     <Compile Include="Helpers\DataRetrieverExtenssions.cs" />
@@ -115,6 +121,7 @@
     <Compile Include="Helpers\SqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class BudgetItemInfo : IDataRetriever<BudgetItemInfo>
     {
+        [Dependency]
+        public IYearComplexBudgetProjectDataProvider YearComplexBudgetProjectDataProvider { get; set; }
+
         public int Id { get; set; }
 
         public int TargetBudgetId { get; set; }
@@ -59,6 +64,23 @@ namespace Budget.Services.BudgetModel
             DateAdded = Convert.ToDateTime(record["DateAdded"]);
             Source = Convert.ToString(record["Source"]);
             return this;
+        }
+
+        public bool IsUsedInBudgetProject(int year, int adminUnitId)
+        {
+            return YearComplexBudgetProjectDataProvider.GetAll()
+                                                       .Any(
+                                                           c =>
+                                                           c.Year == year && c.AdministrativeUnitId == adminUnitId &&
+                                                           c.IsAccepted &&
+                                                           c.BudgetCategories != null &&
+                                                           c.BudgetCategories.Any(
+                                                               b =>
+                                                               b.TargetBudgets != null &&
+                                                               b.TargetBudgets.Any(
+                                                                   t =>
+                                                                   t.BudgetItems != null &&
+                                                                   t.BudgetItems.Any(i => i.InfoId == Id))));
         }
     }
 }

@@ -1,36 +1,44 @@
 ﻿@model IEnumerable<Budget.Web.Models.BudgetModels.YearComplexBudgetModel>
 
 @{
+    Layout = "~/Views/Shared/_BudgetLayout.cshtml";
     ViewBag.Title = "Бюджети компанії";
 }
 
-<h2>Бюджети компанії</h2>
-<h4>Річні бюджети</h4><hr/>
-@if (Model != null)
-{
-    <table>
-        <tr>
-            <td>Рік</td>
-            <td>Адміністративний центр</td>
-            <td>Загальний прибуток</td>
-            <td>Загальні витрати</td>
-            <td>Баланс</td>
-        </tr>
-        @foreach (var budget in Model)
-        {
+<div class="span10">
+    <div class="page-header">
+        <h2>Бюджети компанії</h2>
+    </div>
+    <h4>Річні бюджети</h4><hr/>
+    @if (Model != null)
+    {
+        <table>
             <tr>
-                <td>@budget.Year</td>
-                <td>@budget.AdminUnitName</td>
-                <td>@budget.TotalIncome</td>
-                <td>@budget.TotalCosts</td>
-                <td>@budget.Balance</td>
-                <td>@Html.ActionLink("Редагувати", "Edit", new {id = budget.Id})</td>
-                <td>@Html.ActionLink("Видалити", "Delete", new {id = budget.Id})</td>
+                <td>Рік</td>
+                <td>Адміністративний центр</td>
+                <td>Загальний прибуток</td>
+                <td>Загальні витрати</td>
+                <td>Баланс</td>
             </tr>
-        }
+            @foreach (var budget in Model)
+            {
+                <tr>
+                    <td>@budget.Year</td>
+                    <td>@budget.AdminUnitName</td>
+                    <td>@budget.TotalIncome</td>
+                    <td>@budget.TotalCosts</td>
+                    <td>@budget.Balance</td>
+                    <td>@Html.ActionLink("Редагувати", "Edit", new {id = budget.Id})</td>
+                    <td>@Html.ActionLink("Видалити", "Delete", new {id = budget.Id})</td>
+                </tr>
+            }
 
-    </table>
-}
-@Html.ActionLink("Додати новий річний бюджет", "Create")
-<h4>Квартальні бюджети</h4><hr/>
-<h4>Місячні бюджети</h4><hr/>
+        </table>
+    }
+    @Html.ActionLink("Додати новий річний бюджет", "Create")
+    <h4>Квартальні бюджети</h4><hr/>
+    <h4>Місячні бюджети</h4><hr/>
+</div>
+
+
+
