@@ -29,11 +29,13 @@ END
 GO
 CREATE PROC [dbo].[usp_YearComplexBudgetProjectInsert] 
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit
+    @IsAccepted bit,
+    @IsRejected bit
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -41,16 +43,16 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID])
-	SELECT @AdministrativeUnitID
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
+	SELECT @AdministrativeUnitID, @IsFinal
 	
 	SELECT @ID = SCOPE_IDENTITY();
 		
 	INSERT INTO [dbo].[YearComplexBudget] ([ComplexBudgetID], [Year])
 	SELECT @ID, @Year
 	
-	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [IsAccepted])
-	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @IsAccepted
+	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [IsAccepted], [IsRejected])
+	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @IsAccepted, @IsRejected
 	
 	-- Begin Return Select <- do not remove
 	SELECT * 
@@ -70,11 +72,13 @@ GO
 CREATE PROC [dbo].[usp_YearComplexBudgetProjectUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit
+    @IsAccepted bit,
+    @IsRejected bit
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -82,7 +86,7 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[YearComplexBudget]
@@ -90,7 +94,7 @@ AS
 	WHERE  [ComplexBudgetID] = @ID
 	
 	UPDATE [dbo].[BudgetProject]
-	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [IsAccepted] = @IsAccepted
+	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [IsAccepted] = @IsAccepted, [IsRejected] = @IsRejected
 	WHERE  [ComplexBudgetID] = @ID
 	
 	-- Begin Return Select <- do not remove

@@ -1,6 +1,6 @@
 ﻿namespace Budget.Web.Models
 {
-    public class YearUnapproveComplexBudgetInfoModel : BaseUnapproveComplexBudgetInfoViewModel
+    public class YearUnapproveBudgetModel : BaseUnapproveBudgetModel
     {
         public int Year { get; set; }
     }

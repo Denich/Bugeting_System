@@ -7,8 +7,8 @@
     </control>
     <control controlID="2" controlTypeID="com.balsamiq.mockups::VerticalTabBar" x="197" y="23" w="1013" h="816" measuredW="200" measuredH="169" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>%u0410%u043A%u0442%u0438%u0432%u043D%u0456%20%u0431%u044E%u0434%u0436%u0435%u0442%u0438%0A%u041F%u0440%u0438%u0439%u043D%u044F%u0442%u0456%20%u0431%u044E%u0434%u0436%u0435%u0442%u0438%0A%u0410%u0440%u0445%u0456%u0432</text>
         <hrefs>%2C%2CBudget_archive.bmml</hrefs>
+        <text>%u0410%u043A%u0442%u0438%u0432%u043D%u0456%20%u0431%u044E%u0434%u0436%u0435%u0442%u0438%0A%u041F%u0440%u0438%u0439%u043D%u044F%u0442%u0456%20%u0431%u044E%u0434%u0436%u0435%u0442%u0438%0A%u0410%u0440%u0445%u0456%u0432</text>
       </controlProperties>
     </control>
     <control controlID="68" controlTypeID="com.balsamiq.mockups::Label" x="376" y="176" w="-1" h="-1" measuredW="119" measuredH="25" zOrder="6" locked="false" isInGroup="-1">

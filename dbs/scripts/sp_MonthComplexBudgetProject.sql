@@ -1,12 +1,12 @@
 USE [MyCompany_Database];
 GO
 
-IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectProjectSelect]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectSelect]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_MonthComplexBudgetProjectProjectSelect] 
+    DROP PROC [dbo].[usp_MonthComplexBudgetProjectSelect] 
 END 
 GO
-CREATE PROC [dbo].[usp_MonthComplexBudgetProjectProjectSelect] 
+CREATE PROC [dbo].[usp_MonthComplexBudgetProjectSelect] 
     @ID INT
 AS 
 	SET NOCOUNT ON 
@@ -15,26 +15,28 @@ AS
 	BEGIN TRAN
 	
 	SELECT * 
-	FROM   [dbo].[MonthComplexBudgetProject] mbud
+	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	INNER JOIN [dbo].[BudgetProject] prj ON prj.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
 
 	COMMIT
 GO
-IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectProjectInsert]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectInsert]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_MonthComplexBudgetProjectProjectInsert] 
+    DROP PROC [dbo].[usp_MonthComplexBudgetProjectInsert] 
 END 
 GO
-CREATE PROC [dbo].[usp_MonthComplexBudgetProjectProjectInsert] 
+CREATE PROC [dbo].[usp_MonthComplexBudgetProjectInsert] 
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Month int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit
+    @IsAccepted bit,
+    @IsRejected bit
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -42,20 +44,20 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID])
-	SELECT @AdministrativeUnitID
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
+	SELECT @AdministrativeUnitID, @IsFinal
 	
 	SELECT @ID = SCOPE_IDENTITY();
 		
-	INSERT INTO [dbo].[MonthComplexBudgetProject] ([ComplexBudgetID], [Year], [Month])
+	INSERT INTO [dbo].[MonthComplexBudget] ([ComplexBudgetID], [Year], [Month])
 	SELECT @ID, @Year, @Month
 	
-	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [IsAccepted])
-	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @IsAccepted
+	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [IsAccepted], [IsRejected])
+	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @IsAccepted, @IsRejected
 	
 	-- Begin Return Select <- do not remove
 	SELECT * 
-	FROM   [dbo].[MonthComplexBudgetProject] mbud
+	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	INNER JOIN [dbo].[BudgetProject] prj ON prj.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
@@ -63,20 +65,22 @@ AS
                
 	COMMIT
 GO
-IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectProjectUpdate]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectUpdate]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_MonthComplexBudgetProjectProjectUpdate] 
+    DROP PROC [dbo].[usp_MonthComplexBudgetProjectUpdate] 
 END 
 GO
-CREATE PROC [dbo].[usp_MonthComplexBudgetProjectProjectUpdate] 
+CREATE PROC [dbo].[usp_MonthComplexBudgetProjectUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Month int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit
+    @IsAccepted bit,
+    @IsRejected bit
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -84,20 +88,20 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
 	WHERE  [ID] = @ID
 	
-	UPDATE [dbo].[MonthComplexBudgetProject]
+	UPDATE [dbo].[MonthComplexBudget]
 	SET    [Year] = @Year, [Month] = @Month
 	WHERE  [ComplexBudgetID] = @ID
 	
 	UPDATE [dbo].[BudgetProject]
-	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [IsAccepted] = @IsAccepted
+	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [IsAccepted] = @IsAccepted, [IsRejected] = @IsRejected
 	WHERE  [ComplexBudgetID] = @ID
 	
 	-- Begin Return Select <- do not remove
 	SELECT * 
-	FROM   [dbo].[MonthComplexBudgetProject] mbud
+	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	INNER JOIN [dbo].[BudgetProject] prj ON prj.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
@@ -105,12 +109,12 @@ AS
 
 	COMMIT
 GO
-IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectProjectDelete]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetProjectDelete]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_MonthComplexBudgetProjectProjectDelete] 
+    DROP PROC [dbo].[usp_MonthComplexBudgetProjectDelete] 
 END 
 GO
-CREATE PROC [dbo].[usp_MonthComplexBudgetProjectProjectDelete] 
+CREATE PROC [dbo].[usp_MonthComplexBudgetProjectDelete] 
     @ID int
 AS 
 	SET NOCOUNT ON 
@@ -124,7 +128,7 @@ AS
 	
 	/*Can delete this when add foreign key*/
 	DELETE
-	FROM   [dbo].[MonthComplexBudgetProject]
+	FROM   [dbo].[MonthComplexBudget]
 	WHERE  [ComplexBudgetID] = @ID
 	
 	DELETE

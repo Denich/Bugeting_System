@@ -1,6 +1,6 @@
 ﻿namespace Budget.Web.Models
 {
-    public class BaseUnapproveComplexBudgetInfoViewModel
+    public class BaseUnapproveBudgetModel
     {
         public int RevisionCount { get; set; }
 

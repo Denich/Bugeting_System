@@ -1,11 +1,7 @@
 ﻿namespace Budget.Services.BudgetModel
 {
-    public class UnapproveYearBudget
+    public class UnapproveYearBudget : BaseUnapproveBudget
     {
-        public int RevisionCount { get; set; }
-
-        public int WaitingOfferCount { get; set; }
-
-        public int Yeat { get; set; }
+        public int Year { get; set; }
     }
 }

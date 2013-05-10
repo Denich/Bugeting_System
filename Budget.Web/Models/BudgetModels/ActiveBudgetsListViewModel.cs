@@ -5,6 +5,8 @@ namespace Budget.Web.Models
 {
     public class ActiveBudgetsListViewModel
     {
+        public int CompanyId { get; set; }
+
         public YearComplexBudgetListViewModel CurrentYearBudget { get; set; }
 
         public QuarterComplexBudgetListViewModel CurrentQuarterBudget { get; set; }
@@ -17,10 +19,10 @@ namespace Budget.Web.Models
 
         public IEnumerable<MonthComplexBudgetResultListViewModel> GetResultsMonthBudgets { get; set; }
 
-        public IEnumerable<YearUnapproveComplexBudgetInfoModel> ApprovalProccesYearBudgets { get; set; }
+        public IEnumerable<YearUnapproveBudgetModel> ApprovalProccesYearBudgets { get; set; }
 
-        public IEnumerable<QuarterUnapproveComplexBudgetInfoModel> ApprovalProccesQuarterBudgets { get; set; }
+        public IEnumerable<QuarterUnapproveBudgetModel> ApprovalProccesQuarterBudgets { get; set; }
 
-        public IEnumerable<MonthUnapproveComplexBudgetInfoViewModel> ApprovalProccesMonthBudgets { get; set; }
+        public IEnumerable<MonthUnapproveBudgetModel> ApprovalProccesMonthBudgets { get; set; }
     }
 }

@@ -19,6 +19,7 @@ GO
 CREATE TABLE [dbo].[ComplexlBudget](
 	[ID] [int] IDENTITY(100,1) NOT NULL,
 	[AdministrativeUnitID] [int] NOT NULL,
+	[IsFinal] [bit] NOT NULL
  CONSTRAINT [PK_ComplexlBudget] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

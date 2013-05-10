@@ -48,6 +48,38 @@ namespace Budget.Services.BudgetServices.Management
             return budgets != null ? budgets.Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal) : null;
         }
 
+        public void GenerateQuarterBudgetProjects(int adminUnitId, int year, int userId, bool accept)
+        {
+            for (int quarterNumber = 1; quarterNumber <= 4; quarterNumber++)
+            {
+                var quarterProject = new QuarterComplexBudgetProject
+                {
+                    Year = year,
+                    QuarterNumber = quarterNumber,
+                    AdministrativeUnitId = adminUnitId,
+                    UpdatedPersonId = userId,
+                    IsAccepted = accept,
+                };
+                _data.QuarterComplexBudgetProjects.Insert(quarterProject);
+            }
+        }
+
+        public void GenerateMonthBudgetProjects(int adminUnitId, int year, int userId, bool accept)
+        {
+            for (int monthNumber = 1; monthNumber <= 12; monthNumber++)
+            {
+                var monthProject = new MonthComplexBudgetProject
+                {
+                    Year = year,
+                    Month = monthNumber,
+                    AdministrativeUnitId = adminUnitId,
+                    UpdatedPersonId = userId,
+                    IsAccepted = accept,
+                };
+                _data.MonthComplexBudgetProjects.Insert(monthProject);
+            }
+        }
+
         private void InsertCategoriesRecursivly(IEnumerable<BudgetCategory> categories, int budgetId, IEnumerable<BudgetCategory> checkCategories)
         {
             if (categories == null)

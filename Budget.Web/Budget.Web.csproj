@@ -109,6 +109,12 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Budget\ActiveBudgetsController.cs" />
+    <Compile Include="Helpers\Converters\FinancialCentersConverter.cs" />
+    <Compile Include="Models\BudgetModels\BudgetProjectItemModel.cs" />
+    <Compile Include="Models\BudgetModels\CommonComplexBudgetViewModel.cs" />
+    <Compile Include="Models\BudgetModels\MonthComplexBudgetViewModel.cs" />
+    <Compile Include="Models\BudgetModels\QuarterComplexBudgetViewModel.cs" />
+    <Compile Include="Models\BudgetModels\YearComplexBudgetModel.cs" />
     <Compile Include="Models\AdministrativeUnitModel.cs" />
     <Compile Include="Models\BudgetModels\ActiveBudgetsListViewModel.cs" />
     <Compile Include="Controllers\Budget\ApprovalBudgetsController.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Models\BudgetModels\BaseBudgetListViewModel.cs" />
     <Compile Include="Models\BudgetModels\BaseBudgetResultViewModel.cs" />
     <Compile Include="Models\BudgetModels\BaseUnapproveComplexBudgetInfoViewModel.cs" />
+    <Compile Include="Models\BudgetModels\BudgetYearModel.cs" />
     <Compile Include="Models\BudgetModels\MonthComplexBudgetResultListViewModel.cs" />
     <Compile Include="Models\BudgetModels\MonthUnapproveComplexBudgetInfoViewModel.cs" />
     <Compile Include="Models\BudgetModels\QuarterComplexBudgetListViewModel.cs" />
@@ -163,6 +170,7 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\img\glyphicons-halflings-white.png" />
     <Content Include="Content\img\glyphicons-halflings.png" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -221,6 +229,7 @@
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\BudgetSystem.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -238,7 +247,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Site_old.css" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -283,6 +292,10 @@
     <Content Include="Views\ActiveBudgets\NewBudget.cshtml" />
     <Content Include="Views\ActiveBudgets\EditBudgetItems.cshtml" />
     <Content Include="Views\ActiveBudgets\EditBudgetCenters.cshtml" />
+    <Content Include="Views\Shared\CustomErrorView.cshtml" />
+    <Content Include="Views\ActiveBudgets\YearBudgetProject.cshtml" />
+    <Content Include="Views\ActiveBudgets\QuarterBudgetProject.cshtml" />
+    <Content Include="Views\ActiveBudgets\MonthBudgetProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

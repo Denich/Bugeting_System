@@ -18,7 +18,9 @@ AS
 	FROM   [dbo].[QuarterComplexBudget] qbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON qbud.ComplexBudgetID = cbud.ID
 	WHERE  (qbud.ComplexBudgetID = @ID OR @ID IS NULL) 
-
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = qbud.ComplexBudgetID)
 	COMMIT
 GO
 IF OBJECT_ID('[dbo].[usp_QuarterComplexBudgetInsert]') IS NOT NULL
@@ -28,6 +30,7 @@ END
 GO
 CREATE PROC [dbo].[usp_QuarterComplexBudgetInsert] 
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @QuarterNumber int
 AS 
@@ -37,8 +40,8 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID])
-	SELECT @AdministrativeUnitID
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
+	SELECT @AdministrativeUnitID, @IsFinal
 	
 	SELECT @ID = SCOPE_IDENTITY();
 	
@@ -50,6 +53,9 @@ AS
 	FROM   [dbo].[QuarterComplexBudget] qbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON qbud.ComplexBudgetID = cbud.ID
 	WHERE  (qbud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = qbud.ComplexBudgetID)
 	-- End Return Select <- do not remove
                
 	COMMIT
@@ -62,6 +68,7 @@ GO
 CREATE PROC [dbo].[usp_QuarterComplexBudgetUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @QuarterNumber int
 AS 
@@ -71,7 +78,7 @@ AS
 	BEGIN TRAN
 	
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[QuarterComplexBudget]
@@ -83,6 +90,9 @@ AS
 	FROM   [dbo].[QuarterComplexBudget] qbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON qbud.ComplexBudgetID = cbud.ID
 	WHERE  (qbud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = qbud.ComplexBudgetID)
 	-- End Return Select <- do not remove
 
 	COMMIT

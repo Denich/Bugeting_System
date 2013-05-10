@@ -1,5 +1,4 @@
-﻿@model dynamic
-
+﻿@model Budget.Web.Models.ActiveBudgetsListViewModel
 @{
     Layout = "~/Views/Shared/_BudgetLayout.cshtml";
     ViewBag.Title = "Активні бюджети";
@@ -8,8 +7,257 @@
     <h2>Активні бюджети</h2>
 </div>
 <div class="row-fluid">
-    <div class="btn-group">
-        <a class="btn" href="@Url.Action("NewBudget")">Новий річний бюджет</a>
+    <div class="span11">
+        <div class="btn-group">
+            <a class="btn" href="@Url.Action("NewBudget")">Новий річний бюджет</a>
+        </div>
+        <section class="budgetBlock">
+            <fieldset>
+                <legend>Поточні планові бюджети</legend>
+
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <caption>Річний бюджет</caption>
+                    <thead>
+                        <tr>
+                            <th>Період</th>
+                            <th>Доходы план.</th>
+                            <th>Видатки план.</th>
+                            <th>Баланс план.</th>
+                        </tr>
+                    </thead>
+
+                    <tr>
+                        @if (Model.CurrentMonthBudget != null)
+                        {
+                            <td>@Model.CurrentMonthBudget.Month -й місяць</td>
+                            <td>@Model.CurrentMonthBudget.TotalIncome</td>
+                            <td>@Model.CurrentMonthBudget.TotalCosts</td>
+                            <td>@Model.CurrentMonthBudget.Balance</td>
+                        }
+                        else
+                        {
+                            <td colspan="4">Немає даних</td>
+                        }
+                    </tr>
+                </table>
+
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <caption>Квартальний бюджет</caption>
+                    <thead>
+                        <tr>
+                            <th>Період</th>
+                            <th>Доходы план.</th>
+                            <th>Видатки план.</th>
+                            <th>Баланс план.</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        @if (Model.CurrentQuarterBudget != null)
+                        {
+                            <td>@Model.CurrentQuarterBudget.QuarterNumber -й квартал</td>
+                            <td>@Model.CurrentQuarterBudget.TotalIncome</td>
+                            <td>@Model.CurrentQuarterBudget.TotalCosts</td>
+                            <td>@Model.CurrentQuarterBudget.Balance</td>
+                        }
+                        else
+                        {
+                            <td colspan="4">Немає даних</td>
+                        }
+
+                    </tr>
+                </table>
+
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <caption>Місячний бюджет</caption>
+                    <thead>
+                        <tr>
+                            <th>Період</th>
+                            <th>Доходы план.</th>
+                            <th>Видатки план.</th>
+                            <th>Баланс план.</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        @if (Model.CurrentYearBudget != null)
+                        {
+                            <td>@Model.CurrentYearBudget.Year рік</td>
+                            <td>@Model.CurrentYearBudget.TotalIncome</td>
+                            <td>@Model.CurrentYearBudget.TotalCosts</td>
+                            <td>@Model.CurrentYearBudget.Balance</td>
+                        }
+                        <td colspan="4">Немає даних</td>
+                    </tr>
+                </table>
+            </fieldset>
+        </section>
+
+        <section class="budgetBlock">
+            <fieldset>
+                <legend>Бюджетни на стадії отримання результатів</legend>
+
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Період</th>
+                            <th>Доходы поточні/план.</th>
+                            <th>Видатки поточні/план.</th>
+                            <th>Баланс поточний/план.</th>
+                            <th>Отримано по статтям</th>
+                        </tr>
+                    </thead>
+
+                    @if ((Model.GetResultsMonthBudgets != null && Model.GetResultsMonthBudgets.Any())
+                         || (Model.GetResultsQuarterBudgets != null && Model.GetResultsQuarterBudgets.Any())
+                         || (Model.GetResultsYearBudgets != null && Model.GetResultsYearBudgets.Any()))
+                    {
+                        if (Model.GetResultsMonthBudgets != null)
+                        {
+                            foreach (var monthBudget in Model.GetResultsMonthBudgets)
+                            {
+                        <tr>
+                            <td>@monthBudget.Month -й місяць @monthBudget.Year рік</td>
+                            <td>@monthBudget.TotalIncomeActual / @monthBudget.TotalIncome</td>
+                            <td>@monthBudget.TotalCostsActual / @monthBudget.TotalCosts</td>
+                            <td>@monthBudget.BalanceActual / @monthBudget.Balance</td>
+                            <td>@monthBudget.ProcessedItemsCount з @monthBudget.ProjectItemsCount</td>
+                        </tr>
+                            }
+                        }
+
+                        if (Model.GetResultsQuarterBudgets != null)
+                        {
+                            foreach (var quarterBudget in Model.GetResultsQuarterBudgets)
+                            {
+                        <tr>
+                            <td>@quarterBudget.QuarterNumber -й квaртал @quarterBudget.Year рік</td>
+                            <td>@quarterBudget.TotalIncomeActual / @quarterBudget.TotalIncome</td>
+                            <td>@quarterBudget.TotalCostsActual / @quarterBudget.TotalCosts</td>
+                            <td>@quarterBudget.BalanceActual / @quarterBudget.Balance</td>
+                            <td>@quarterBudget.ProcessedItemsCount з @quarterBudget.ProjectItemsCount</td>
+                        </tr>
+                            }
+                        }
+
+                        if (Model.GetResultsYearBudgets != null)
+                        {
+                            foreach (var yearBudget in Model.GetResultsYearBudgets)
+                            {
+                        <tr>
+                            <td>@yearBudget.Year рік</td>
+                            <td>@yearBudget.TotalIncomeActual / @yearBudget.TotalIncome</td>
+                            <td>@yearBudget.TotalCostsActual / @yearBudget.TotalCosts</td>
+                            <td>@yearBudget.BalanceActual / @yearBudget.Balance</td>
+                            <td>@yearBudget.ProcessedItemsCount з @yearBudget.ProjectItemsCount</td>
+                        </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">Отримані всі бюджетні результати</td>
+                        </tr>
+                    }
+                </table>
+            </fieldset>
+        </section>
+
+        <section class="budgetBlock">
+            <fieldset>
+                <legend>Бюджети на стадії затвердження</legend>
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Період</th>
+                            <th>К-ть ревізій проекту</th>
+                            <th>К-ть пропозицій для розгляду</th>
+                        </tr>
+                    </thead>
+                    @if ((Model.ApprovalProccesYearBudgets != null && Model.ApprovalProccesYearBudgets.Any())
+                     || (Model.ApprovalProccesQuarterBudgets != null && Model.ApprovalProccesQuarterBudgets.Any())
+                     || (Model.ApprovalProccesMonthBudgets != null && Model.ApprovalProccesMonthBudgets.Any()))
+                    {
+                        if (Model.ApprovalProccesMonthBudgets != null)
+                        {
+                            foreach (var monthBudget in Model.ApprovalProccesMonthBudgets)
+                            {
+                        <tr>
+                            <td>@monthBudget.Month -й місяць @monthBudget.Year рік</td>
+                            <td>@monthBudget.RevisionCount</td>
+                            <td>@monthBudget.WaitingOfferCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                            }
+                        }
+
+                        if (Model.ApprovalProccesQuarterBudgets != null)
+                        {
+                            foreach (var quarterBudget in Model.ApprovalProccesQuarterBudgets)
+                            {
+                        <tr>
+                            <td>@quarterBudget.Quarter -й квартал @quarterBudget.Year рік</td>
+                            <td>@quarterBudget.RevisionCount</td>
+                            <td>@quarterBudget.WaitingOfferCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                            }
+                        }
+
+                        if (Model.ApprovalProccesYearBudgets != null)
+                        {
+                            foreach (var yearBudget in Model.ApprovalProccesYearBudgets)
+                            {
+                        <tr>
+                            <td>@yearBudget.Year рік</td>
+                            <td>@yearBudget.RevisionCount</td>
+                            <td>@yearBudget.WaitingOfferCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <!--<a class="btn btn-small" href="#"><i class="icon-edit"></i></a>-->
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("YearBudgetProject", new { year = yearBudget.Year, adminUnitId = Model.CompanyId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("EditBudgetCenters", new { year = yearBudget.Year })">
+                                                <i class="icon-tags"></i> ЦФВ-участники
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("EditBudgetItems", new { year = yearBudget.Year })">
+                                                <i class="icon-list-alt"></i> Бюджетні статті
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3">Всі бюджети прийняті</td>
+                        </tr>
+                    }
+                </table>
+            </fieldset>
+        </section>
     </div>
-    <hr/>
 </div>

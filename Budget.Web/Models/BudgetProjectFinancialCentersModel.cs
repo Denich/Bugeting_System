@@ -20,5 +20,7 @@ namespace Budget.Web.Models
         public int Year { get; set; }
 
         public List<FinancialCenterSelectModel> FinancialCenters { get; set; }
+
+        public bool IsNewBudget { get; set; }
     }
 }

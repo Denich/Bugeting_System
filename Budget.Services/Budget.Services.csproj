@@ -45,7 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BudgetModel\BaseUnapproveBudget.cs" />
+    <Compile Include="BudgetModel\UnapproveMonthBudget.cs" />
     <Compile Include="BudgetModel\UnapproveYearBudget.cs" />
+    <Compile Include="BudgetModel\UnapproveQuarterBudget.cs" />
     <Compile Include="BudgetServices\DataProviders\CompanyPositionDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\ICompanyPositionDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviders\AdministrativeUnitDataProvider.cs" />

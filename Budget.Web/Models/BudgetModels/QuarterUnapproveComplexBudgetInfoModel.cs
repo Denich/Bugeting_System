@@ -1,6 +1,6 @@
 ﻿namespace Budget.Web.Models
 {
-    public class QuarterUnapproveComplexBudgetInfoModel : BaseUnapproveComplexBudgetInfoViewModel
+    public class QuarterUnapproveBudgetModel : BaseUnapproveBudgetModel
     {
         public int Quarter { get; set; }
 

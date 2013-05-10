@@ -15,6 +15,12 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
 
         int Delete(int monthComplexBudgetProjectId);
 
-        MonthComplexBudget GetFinalFor(int adminUnitId, int year, int month);
+        IEnumerable<MonthComplexBudgetProject> GetBudgetProjects(int year, int month, int fcenterId);
+
+        MonthComplexBudgetProject GetLatestAcceptedBudgetProject(int year, int month, int fcenterId);
+
+        MonthComplexBudgetProject GetFinalFor(int adminUnitId, int year, int month);
+        
+        IEnumerable<UnapproveMonthBudget> GetUnapprovalBudgets(int adminUnitId);
     }
 }

@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class YearComplexBudgetProject : YearComplexBudget, IDataRetriever<YearComplexBudgetProject>
     {
+        [Dependency]
+        public IQuarterComplexBudgetProjectDataProvider QuarterComplexBudgetProjectDataProvider { get; set; }
+
         private readonly BudgetProject _budgetProject = new BudgetProject();
 
         public int UpdatedPersonId
@@ -39,6 +45,24 @@ namespace Budget.Services.BudgetModel
         {
             get { return _budgetProject.IsAccepted; }
             set { _budgetProject.IsAccepted = value; }
+        }
+
+        public bool IsRejected
+        {
+            get { return _budgetProject.IsRejected; }
+            set { _budgetProject.IsRejected = value; }
+        }
+
+        public bool HasQuarterBudgets
+        {
+            get
+            {
+                return
+                    QuarterComplexBudgetProjectDataProvider.GetBudgetProjects(Year, 1, AdministrativeUnitId).Any(c => c.IsAccepted) &&
+                    QuarterComplexBudgetProjectDataProvider.GetBudgetProjects(Year, 2, AdministrativeUnitId).Any(c => c.IsAccepted) &&
+                    QuarterComplexBudgetProjectDataProvider.GetBudgetProjects(Year, 3, AdministrativeUnitId).Any(c => c.IsAccepted) &&
+                    QuarterComplexBudgetProjectDataProvider.GetBudgetProjects(Year, 4, AdministrativeUnitId).Any(c => c.IsAccepted);
+            }
         }
 
         public override ICollection<SqlParameter> InsertSqlParameters

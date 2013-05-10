@@ -18,6 +18,9 @@ AS
 	FROM   [dbo].[YearComplexBudget] ybud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON ybud.ComplexBudgetID = cbud.ID
 	WHERE  (ybud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = ybud.ComplexBudgetID)
 
 	COMMIT
 GO
@@ -28,6 +31,7 @@ END
 GO
 CREATE PROC [dbo].[usp_YearComplexBudgetInsert] 
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int
 AS 
 	SET NOCOUNT ON 
@@ -36,8 +40,8 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID])
-	SELECT @AdministrativeUnitID
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
+	SELECT @AdministrativeUnitID, @IsFinal
 	
 	SELECT @ID = SCOPE_IDENTITY();
 		
@@ -49,6 +53,9 @@ AS
 	FROM   [dbo].[YearComplexBudget] ybud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON ybud.ComplexBudgetID = cbud.ID
 	WHERE  (ybud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = ybud.ComplexBudgetID)
 	-- End Return Select <- do not remove
                
 	COMMIT
@@ -61,6 +68,7 @@ GO
 CREATE PROC [dbo].[usp_YearComplexBudgetUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int
 AS 
 	SET NOCOUNT ON 
@@ -69,7 +77,7 @@ AS
 	BEGIN TRAN
 	
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[YearComplexBudget]
@@ -81,6 +89,9 @@ AS
 	FROM   [dbo].[YearComplexBudget] ybud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON ybud.ComplexBudgetID = cbud.ID
 	WHERE  (ybud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = ybud.ComplexBudgetID)
 	-- End Return Select <- do not remove
 
 	COMMIT

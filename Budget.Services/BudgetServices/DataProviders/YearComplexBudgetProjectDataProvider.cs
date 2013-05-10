@@ -12,7 +12,7 @@ using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class YearComplexBudgetProjectDataProvider : IYearComplexBudgetProjectDataProvider
+    public class YearComplexBudgetProjectDataProvider : IYearComplexBudgetProjectDataProvider 
     {
         private readonly CustomDataProvider<YearComplexBudgetProject> _provider;
 
@@ -63,7 +63,7 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             var budgets = GetBudgetProjects(year, fcenterId);
             return budgets != null && budgets.Any(p => p.IsAccepted)
-                       ? budgets.Where(p => p.IsAccepted).OrderByDescending(p => p.Revision).First()
+                       ? budgets.Where(p => p.IsAccepted).OrderByDescending(p => p.Revision).FirstOrDefault()
                        : null;
         }
 
@@ -71,19 +71,19 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             var budgets = GetAll();
             return budgets != null
-                       ? budgets.First(b => b.AdministrativeUnitId == adminUnitId && b.Year == year && b.IsFinal)
+                       ? budgets.FirstOrDefault(b => b.AdministrativeUnitId == adminUnitId && b.Year == year && b.IsFinal)
                        : null;
         }
 
-        public IEnumerable<UnapproveYearBudget> GetUnapprovalBudgetsInfo(int adminUnitId)
+        public IEnumerable<UnapproveYearBudget> GetUnapprovalBudgets(int adminUnitId)
         {
             var budgets = GetAll();
             return budgets != null
                        ? budgets.Where(b => !b.IsFinal).GroupBy(b => b.Year, (key, group) => new UnapproveYearBudget
                            {
-                               Yeat = key,
+                               Year = key,
                                RevisionCount = group.Count(),
-                               WaitingOfferCount = group.Count(x => !x.IsDenied && !x.IsAccepted)
+                               WaitingOfferCount = group.Count(x => !x.IsRejected && !x.IsAccepted)
                            })
                        : null;
         }

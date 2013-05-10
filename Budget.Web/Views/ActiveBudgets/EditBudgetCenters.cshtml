@@ -19,7 +19,14 @@
                 {
                     <div class="controls">
                         <label class="checkbox">
-                            @Html.CheckBoxFor(m => m.FinancialCenters[i].IsSeleceted)
+                            @if (Model.FinancialCenters[i].IsSeleceted)
+                            {
+                                @Html.CheckBoxFor(m => m.FinancialCenters[i].IsSeleceted, new {disabled = "disabled"})
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(m => m.FinancialCenters[i].IsSeleceted)
+                            }
                             @fcenter.Name
                         </label>
                         @Html.HiddenFor(m => m.FinancialCenters[i].Id)
@@ -28,9 +35,10 @@
                 }
             </fieldset>
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Далі</button>
+                <button type="submit" class="btn btn-primary">Зберегти</button>
             </div>
             @Html.HiddenFor(m => m.Year)
+            @Html.HiddenFor(m => m.IsNewBudget)
         </form>
     </div>
 </div>

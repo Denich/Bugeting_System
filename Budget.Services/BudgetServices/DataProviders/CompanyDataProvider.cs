@@ -25,7 +25,7 @@ namespace Budget.Services.BudgetServices.DataProviders
         public Company Get()
         {
             var items = _provider.GetItems();
-            return items == null ? null : items.First();
+            return items == null ? null : items.FirstOrDefault();
         }
 
         public int Update(Company company)

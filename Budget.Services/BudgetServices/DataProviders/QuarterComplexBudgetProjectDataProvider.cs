@@ -33,14 +33,18 @@ namespace Budget.Services.BudgetServices.DataProviders
             return _provider.GetItem(id);
         }
 
-        public int Insert(QuarterComplexBudgetProject QuarterComplexBudgetProject)
+        public int Insert(QuarterComplexBudgetProject quarterComplexBudgetProject)
         {
-            return _provider.AddItem(QuarterComplexBudgetProject);
+            quarterComplexBudgetProject.Revision = GetBudgetNextRevision(quarterComplexBudgetProject.Year,
+                                                                         quarterComplexBudgetProject.QuarterNumber,
+                                                                         quarterComplexBudgetProject.AdministrativeUnitId);
+            quarterComplexBudgetProject.RevisionDate = DateTime.Now;
+            return _provider.AddItem(quarterComplexBudgetProject);
         }
 
-        public int Update(QuarterComplexBudgetProject QuarterComplexBudgetProject)
+        public int Update(QuarterComplexBudgetProject quarterComplexBudgetProject)
         {
-            return _provider.UpdateItem(QuarterComplexBudgetProject);
+            return _provider.UpdateItem(quarterComplexBudgetProject);
         }
 
         public int Delete(int id)
@@ -48,16 +52,57 @@ namespace Budget.Services.BudgetServices.DataProviders
             return _provider.DeleteItem(id);
         }
 
-        public QuarterComplexBudget GetFinalFor(int adminUnitId, int year, int quarter)
+        public IEnumerable<QuarterComplexBudgetProject> GetBudgetProjects(int year, int quarter, int fcenterId)
         {
             var budgets = GetAll();
 
             return budgets != null
-                       ? budgets.First(
+                       ? budgets.Where(
+                           b => b.AdministrativeUnitId == fcenterId && b.Year == year && b.QuarterNumber == quarter)
+                       : null;
+        }
+
+        public QuarterComplexBudgetProject GetLatestAcceptedBudgetProject(int year, int quarter, int fcenterId)
+        {
+            var budgets = GetBudgetProjects(year, quarter, fcenterId);
+            return budgets != null && budgets.Any(p => p.IsAccepted)
+                       ? budgets.Where(p => p.IsAccepted).OrderByDescending(p => p.Revision).FirstOrDefault()
+                       : null;
+        }
+
+        public QuarterComplexBudgetProject GetFinalFor(int adminUnitId, int year, int quarter)
+        {
+            var budgets = GetAll();
+
+            return budgets != null
+                       ? budgets.FirstOrDefault(
                            b =>
                            b.AdministrativeUnitId == adminUnitId && b.Year == year && b.QuarterNumber == quarter &&
                            b.IsFinal)
                        : null;
+        }
+
+        public IEnumerable<UnapproveQuarterBudget> GetUnapprovalBudgets(int adminUnitId)
+        {
+            IEnumerable<QuarterComplexBudgetProject> budgets = GetAll();
+
+            return budgets != null
+                       ? budgets.Where(b => !b.IsFinal)
+                                .GroupBy(b => new { b.Year, b.QuarterNumber }, (key, group) => new UnapproveQuarterBudget
+                                    {
+                                        Year = key.Year,
+                                        Quarter = key.QuarterNumber,
+                                        RevisionCount = group.Count(),
+                                        WaitingOfferCount = group.Count(x => !x.IsRejected && !x.IsAccepted)
+                                    })
+                       : null;
+        }
+
+        private int GetBudgetNextRevision(int year, int quarter, int fcenterId)
+        {
+            var fcenterBudgets = GetBudgetProjects(year, quarter, fcenterId);
+
+            return fcenterBudgets.Count() != 0 ? fcenterBudgets.Max(p => p.Revision) : 0;
         }
     }
 }

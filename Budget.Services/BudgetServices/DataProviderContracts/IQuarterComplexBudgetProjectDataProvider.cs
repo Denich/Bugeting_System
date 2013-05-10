@@ -14,7 +14,13 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(QuarterComplexBudgetProject quarterComplexBudgetProject);
 
         int Delete(int quarterComplexBudgetProjectId);
+
+        IEnumerable<QuarterComplexBudgetProject> GetBudgetProjects(int year, int quarter, int fcenterId);
+
+        QuarterComplexBudgetProject GetLatestAcceptedBudgetProject(int year, int quarter, int fcenterId);
         
-        QuarterComplexBudget GetFinalFor(int adminUnitId, int year, int quarter);
+        QuarterComplexBudgetProject GetFinalFor(int adminUnitId, int year, int quarter);
+        
+        IEnumerable<UnapproveQuarterBudget> GetUnapprovalBudgets(int adminUnitId);
     }
 }

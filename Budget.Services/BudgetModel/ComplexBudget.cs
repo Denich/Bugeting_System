@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Microsoft.Practices.Unity;
@@ -30,5 +32,25 @@ namespace Budget.Services.BudgetModel
         }
 
         public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
+
+        public double TotalIncome
+        {
+            get { return BudgetCategories != null ? BudgetCategories.Where(c => c.Value > 0).Sum(c => c.Value) : 0; }
+        }
+
+        public double TotalCosts
+        {
+            get
+            {
+                return BudgetCategories != null
+                           ? Math.Abs(BudgetCategories.Where(c => c.Value < 0).Sum(c => c.Value))
+                           : 0;
+            }
+        }
+
+        public double Balance
+        {
+            get { return TotalIncome - TotalCosts; }
+        }
     }
 }

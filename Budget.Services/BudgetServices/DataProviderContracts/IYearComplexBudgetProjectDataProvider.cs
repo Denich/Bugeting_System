@@ -3,7 +3,7 @@ using Budget.Services.BudgetModel;
 
 namespace Budget.Services.BudgetServices.DataProviderContracts
 {
-    public interface IYearComplexBudgetProjectDataProvider
+    public interface IYearComplexBudgetProjectDataProvider /*: IBaseComplexBudgetProjectDataProvider*/
     {
         IEnumerable<YearComplexBudgetProject> GetAll();
 
@@ -21,6 +21,6 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         
         YearComplexBudgetProject GetFinalFor(int adminUnitId, int year);
         
-        IEnumerable<UnapproveYearBudget> GetUnapprovalBudgetsInfo(int adminUnitId);
+        IEnumerable<UnapproveYearBudget> GetUnapprovalBudgets(int adminUnitId);
     }
 }

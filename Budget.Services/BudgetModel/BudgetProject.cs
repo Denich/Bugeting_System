@@ -34,12 +34,15 @@ namespace Budget.Services.BudgetModel
 
         public bool IsAccepted { get; set; }
 
+        public bool IsRejected { get; set; }
+
         public BudgetProject Setup(IDataRecord record)
         {
             Revision = Convert.ToInt32(record["Revision"]);
             RevisionDate = Convert.ToDateTime(record["RevisionDate"]);
             UpdatedPersonId = Convert.ToInt32(record["UpdatePersonId"]);
             IsAccepted = Convert.ToBoolean(record["IsAccepted"]);
+            IsRejected = Convert.ToBoolean(record["IsRejected"]);
             return this;
         }
 
@@ -53,7 +56,8 @@ namespace Budget.Services.BudgetModel
                         new SqlParameter("Revision", SqlHelper.GetSqlValue(Revision)),
                         new SqlParameter("RevisionDate", SqlHelper.GetSqlValue(RevisionDate)),
                         new SqlParameter("UpdatePersonId", SqlHelper.GetSqlValue(UpdatedPersonId)),
-                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted))
+                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted)),
+                        new SqlParameter("IsRejected", SqlHelper.GetSqlValue(IsRejected))
                     };
 
                 return sqlParams.ToArray();

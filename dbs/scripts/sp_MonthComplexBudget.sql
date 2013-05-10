@@ -18,7 +18,10 @@ AS
 	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
-
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = mbud.ComplexBudgetID)
+			
 	COMMIT
 GO
 IF OBJECT_ID('[dbo].[usp_MonthComplexBudgetInsert]') IS NOT NULL
@@ -28,6 +31,7 @@ END
 GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetInsert] 
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Month int
 AS 
@@ -37,8 +41,8 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID])
-	SELECT @AdministrativeUnitID
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
+	SELECT @AdministrativeUnitID, @IsFinal
 	
 	SELECT @ID = SCOPE_IDENTITY();
 	
@@ -50,6 +54,9 @@ AS
 	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = mbud.ComplexBudgetID)
 	-- End Return Select <- do not remove
                
 	COMMIT
@@ -62,6 +69,7 @@ GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @IsFinal bit,
     @Year int,
     @Month int
 AS 
@@ -71,7 +79,7 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[MonthComplexBudget]
@@ -83,6 +91,9 @@ AS
 	FROM   [dbo].[MonthComplexBudget] mbud
 	INNER JOIN [dbo].[ComplexlBudget] cbud ON mbud.ComplexBudgetID = cbud.ID
 	WHERE  (mbud.ComplexBudgetID = @ID OR @ID IS NULL) 
+		AND NOT EXISTS 
+		(SELECT ID FROM [dbo].[BudgetProject] prj 
+			WHERE prj.ComplexBudgetID = mbud.ComplexBudgetID)
 	-- End Return Select <- do not remove
 
 	COMMIT

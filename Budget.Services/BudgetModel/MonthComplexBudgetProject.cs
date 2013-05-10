@@ -40,6 +40,12 @@ namespace Budget.Services.BudgetModel
             set { _budgetProject.IsAccepted = value; }
         }
 
+        public bool IsRejected
+        {
+            get { return _budgetProject.IsRejected; }
+            set { _budgetProject.IsRejected = value; }
+        }
+
         public override ICollection<SqlParameter> InsertSqlParameters
         {
             get

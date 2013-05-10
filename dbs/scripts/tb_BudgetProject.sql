@@ -22,6 +22,7 @@ CREATE TABLE [dbo].[BudgetProject](
 	[RevisionDate] [datetime] NOT NULL,
 	[UpdatePersonId] [int] NOT NULL,
 	[IsAccepted] [bit] NOT NULL,
+	[IsRejected] [bit] NOT NULL,
  CONSTRAINT [PK_BudgetProject] PRIMARY KEY CLUSTERED 
 (
 	[ComplexBudgetID] ASC
