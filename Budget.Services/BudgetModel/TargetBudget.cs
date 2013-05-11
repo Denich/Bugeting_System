@@ -90,5 +90,30 @@ namespace Budget.Services.BudgetModel
             BudgetCategoryId = Convert.ToInt32(record["BudgetCategoryId"]);
             return this;
         }
+
+        public TargetBudget ClearValues()
+        {
+            var clearedTarget= this;
+
+            clearedTarget.Value = 0;
+            clearedTarget.BudgetCategoryId = 0;
+
+            if (clearedTarget.BudgetItems != null)
+            {
+                clearedTarget.BudgetItems = clearedTarget.BudgetItems.Select(b => b.ClearValues());
+            }
+
+            return clearedTarget;
+        }
+
+        public void Calculate()
+        {
+            if (BudgetItems == null || !BudgetItems.Any())
+            {
+                return;
+            }
+
+            Value = BudgetItems.Sum(i => i.Value);
+        }
     }
 }

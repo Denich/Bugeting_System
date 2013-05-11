@@ -12,7 +12,7 @@ using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class QuarterComplexBudgetProjectDataProvider : IQuarterComplexBudgetProjectDataProvider
+    public class QuarterComplexBudgetProjectDataProvider : BaseComplexBudgetProjectDataProvider, IQuarterComplexBudgetProjectDataProvider
     {
         private readonly CustomDataProvider<QuarterComplexBudgetProject> _provider;
 
@@ -22,6 +22,9 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             _provider = new CustomDataProvider<QuarterComplexBudgetProject>(connectionString, procedureSet);
         }
+
+        [Dependency]
+        public IMonthComplexBudgetProjectDataProvider MonthComplexBudgetProjectDataProvider { get; set; }
 
         public IEnumerable<QuarterComplexBudgetProject> GetAll()
         {
@@ -39,7 +42,31 @@ namespace Budget.Services.BudgetServices.DataProviders
                                                                          quarterComplexBudgetProject.QuarterNumber,
                                                                          quarterComplexBudgetProject.AdministrativeUnitId);
             quarterComplexBudgetProject.RevisionDate = DateTime.Now;
-            return _provider.AddItem(quarterComplexBudgetProject);
+            
+            int quarterBudgetId = _provider.AddItem(quarterComplexBudgetProject);
+
+            InsertCategoriesRecursivly(quarterComplexBudgetProject.BudgetCategories, quarterBudgetId);
+
+            //Insert quarter budgets
+            if (quarterComplexBudgetProject.MonthBudgets != null)
+            {
+                foreach (var monthBudget in quarterComplexBudgetProject.MonthBudgets)
+                {
+                    MonthComplexBudgetProjectDataProvider.Insert(monthBudget);
+                }
+            }
+
+            //Insert child budgets
+            if (quarterComplexBudgetProject.ChildBudgets != null)
+            {
+                foreach (var childBudget in quarterComplexBudgetProject.ChildBudgets)
+                {
+                    childBudget.MasterBudgetID = quarterBudgetId;
+                    Insert(childBudget);
+                }
+            }
+
+            return quarterBudgetId;
         }
 
         public int Update(QuarterComplexBudgetProject quarterComplexBudgetProject)
@@ -93,9 +120,24 @@ namespace Budget.Services.BudgetServices.DataProviders
                                         Year = key.Year,
                                         Quarter = key.QuarterNumber,
                                         RevisionCount = group.Count(),
-                                        WaitingOfferCount = group.Count(x => !x.IsRejected && !x.IsAccepted)
+                                        WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
                                     })
                        : null;
+        }
+
+        public IEnumerable<QuarterComplexBudgetProject> GetChildForYearBudget(int yearBudgetId)
+        {
+            return GetAll().Where(b => b.YearBudgetID == yearBudgetId);
+        }
+
+        public IEnumerable<QuarterComplexBudgetProject> GetByMaster(int masterBudgetId)
+        {
+            return GetAll().Where(b => b.MasterBudgetID == masterBudgetId);
+        }
+
+        public QuarterComplexBudgetProject GetTemplate()
+        {
+            return IocContainer.Instance.Resolve<QuarterComplexBudgetProject>();
         }
 
         private int GetBudgetNextRevision(int year, int quarter, int fcenterId)

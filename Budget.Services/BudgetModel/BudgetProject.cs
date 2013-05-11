@@ -32,17 +32,22 @@ namespace Budget.Services.BudgetModel
             }
         }
 
-        public bool IsAccepted { get; set; }
+        public bool IsAccepted
+        {
+            get { return Status == BudgetProjectStatus.Accepted; }
+        }
 
-        public bool IsRejected { get; set; }
+        public BudgetProjectStatus Status { get; set; }
+
+        public string Comment { get; set; }
 
         public BudgetProject Setup(IDataRecord record)
         {
             Revision = Convert.ToInt32(record["Revision"]);
             RevisionDate = Convert.ToDateTime(record["RevisionDate"]);
             UpdatedPersonId = Convert.ToInt32(record["UpdatePersonId"]);
-            IsAccepted = Convert.ToBoolean(record["IsAccepted"]);
-            IsRejected = Convert.ToBoolean(record["IsRejected"]);
+            Status = (BudgetProjectStatus) Convert.ToInt32(record["Status"]);
+            Comment = Convert.ToString(record["Comment"]);
             return this;
         }
 
@@ -56,8 +61,8 @@ namespace Budget.Services.BudgetModel
                         new SqlParameter("Revision", SqlHelper.GetSqlValue(Revision)),
                         new SqlParameter("RevisionDate", SqlHelper.GetSqlValue(RevisionDate)),
                         new SqlParameter("UpdatePersonId", SqlHelper.GetSqlValue(UpdatedPersonId)),
-                        new SqlParameter("IsAccepted", SqlHelper.GetSqlValue(IsAccepted)),
-                        new SqlParameter("IsRejected", SqlHelper.GetSqlValue(IsRejected))
+                        new SqlParameter("Status", SqlHelper.GetSqlValue(Status)),
+                        new SqlParameter("Comment", SqlHelper.GetSqlValue(Comment))
                     };
 
                 return sqlParams.ToArray();

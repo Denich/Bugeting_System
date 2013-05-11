@@ -7,6 +7,7 @@ using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.ObjectBuilder2;
 
 namespace Budget.Services.BudgetModel
 {
@@ -107,6 +108,33 @@ namespace Budget.Services.BudgetModel
             ResponsibleEmployeId = Convert.ToInt32(record["ResponsibleEmployeeId"]);
             ComplexBudgetId = Convert.ToInt32(record["ComplexBudgetId"]);
             return this;
+        }
+
+        public BudgetCategory ClearValues()
+        {
+            var clearedCategory = this;
+            
+            clearedCategory.Value = 0;
+            clearedCategory.ComplexBudgetId = 0;
+
+            if (clearedCategory.TargetBudgets != null)
+            {
+                clearedCategory.TargetBudgets = clearedCategory.TargetBudgets.Select(b => b.ClearValues());
+            }
+
+            return clearedCategory;
+        }
+
+        public void Calulate()
+        {
+            if (TargetBudgets == null || !TargetBudgets.Any())
+            {
+                return;
+            }
+
+            TargetBudgets.ForEach(t => t.Calculate());
+
+            Value = TargetBudgets.Sum(t => t.Value);
         }
     }
 }

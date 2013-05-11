@@ -12,7 +12,7 @@ using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class MonthComplexBudgetProjectDataProvider : IMonthComplexBudgetProjectDataProvider
+    public class MonthComplexBudgetProjectDataProvider : BaseComplexBudgetProjectDataProvider, IMonthComplexBudgetProjectDataProvider
     {
         private readonly CustomDataProvider<MonthComplexBudgetProject> _provider;
 
@@ -38,8 +38,24 @@ namespace Budget.Services.BudgetServices.DataProviders
             monthComplexBudgetProject.Revision = GetBudgetNextRevision(monthComplexBudgetProject.Year,
                                                              monthComplexBudgetProject.Month,
                                                              monthComplexBudgetProject.AdministrativeUnitId);
+
             monthComplexBudgetProject.RevisionDate = DateTime.Now;
-            return _provider.AddItem(monthComplexBudgetProject);
+
+            int monthBudgetId = _provider.AddItem(monthComplexBudgetProject);
+
+            InsertCategoriesRecursivly(monthComplexBudgetProject.BudgetCategories, monthBudgetId);
+
+            //Insert child budgets
+            if (monthComplexBudgetProject.ChildBudgets != null)
+            {
+                foreach (var childBudget in monthComplexBudgetProject.ChildBudgets)
+                {
+                    childBudget.MasterBudgetID = monthBudgetId;
+                    Insert(childBudget);
+                }
+            }
+
+            return monthBudgetId;
         }
 
         public int Update(MonthComplexBudgetProject monthComplexBudgetProject)
@@ -91,10 +107,25 @@ namespace Budget.Services.BudgetServices.DataProviders
                                         Year = key.Year,
                                         Month = key.Month,
                                         RevisionCount = group.Count(),
-                                        WaitingOfferCount = group.Count(x => !x.IsRejected && !x.IsAccepted)
+                                        WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
                                     })
                        : null;
         
+        }
+
+        public IEnumerable<MonthComplexBudgetProject> GetChildForQuarterBudget(int quarterBudgetId)
+        {
+            return GetAll().Where(b => b.QuarterBudgetID == quarterBudgetId);
+        }
+
+        public IEnumerable<MonthComplexBudgetProject> GetByMaster(int masterBudgetId)
+        {
+            return GetAll().Where(b => b.MasterBudgetID == masterBudgetId);
+        }
+
+        public MonthComplexBudgetProject GetTemplate()
+        {
+            return IocContainer.Instance.Resolve<MonthComplexBudgetProject>();
         }
 
         private int GetBudgetNextRevision(int year, int month, int fcenterId)

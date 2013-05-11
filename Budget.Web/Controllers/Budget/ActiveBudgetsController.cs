@@ -79,14 +79,6 @@ namespace Budget.Web.Controllers
         [HttpPost]
         public ActionResult NewBudget(NewBudgetModel newBudgetModel)
         {
-            var project = new YearComplexBudgetProject
-                {
-                    Year = newBudgetModel.SelectedYear,
-                    AdministrativeUnitId = CompanyId,
-                    UpdatedPersonId = GetCurrentUser().EmployeInfo.Id,
-                    IsAccepted = GetCurrentUser().EmployeInfo.Position.CanApproveBudget,
-                };
-
             try
             {
                 if (newBudgetModel.SelectedYear < DateTime.MinValue.Year)
@@ -103,26 +95,26 @@ namespace Budget.Web.Controllers
                                                       newBudgetModel.SelectedYear));
                 }
 
-                //Todo: add transaction here
-                GetBudgetClient().Data.YearComplexBudgetProjects.Insert(project);
 
-                if (newBudgetModel.GenerateQuarterBudgets)
+                var project = GetBudgetClient().Data.YearComplexBudgetProjects.GetTemplate();
+                project.Year = newBudgetModel.SelectedYear;
+                project.AdministrativeUnitId = CompanyId;
+                project.UpdatedPersonId = GetCurrentUser().EmployeInfo.Id;
+                project.Status = GetCurrentUser().EmployeInfo.GetAllowedApproveStatus(CompanyId);
+
+                if (newBudgetModel.GenerateMonthBudgets)
                 {
-                    GetBudgetClient()
-                        .BudgetOperation.GenerateQuarterBudgetProjects(CompanyId, newBudgetModel.SelectedYear,
-                                                                       GetCurrentUser().EmployeInfo.Id,
-                                                                       GetCurrentUser()
-                                                                           .EmployeInfo.Position.CanApproveBudget);
-
-                    if (newBudgetModel.GenerateMonthBudgets)
-                    {
-                        GetBudgetClient()
-                            .BudgetOperation.GenerateMonthBudgetProjects(CompanyId, newBudgetModel.SelectedYear,
-                                                                         GetCurrentUser().EmployeInfo.Id,
-                                                                         GetCurrentUser()
-                                                                             .EmployeInfo.Position.CanApproveBudget);
-                    }
+                    project.GenerateQuarterMonthBudgets();
                 }
+                else
+                {
+                   if (newBudgetModel.GenerateQuarterBudgets)
+                   {
+                       project.GenerateQuarterBudgets();
+                   }
+                }
+
+                GetBudgetClient().Data.YearComplexBudgetProjects.Insert(project);
             }
             catch (Exception ex)
             {
@@ -136,6 +128,8 @@ namespace Budget.Web.Controllers
 
         public ActionResult EditBudgetCenters(int year, bool? isNewBudgetWizard)
         {
+            var yearBudget = GetBudgetClient().Data.YearComplexBudgetProjects.GetLatestAcceptedBudgetProject(year, CompanyId);
+
             IEnumerable<FinancialCenter> finCenters = GetBudgetClient().Data.FinancialCenters.GetAll();
 
             if (finCenters == null || !finCenters.Any())
@@ -143,7 +137,11 @@ namespace Budget.Web.Controllers
                 return RedirectToAction("Index", "FinancialCenters");
             }
 
-            var modelFinCenters = finCenters.Select(m => m.ToSelectModel(year));
+            var modelFinCenters = finCenters.Select(m => m.ToModel(year));
+
+            modelFinCenters.ForEach(
+                c =>
+                c.IsSeleceted = yearBudget.ChildBudgets.Any(b => b.AdministrativeUnitId == c.Id));
 
             var model = new BudgetProjectFinancialCentersModel(year, modelFinCenters)
                 {
@@ -156,31 +154,48 @@ namespace Budget.Web.Controllers
         [HttpPost]
         public ActionResult EditBudgetCenters(BudgetProjectFinancialCentersModel model)
         {
-            IEnumerable<FinancialCenter> finCenters = GetBudgetClient().Data.FinancialCenters.GetAll();
+            var companyYearBudget = GetBudgetClient().Data.YearComplexBudgetProjects.GetLatestAcceptedBudgetProject(model.Year, CompanyId);
+
+            var finCenterBudgets = new List<YearComplexBudgetProject>();
 
             foreach (var modelCenter in model.FinancialCenters)
             {
-                var foundFinCenter = finCenters.SingleOrDefault(c => c.Id == modelCenter.Id);
-
-                if (foundFinCenter == null || foundFinCenter.IsUsedInYearBudget(model.Year) == modelCenter.IsSeleceted)
+                if (!modelCenter.IsSeleceted /*Cann't delete exist financial center (may corrupt data)*/ ||
+                    companyYearBudget.ChildBudgets.Any(b => b.AdministrativeUnitId == modelCenter.Id) ==
+                    modelCenter.IsSeleceted)
                 {
                     continue;
                 }
 
-                if (modelCenter.IsSeleceted)
-                {
-                    var project = new YearComplexBudgetProject
-                    {
-                        Year = model.Year,
-                        AdministrativeUnitId = modelCenter.Id,
-                        UpdatedPersonId = GetCurrentUser().EmployeInfo.Id,
-                        IsAccepted = GetCurrentUser().EmployeInfo.Position.CanApproveBudget,
-                    };
+                var project = GetBudgetClient().Data.YearComplexBudgetProjects.GetTemplate();
 
-                    GetBudgetClient().Data.YearComplexBudgetProjects.Insert(project);
-                }
+                project.Year = model.Year;
+                project.AdministrativeUnitId = modelCenter.Id;
+                project.UpdatedPersonId = GetCurrentUser().EmployeInfo.Id;
+                project.Status = GetCurrentUser().EmployeInfo.GetAllowedApproveStatus(CompanyId);
+
+                finCenterBudgets.Add(project);
             }
 
+            if (finCenterBudgets.Any())
+            {
+                if (companyYearBudget.HasQuarterMonthBudgets)
+                {
+                    finCenterBudgets.ForEach(b => b.GenerateQuarterMonthBudgets());
+                }
+                else
+                {
+                    if (companyYearBudget.HasQuarterBudgets)
+                    {
+                        finCenterBudgets.ForEach(b => b.GenerateQuarterBudgets());        
+                    }
+                }
+
+                companyYearBudget.ChildBudgets = finCenterBudgets;
+
+                GetBudgetClient().Data.YearComplexBudgetProjects.Insert(companyYearBudget); 
+            }
+            
             return model.IsNewBudget ? RedirectToAction("EditBudgetItems", new { year = model.Year }) : RedirectToAction("Index");
         }
 
@@ -213,19 +228,19 @@ namespace Budget.Web.Controllers
                     {
                         Year = model.Year,
                         AdministrativeUnitId = CompanyId,
-                        IsAccepted = GetCurrentUser().EmployeInfo.Position.CanApproveBudget,
+                        Status = GetCurrentUser().EmployeInfo.GetAllowedApproveStatus(CompanyId),
                         BudgetCategories = model.Categories.Where(c => c.IsSelected).Select(c => c.ToObj())
                     };
 
             GetBudgetClient().BudgetOperation.InsertBudgetRecursivly(project);
 
-            foreach (var fcenter in GetBudgetClient().Data.FinancialCenters.GetAll().Where(c => c.IsUsedInYearBudget(model.Year)))
+            foreach (var fcenter in GetBudgetClient().Data.FinancialCenters.GetAll()/*.Where(c => c.IsUsedInYearBudget(model.Year))*/)
             {
                 var fcenterProject = new YearComplexBudgetProject
                 {
                     Year = model.Year,
                     AdministrativeUnitId = fcenter.Id,
-                    IsAccepted = GetCurrentUser().EmployeInfo.Position.CanApproveBudget,
+                    Status = GetCurrentUser().EmployeInfo.GetAllowedApproveStatus(CompanyId),
                     BudgetCategories = model.Categories.Where(c => c.IsSelected).Select(c => c.ToObj())
                 };
 
@@ -238,6 +253,16 @@ namespace Budget.Web.Controllers
         public ActionResult YearBudgetProject(int year, int adminUnitId)
         {
             var budgetModel = GetBudgetClient().Data.YearComplexBudgetProjects.GetLatestAcceptedBudgetProject(year, adminUnitId).ToViewModel();
+
+            var finCenters = GetBudgetClient().BudgetOperation.GetYearBudgetInvolvedFinancialCenters(year);
+
+
+            budgetModel.FinancialCenterBudgets = finCenters.Select(c =>
+                                                                   GetBudgetClient()
+                                                                       .Data.YearComplexBudgetProjects
+                                                                       .GetLatestAcceptedBudgetProject(year, c.Id)
+                                                                       .ToViewModel());
+            
 
             return View(budgetModel);
         }

@@ -21,6 +21,12 @@ namespace Budget.Services.BudgetModel
         [Dependency]
         public ICompanyPositionDataProvider CompanyPositionDataProvider { get; set; }
 
+        [Dependency]
+        public ICompanyDataProvider CompanyDataProvider { get; set; }
+
+        [Dependency]
+        public IFinancialCenterDataProvider FinancialCenterDataProvider { get; set; }
+
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -77,6 +83,28 @@ namespace Budget.Services.BudgetModel
 
                 return fullName;
             }
+        }
+
+        public BudgetProjectStatus GetAllowedApproveStatus(int adminUnitId)
+        {
+            //Todo: remove this stub
+            return BudgetProjectStatus.Accepted;
+
+            var company = CompanyDataProvider.Get();
+
+            if (company.Id == adminUnitId && company.DirectorId == Id)
+            {
+                return BudgetProjectStatus.Accepted;
+            }
+
+            var finCenter = FinancialCenterDataProvider.Get(adminUnitId);
+
+            if (finCenter != null && finCenter.Id == adminUnitId && finCenter.DirectorId == Id)
+            {
+                return BudgetProjectStatus.IntermediatelyAccepted;
+            }
+
+            return BudgetProjectStatus.Waiting;
         }
 
         public ICollection<SqlParameter> InsertSqlParameters {

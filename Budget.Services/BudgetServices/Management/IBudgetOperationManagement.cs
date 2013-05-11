@@ -12,9 +12,7 @@ namespace Budget.Services.BudgetServices.Management
         IEnumerable<QuarterComplexBudget> GetUnresultedQuarterBudgets(int adminUnitId);
 
         IEnumerable<MonthComplexBudget> GetUnresultedMonthBudgets(int adminUnitId);
-
-        void GenerateQuarterBudgetProjects(int adminUnitId, int year, int userId, bool accept);
-
-        void GenerateMonthBudgetProjects(int adminUnitId, int year, int userId, bool accept);
+        
+        IEnumerable<FinancialCenter> GetYearBudgetInvolvedFinancialCenters(int year);
     }
 }

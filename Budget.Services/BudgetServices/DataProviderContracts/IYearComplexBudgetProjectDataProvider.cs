@@ -22,5 +22,9 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         YearComplexBudgetProject GetFinalFor(int adminUnitId, int year);
         
         IEnumerable<UnapproveYearBudget> GetUnapprovalBudgets(int adminUnitId);
+
+        IEnumerable<YearComplexBudgetProject> GetByMaster(int masterBudgetId);
+        
+        YearComplexBudgetProject GetTemplate();
     }
 }

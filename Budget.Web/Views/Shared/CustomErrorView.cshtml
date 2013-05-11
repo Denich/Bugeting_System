@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Помилка у додатку";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <h2 class="text-error">Виникла помилка у додатку</h2>
+</div>
+<div class="row-fluid">
+    <div class="span6">
+        <article>
+            <p class="lead">@ViewBag.Error</p>
+            <p>@ViewBag.StackTrace</p>
+        </article>
+    </div>
+</div>
+
+
+

@@ -20,6 +20,7 @@ CREATE TABLE [dbo].[QuarterComplexBudget](
 	[ComplexBudgetID] [int] NOT NULL,
 	[Year] [int] NOT NULL,
 	[QuarterNumber] [int] NOT NULL,
+	[YearBudgetID] [int] NULL
  CONSTRAINT [PK_QuarterComplexBudget] PRIMARY KEY CLUSTERED 
 (
 	[ComplexBudgetID] ASC

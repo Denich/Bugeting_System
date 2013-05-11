@@ -8,9 +8,16 @@ namespace Budget.Services.BudgetModel
 {
     public class QuarterComplexBudget : ComplexBudget, IDataRetriever<QuarterComplexBudget>
     {
+        public QuarterComplexBudget() : base()
+        {
+            YearBudgetID = -1;
+        }
+
         public int QuarterNumber { get; set; }
 
         public int Year { get; set; }
+
+        public int YearBudgetID { get; set; }
 
         public virtual ICollection<SqlParameter> InsertSqlParameters
         {
@@ -19,6 +26,8 @@ namespace Budget.Services.BudgetModel
                 return new[]
                     {
                         new SqlParameter("AdministrativeUnitId", SqlHelper.GetSqlValue(AdministrativeUnitId)),
+                        new SqlParameter("MasterBudgetID", SqlHelper.GetSqlValue(MasterBudgetID)),
+                        new SqlParameter("YearBudgetID", SqlHelper.GetSqlValue(YearBudgetID)),
                         new SqlParameter("Year", SqlHelper.GetSqlValue(Year)),
                         new SqlParameter("QuarterNumber", SqlHelper.GetSqlValue(QuarterNumber)),
                         new SqlParameter("IsFinal", SqlHelper.GetSqlValue(IsFinal))
@@ -40,6 +49,8 @@ namespace Budget.Services.BudgetModel
         {
             Id = Convert.ToInt32(record["Id"]);
             AdministrativeUnitId = Convert.ToInt32(record["AdministrativeUnitId"]);
+            MasterBudgetID = Convert.ToInt32(record["MasterBudgetID"]);
+            YearBudgetID = Convert.ToInt32(record["YearBudgetID"]);
             Year = Convert.ToInt32(record["Year"]);
             QuarterNumber = Convert.ToInt32(record["QuarterNumber"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);

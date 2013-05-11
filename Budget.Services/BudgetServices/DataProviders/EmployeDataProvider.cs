@@ -41,5 +41,14 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             return _provider.DeleteItem(id);
         }
+
+        public Employe GetUnknown()
+        {
+            var unknownEmploye = IocContainer.Instance.Resolve<Employe>();
+
+            unknownEmploye.Id = 0;
+            
+            return unknownEmploye;
+        }
     }
 }

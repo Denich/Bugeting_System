@@ -64,5 +64,15 @@ namespace Budget.Services.BudgetModel
             TargetBudgetId = Convert.ToInt32(record["TargetBudgetId"]);
             return this;
         }
+
+        public BudgetItem ClearValues()
+        {
+            var clearedItem = this;
+
+            clearedItem.Value = 0;
+            clearedItem.TargetBudgetId = 0;
+
+            return clearedItem;
+        }
     }
 }

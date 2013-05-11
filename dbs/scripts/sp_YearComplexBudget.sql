@@ -31,6 +31,7 @@ END
 GO
 CREATE PROC [dbo].[usp_YearComplexBudgetInsert] 
     @AdministrativeUnitID int,
+    @MasterBudgetID int,
     @IsFinal bit,
     @Year int
 AS 
@@ -40,8 +41,8 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
-	SELECT @AdministrativeUnitID, @IsFinal
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal], [MasterBudgetID])
+	SELECT @AdministrativeUnitID, @IsFinal, @MasterBudgetID
 	
 	SELECT @ID = SCOPE_IDENTITY();
 		
@@ -67,6 +68,7 @@ END
 GO
 CREATE PROC [dbo].[usp_YearComplexBudgetUpdate] 
     @ID int,
+    @MasterBudgetID int,
     @AdministrativeUnitID int,
     @IsFinal bit,
     @Year int
@@ -77,7 +79,7 @@ AS
 	BEGIN TRAN
 	
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal, [MasterBudgetID] = @MasterBudgetID
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[YearComplexBudget]

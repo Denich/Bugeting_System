@@ -14,5 +14,7 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(Employe employe);
 
         int Delete(int id);
+
+        Employe GetUnknown();
     }
 }

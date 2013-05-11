@@ -31,9 +31,11 @@ END
 GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetInsert] 
     @AdministrativeUnitID int,
+    @MasterBudgetID int,
     @IsFinal bit,
     @Year int,
-    @Month int
+    @Month int,
+    @QuarterBudgetID int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -41,13 +43,13 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
-	SELECT @AdministrativeUnitID, @IsFinal
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal], [MasterBudgetID])
+	SELECT @AdministrativeUnitID, @IsFinal, @MasterBudgetID
 	
 	SELECT @ID = SCOPE_IDENTITY();
 	
-	INSERT INTO [dbo].[MonthComplexBudget] ([ComplexBudgetID], [Year], [Month])
-	SELECT @ID, @Year, @Month
+	INSERT INTO [dbo].[MonthComplexBudget] ([ComplexBudgetID], [Year], [Month], [QuarterBudgetID])
+	SELECT @ID, @Year, @Month, @QuarterBudgetID
 	
 	-- Begin Return Select <- do not remove
 	SELECT * 
@@ -69,9 +71,11 @@ GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @MasterBudgetID int,
     @IsFinal bit,
     @Year int,
-    @Month int
+    @Month int,
+    @QuarterBudgetID int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -79,11 +83,11 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal, [MasterBudgetID] = @MasterBudgetID
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[MonthComplexBudget]
-	SET    [Year] = @Year, [Month] = @Month
+	SET    [Year] = @Year, [Month] = @Month, [QuarterBudgetID] = @QuarterBudgetID
 	WHERE  [ComplexBudgetID] = @ID
 	
 	-- Begin Return Select <- do not remove

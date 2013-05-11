@@ -20,6 +20,7 @@ CREATE TABLE [dbo].[MonthComplexBudget](
 	[ComplexBudgetID] [int] NOT NULL,
 	[Year] [int] NOT NULL,
 	[Month] [int] NOT NULL,
+	[QuarterBudgetID] [int] NULL
  CONSTRAINT [PK_MonthComplexBudget] PRIMARY KEY CLUSTERED 
 (
 	[ComplexBudgetID] ASC

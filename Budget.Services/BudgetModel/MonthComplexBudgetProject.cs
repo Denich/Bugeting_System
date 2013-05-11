@@ -2,13 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.ObjectBuilder2;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class MonthComplexBudgetProject : MonthComplexBudget, IDataRetriever<MonthComplexBudgetProject>
     {
+        private IEnumerable<MonthComplexBudgetProject> _childBudgets;
+
         private readonly BudgetProject _budgetProject = new BudgetProject();
+
+        [Dependency]
+        public IMonthComplexBudgetProjectDataProvider MonthComplexBudgetProjectDataProvider { get; set; }
 
         public int UpdatedPersonId
         {
@@ -37,13 +46,44 @@ namespace Budget.Services.BudgetModel
         public bool IsAccepted
         {
             get { return _budgetProject.IsAccepted; }
-            set { _budgetProject.IsAccepted = value; }
         }
 
-        public bool IsRejected
+        public BudgetProjectStatus Status
         {
-            get { return _budgetProject.IsRejected; }
-            set { _budgetProject.IsRejected = value; }
+            get { return _budgetProject.Status; }
+            set { _budgetProject.Status = value; }
+        }
+
+        public string Comment
+        {
+            get { return _budgetProject.Comment; }
+            set { _budgetProject.Comment = value; }
+        }
+
+        public IEnumerable<MonthComplexBudgetProject> ChildBudgets
+        {
+            get
+            {
+                return _childBudgets ?? MonthComplexBudgetProjectDataProvider.GetByMaster(Id);
+            }
+            set
+            {
+                _childBudgets = value;
+            }
+        }
+
+        public override void CalculateValues()
+        {
+            if (ChildBudgets != null && ChildBudgets.Any())
+            {
+                ChildBudgets.ForEach(b => b.CalculateValues());
+
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.Select(b => b.BudgetCategories));
+
+                return;
+            }
+
+            base.CalculateValues();
         }
 
         public override ICollection<SqlParameter> InsertSqlParameters

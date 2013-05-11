@@ -21,8 +21,16 @@ namespace Budget.Services.Helpers
             unityContainer.RegisterType<IBudgetDataManagement, BudgetDataManagement>();
             unityContainer.RegisterType<IAdministrativeUnitDataProvider, AdministrativeUnitDataProvider>();
             unityContainer.RegisterType<IBudgetOperationManagement, BudgetOperationManagement>();
+            unityContainer.RegisterType<ICompanyDataProvider, CompanyDataProvider>();
 
             unityContainer.RegisterType<ICompanyPositionDataProvider, CompanyPositionDataProvider>();
+            unityContainer.RegisterInstance("CompanyProcedures",
+                                            new DbProcedureSet("usp_CompanySelect",
+                                                               "usp_CompanySelect",
+                                                               "usp_CompanyUpdate",
+                                                               "usp_CompanyDelete",
+                                                               "usp_CompanyInsert"));
+
             unityContainer.RegisterInstance("CompanyPositionProcedures",
                                             new DbProcedureSet("usp_CompanyPositionSelect",
                                                                "usp_CompanyPositionSelect",

@@ -12,7 +12,7 @@ namespace Budget.Services.BudgetModel
 
         public string Name { get; set; }
 
-        public bool CanApproveBudget { get; set; }
+        public string Description { get; set; }
 
         public ICollection<SqlParameter> InsertSqlParameters
         {
@@ -21,7 +21,7 @@ namespace Budget.Services.BudgetModel
                 return new[]
                     {
                         new SqlParameter("Name", SqlHelper.GetSqlValue(Name)),
-                        new SqlParameter("CanApproveBudget", SqlHelper.GetSqlValue(CanApproveBudget)),
+                        new SqlParameter("Description", SqlHelper.GetSqlValue(Description)),
                     };
             }
         }
@@ -40,7 +40,7 @@ namespace Budget.Services.BudgetModel
         {
             Id = Convert.ToInt32(record["Id"]);
             Name = Convert.ToString(record["Name"]);
-            CanApproveBudget = Convert.ToBoolean(record["CanApproveBudget"]);
+            Description = Convert.ToString(record["Description"]);
             return this;
         }
     }

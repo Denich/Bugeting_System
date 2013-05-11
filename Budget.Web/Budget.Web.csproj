@@ -110,11 +110,12 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Budget\ActiveBudgetsController.cs" />
     <Compile Include="Helpers\Converters\FinancialCentersConverter.cs" />
+    <Compile Include="Models\BudgetModels\BudgetItemCollection.cs" />
     <Compile Include="Models\BudgetModels\BudgetProjectItemModel.cs" />
     <Compile Include="Models\BudgetModels\CommonComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\MonthComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\QuarterComplexBudgetViewModel.cs" />
-    <Compile Include="Models\BudgetModels\YearComplexBudgetModel.cs" />
+    <Compile Include="Models\BudgetModels\YearCompanyComplexBudgetViewModel.cs" />
     <Compile Include="Models\AdministrativeUnitModel.cs" />
     <Compile Include="Models\BudgetModels\ActiveBudgetsListViewModel.cs" />
     <Compile Include="Controllers\Budget\ApprovalBudgetsController.cs" />

@@ -2,20 +2,29 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class QuarterComplexBudgetProject : QuarterComplexBudget, IDataRetriever<QuarterComplexBudgetProject>
     {
+        private readonly List<int> _quaretrNumbers = new List<int> {1, 2, 3, 4};
+
         private readonly BudgetProject _budgetProject = new BudgetProject();
+
+        private IEnumerable<MonthComplexBudgetProject> _monthBudgets;
 
         [Dependency]
         public IMonthComplexBudgetProjectDataProvider MonthComplexBudgetProjectDataProvider { get; set; }
+
+        [Dependency]
+        public IQuarterComplexBudgetProjectDataProvider QuarterComplexBudgetProjectDataProvider { get; set; }
 
         public int UpdatedPersonId
         {
@@ -44,24 +53,38 @@ namespace Budget.Services.BudgetModel
         public bool IsAccepted
         {
             get { return _budgetProject.IsAccepted; }
-            set { _budgetProject.IsAccepted = value; }
         }
 
-        public bool IsRejected
+        public BudgetProjectStatus Status
         {
-            get { return _budgetProject.IsRejected; }
-            set { _budgetProject.IsRejected = value; }
+            get { return _budgetProject.Status; }
+            set { _budgetProject.Status = value; }
         }
 
-        public bool HasMonthBudgets
+        public string Comment
+        {
+            get { return _budgetProject.Comment; }
+            set { _budgetProject.Comment = value; }
+        }
+
+        private IEnumerable<QuarterComplexBudgetProject> _childBudgets;
+
+        public IEnumerable<QuarterComplexBudgetProject> ChildBudgets
         {
             get
             {
-                return
-                    MonthComplexBudgetProjectDataProvider.GetBudgetProjects(Year, QuarterNumber * 3, AdministrativeUnitId).Any(c => c.IsAccepted) &&
-                    MonthComplexBudgetProjectDataProvider.GetBudgetProjects(Year, QuarterNumber * 3 - 1, AdministrativeUnitId).Any(c => c.IsAccepted) &&
-                    MonthComplexBudgetProjectDataProvider.GetBudgetProjects(Year, QuarterNumber * 3 - 2, AdministrativeUnitId).Any(c => c.IsAccepted);
+                return _childBudgets ?? QuarterComplexBudgetProjectDataProvider.GetByMaster(Id);
             }
+            set
+            {
+                _childBudgets = value;
+            }
+        }
+
+        public IEnumerable<MonthComplexBudgetProject> MonthBudgets
+        {
+            get { return _monthBudgets ?? MonthComplexBudgetProjectDataProvider.GetChildForQuarterBudget(Id); }
+            set { _monthBudgets = value; }
         }
 
         public new QuarterComplexBudgetProject Setup(IDataRecord record)
@@ -86,6 +109,60 @@ namespace Budget.Services.BudgetModel
         public override ICollection<SqlParameter> UpdateSqlParameters
         {
             get { return InsertSqlParameters; }
+        }
+
+        public void GenerateMonthBudgets()
+        {
+            if (!_quaretrNumbers.Contains(QuarterNumber))
+            {
+                throw new NotSupportedException(String.Format(CultureInfo.InvariantCulture,
+                                                              "Quarter number '{0}' not supported", QuarterNumber));
+            }
+
+            var monthBudgets =  new List<MonthComplexBudgetProject>();
+
+            for (int monthNumber = QuarterNumber * 3 - 2; monthNumber <= QuarterNumber * 3; monthNumber++)
+            {
+                monthBudgets.Add(GetMonthBudget(monthNumber));
+            }
+
+            MonthBudgets = monthBudgets;
+        }
+
+        public override void CalculateValues()
+        {
+            if (ChildBudgets != null && ChildBudgets.Any())
+            {
+                ChildBudgets.ForEach(b => b.CalculateValues());
+
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.Select(b => b.BudgetCategories));
+
+                return;
+            }
+
+            if (MonthBudgets != null && MonthBudgets.Any())
+            {
+                MonthBudgets.ForEach(b => b.CalculateValues());
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, MonthBudgets.Select(b => b.BudgetCategories));
+                return;
+            }
+
+            base.CalculateValues();
+        }
+
+        private MonthComplexBudgetProject GetMonthBudget(int monthNumber)
+        {
+            var monthBudget = MonthComplexBudgetProjectDataProvider.GetTemplate();
+
+            monthBudget.Year = Year;
+            monthBudget.Month = monthNumber;
+            monthBudget.AdministrativeUnitId = AdministrativeUnitId;
+            monthBudget.UpdatedPersonId = UpdatedPersonId;
+            monthBudget.Status = Status;
+            monthBudget.BudgetCategories = BudgetCategories != null
+                                               ? BudgetCategories.Select(b => b.ClearValues())
+                                               : null;
+            return monthBudget;
         }
     }
 }

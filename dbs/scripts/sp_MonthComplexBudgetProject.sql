@@ -29,14 +29,16 @@ END
 GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetProjectInsert] 
     @AdministrativeUnitID int,
+    @MasterBudgetID int,
     @IsFinal bit,
     @Year int,
     @Month int,
+    @QuarterBudgetID int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit,
-    @IsRejected bit
+    @Status int,
+    @Comment nvarchar(250)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -44,16 +46,16 @@ AS
 	BEGIN TRAN
 	
 	DECLARE @ID [int];
-	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal])
-	SELECT @AdministrativeUnitID, @IsFinal
+	INSERT INTO [dbo].[ComplexlBudget] ([AdministrativeUnitID], [IsFinal], [MasterBudgetID])
+	SELECT @AdministrativeUnitID, @IsFinal, @MasterBudgetID
 	
 	SELECT @ID = SCOPE_IDENTITY();
 		
-	INSERT INTO [dbo].[MonthComplexBudget] ([ComplexBudgetID], [Year], [Month])
-	SELECT @ID, @Year, @Month
+	INSERT INTO [dbo].[MonthComplexBudget] ([ComplexBudgetID], [Year], [Month], [QuarterBudgetID])
+	SELECT @ID, @Year, @Month, @QuarterBudgetID
 	
-	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [IsAccepted], [IsRejected])
-	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @IsAccepted, @IsRejected
+	INSERT INTO [dbo].[BudgetProject] ([ComplexBudgetID], [Revision], [RevisionDate], [UpdatePersonId], [Status], [Comment])
+	SELECT @ID, @Revision, @RevisionDate, @UpdatePersonId, @Status, @Comment
 	
 	-- Begin Return Select <- do not remove
 	SELECT * 
@@ -73,14 +75,16 @@ GO
 CREATE PROC [dbo].[usp_MonthComplexBudgetProjectUpdate] 
     @ID int,
     @AdministrativeUnitID int,
+    @MasterBudgetID int,
     @IsFinal bit,
     @Year int,
     @Month int,
+    @QuarterBudgetID int,
     @Revision int,
     @RevisionDate datetime,
     @UpdatePersonId int,
-    @IsAccepted bit,
-    @IsRejected bit
+    @Status int,
+    @Comment nvarchar(250)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -88,15 +92,15 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ComplexlBudget]
-	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal
+	SET    [AdministrativeUnitID] = @AdministrativeUnitID, [IsFinal] = @IsFinal, [MasterBudgetID] = @MasterBudgetID
 	WHERE  [ID] = @ID
 	
 	UPDATE [dbo].[MonthComplexBudget]
-	SET    [Year] = @Year, [Month] = @Month
+	SET    [Year] = @Year, [Month] = @Month, [QuarterBudgetID] = @QuarterBudgetID
 	WHERE  [ComplexBudgetID] = @ID
 	
 	UPDATE [dbo].[BudgetProject]
-	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [IsAccepted] = @IsAccepted, [IsRejected] = @IsRejected
+	SET    [Revision] = @Revision, [RevisionDate] = @RevisionDate, [UpdatePersonId] = @UpdatePersonId, [Status] = @Status, [Comment] = @Comment
 	WHERE  [ComplexBudgetID] = @ID
 	
 	-- Begin Return Select <- do not remove

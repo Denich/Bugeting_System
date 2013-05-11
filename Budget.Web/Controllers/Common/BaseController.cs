@@ -48,20 +48,13 @@ namespace Budget.Web.Controllers.Common
 
             if (employes == null || !employes.Any())
             {
-                user.EmployeInfo = new Employe
-                    {
-                        Id = 0,
-                        Position = new CompanyPosition { CanApproveBudget = true }//todo: change for false
-                    };
+                user.EmployeInfo = GetBudgetClient().Data.Employes.GetUnknown();
             }
             else
             {
                 Employe foundEmploye = employes.SingleOrDefault(e => e.Name == User.Identity.Name);
 
-                if (foundEmploye != null)
-                {
-                    user.EmployeInfo = foundEmploye;
-                }
+                user.EmployeInfo = foundEmploye ?? GetBudgetClient().Data.Employes.GetUnknown();
             }
 
             return user;

@@ -52,6 +52,8 @@ namespace Budget.Web.Helpers.Converters
         {
             var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, YearComplexBudgetViewModel>().Map(obj);
 
+            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
+
             model.BudgetItems = obj.BudgetCategories != null
                                     ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
                                     : null;
@@ -63,6 +65,8 @@ namespace Budget.Web.Helpers.Converters
         {
             var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, QuarterComplexBudgetViewModel>().Map(obj);
 
+            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
+
             model.BudgetItems = obj.BudgetCategories != null
                         ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
                         : null;
@@ -73,6 +77,8 @@ namespace Budget.Web.Helpers.Converters
         public static MonthComplexBudgetViewModel ToViewModel(this MonthComplexBudgetProject obj)
         {
             var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, MonthComplexBudgetViewModel>().Map(obj);
+
+            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
 
             model.BudgetItems = obj.BudgetCategories != null
             ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
