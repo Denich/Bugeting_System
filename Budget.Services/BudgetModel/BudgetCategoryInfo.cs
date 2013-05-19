@@ -84,16 +84,5 @@ namespace Budget.Services.BudgetModel
             Source = Convert.ToString(record["Source"]);
             return this;
         }
-
-        public bool IsUsedInBudgetProject(int year, int adminUnitId)
-        {
-            return YearComplexBudgetProjectDataProvider.GetAll()
-                                                       .Any(
-                                                           c =>
-                                                           c.Year == year && c.AdministrativeUnitId == adminUnitId &&
-                                                           c.IsAccepted &&
-                                                           c.BudgetCategories != null &&
-                                                           c.BudgetCategories.Any(b => b.InfoId == Id));
-        }
     }
 }

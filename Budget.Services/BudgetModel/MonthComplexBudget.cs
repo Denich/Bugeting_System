@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,7 +9,14 @@ namespace Budget.Services.BudgetModel
 {
     public class MonthComplexBudget : ComplexBudget, IDataRetriever<MonthComplexBudget>
     {
-        public MonthComplexBudget() : base()
+        private static readonly string[] Months =
+            {
+                "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень",
+                "Жовтень", "Листопад",
+                "Грудень"
+            };
+
+        public MonthComplexBudget()
         {
             QuarterBudgetID = -1;
         }
@@ -55,6 +62,16 @@ namespace Budget.Services.BudgetModel
             Month = Convert.ToInt32(record["Month"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
+        }
+
+        public override string GetPeriodName()
+        {
+            return Months[Month - 1] + " " + Year + " рік";
+        }
+
+        public override string GetShortPeriodName()
+        {
+            return Months[Month - 1];
         }
     }
 }

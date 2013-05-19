@@ -13,6 +13,11 @@ namespace Budget.Services.BudgetModel
     {
         private BudgetItemInfo _info;
 
+        public BudgetItem()
+        {
+            TargetBudgetId = -1;
+        }
+
         [Dependency]
         public IBudgetItemInfoDataProvider BudgetItemInfoDataProvider { get; set; }
 

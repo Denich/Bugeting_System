@@ -9,6 +9,7 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using MoreLinq;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
@@ -50,24 +51,67 @@ namespace Budget.Services.BudgetServices.DataProviders
             InsertCategoriesRecursivly(yearComplexBudgetProject.BudgetCategories, yearBudgetId);
 
             //Insert quarter budgets
-            if (yearComplexBudgetProject.QuarterBudgets != null)
+            var quarterBudgetNumberIds = new Dictionary<int, int>();
+
+            foreach (var quarterBudget in yearComplexBudgetProject.QuarterBudgets)
             {
-                foreach (var quarterBudget in yearComplexBudgetProject.QuarterBudgets)
+                quarterBudget.YearBudgetID = yearBudgetId;
+
+                int quarterBudgetId = QuarterComplexBudgetProjectDataProvider.Insert(quarterBudget);
+
+                quarterBudgetNumberIds.Add(quarterBudget.QuarterNumber, quarterBudgetId);
+            }
+            
+            if (!yearComplexBudgetProject.ChildBudgets.Any())
+            {
+                return yearBudgetId;
+            }
+
+            //Add master quarter budgets to childs
+            if (yearComplexBudgetProject.HasQuarterBudgets)
+            {
+                foreach (var quarterBudgetId in quarterBudgetNumberIds)
                 {
-                    QuarterComplexBudgetProjectDataProvider.Insert(quarterBudget);
+                    yearComplexBudgetProject.ChildBudgets = yearComplexBudgetProject.ChildBudgets.Select(b =>
+                    {
+                        b.QuarterBudgets.Single(q => q.QuarterNumber == quarterBudgetId.Key).MasterBudgetID = quarterBudgetId.Value;
+                        return b;
+                    }).ToList();   
                 }
+            }
+
+            //Add master month budgets to childs
+            if (yearComplexBudgetProject.HasQuarterMonthBudgets)
+            {
+                Dictionary<int, int> monthBudgetsIds =
+                    quarterBudgetNumberIds.SelectMany(
+                        q => QuarterComplexBudgetProjectDataProvider.Get(q.Value).MonthBudgets)
+                                          .ToDictionary(b => b.Month, b => b.Id);
+
+                yearComplexBudgetProject.ChildBudgets = yearComplexBudgetProject.ChildBudgets.Select(c =>
+                    {
+                        c.QuarterBudgets = c.QuarterBudgets.Select(
+                            q =>
+                                {
+                                    q.MonthBudgets = q.MonthBudgets.Select(m =>
+                                        {
+                                            m.MasterBudgetID = monthBudgetsIds[m.Month];
+                                            return m;
+                                        }).ToList();
+                                    return q;
+                                }).ToList();
+                        return c;
+                    }).ToList();
+
             }
 
             //Insert child budgets
-            if (yearComplexBudgetProject.ChildBudgets != null)
+            foreach (var childBudget in yearComplexBudgetProject.ChildBudgets)
             {
-                foreach (var childBudget in yearComplexBudgetProject.ChildBudgets)
-                {
-                    childBudget.MasterBudgetID = yearBudgetId;
-                    Insert(childBudget);
-                }
+                childBudget.MasterBudgetID = yearBudgetId;
+                Insert(childBudget);
             }
-
+            
             return yearBudgetId;
         }
 
@@ -83,38 +127,35 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public IEnumerable<YearComplexBudgetProject> GetBudgetProjects(int year, int fcenterId)
         {
-            var budgets = GetAll();
-
-            return budgets != null ? budgets.Where(b => b.AdministrativeUnitId == fcenterId && b.Year == year) : null;
+            return GetAll().Where(b => b.AdministrativeUnitId == fcenterId && b.Year == year);
         }
 
         public YearComplexBudgetProject GetLatestAcceptedBudgetProject(int year, int fcenterId)
         {
-            var budgets = GetBudgetProjects(year, fcenterId);
-            return budgets != null && budgets.Any(p => p.IsAccepted)
-                       ? budgets.Where(p => p.IsAccepted).OrderByDescending(p => p.Revision).FirstOrDefault()
-                       : null;
+            return
+                GetAll()
+                    .Where(b => b.AdministrativeUnitId == fcenterId && b.Year == year && b.IsAccepted)
+                    .MinBy(p => p.Id);
         }
 
         public YearComplexBudgetProject GetFinalFor(int adminUnitId, int year)
         {
-            var budgets = GetAll();
-            return budgets != null
-                       ? budgets.FirstOrDefault(b => b.AdministrativeUnitId == adminUnitId && b.Year == year && b.IsFinal)
-                       : null;
+            return GetAll().FirstOrDefault(b => b.AdministrativeUnitId == adminUnitId && b.Year == year && b.IsFinal);
         }
 
         public IEnumerable<UnapproveYearBudget> GetUnapprovalBudgets(int adminUnitId)
         {
-            var budgets = GetAll();
-            return budgets != null
-                       ? budgets.Where(b => !b.IsFinal).GroupBy(b => b.Year, (key, group) => new UnapproveYearBudget
-                           {
-                               Year = key,
-                               RevisionCount = group.Count(),
-                               WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
-                           })
-                       : null;
+            var yearComplexBudgetProjects = _provider.GetItems().Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal).ToList();
+
+            return
+                yearComplexBudgetProjects
+                         .GroupBy(b => b.Year, (key, group) => new UnapproveYearBudget
+                             {
+                                 LastApprovedBudgetId = group.Where(b => b.IsAccepted).MaxBy(b => b.Revision).Id,
+                                 Year = key,
+                                 RevisionCount = group.Count(),
+                                 WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
+                             });
         }
 
         public IEnumerable<YearComplexBudgetProject> GetByMaster(int masterBudgetId)
@@ -131,7 +172,7 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             var fcenterBudgets = GetBudgetProjects(year, fcenterId);
 
-            return fcenterBudgets.Count() != 0 ? fcenterBudgets.Max(p => p.Revision) : 0;
+            return fcenterBudgets.Any() ? fcenterBudgets.Max(p => p.Revision) + 1 : 0;
         }
     }
 }

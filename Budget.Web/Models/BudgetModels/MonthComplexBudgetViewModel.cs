@@ -1,6 +1,6 @@
 ﻿namespace Budget.Web.Models.BudgetModels
 {
-    public class MonthComplexBudgetViewModel : CommonComplexBudgetViewModel
+    public class MonthComplexBudgetViewModel : ParentComplexBudgetViewModel
     {
         public int Year { get; set; }
 

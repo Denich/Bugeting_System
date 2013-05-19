@@ -78,7 +78,7 @@ namespace Budget.Services.BudgetModel
             {
                 ChildBudgets.ForEach(b => b.CalculateValues());
 
-                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.Select(b => b.BudgetCategories));
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
 
                 return;
             }

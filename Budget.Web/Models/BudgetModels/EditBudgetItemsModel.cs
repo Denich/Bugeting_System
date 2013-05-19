@@ -6,6 +6,8 @@ namespace Budget.Web.Models
     {
         public int Year { get; set; }
 
+        public int CompanyBaseYearBudgetId { get; set; }
+
         public IList<BudgetCategoryInfoSelectModel> Categories { get; set; }
     }
 }

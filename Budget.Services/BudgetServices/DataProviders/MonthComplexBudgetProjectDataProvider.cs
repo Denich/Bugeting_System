@@ -9,6 +9,7 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using MoreLinq;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
@@ -44,16 +45,6 @@ namespace Budget.Services.BudgetServices.DataProviders
             int monthBudgetId = _provider.AddItem(monthComplexBudgetProject);
 
             InsertCategoriesRecursivly(monthComplexBudgetProject.BudgetCategories, monthBudgetId);
-
-            //Insert child budgets
-            if (monthComplexBudgetProject.ChildBudgets != null)
-            {
-                foreach (var childBudget in monthComplexBudgetProject.ChildBudgets)
-                {
-                    childBudget.MasterBudgetID = monthBudgetId;
-                    Insert(childBudget);
-                }
-            }
 
             return monthBudgetId;
         }
@@ -98,19 +89,18 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public IEnumerable<UnapproveMonthBudget> GetUnapprovalBudgets(int adminUnitId)
         {
-            IEnumerable<MonthComplexBudgetProject> budgets = GetAll();
+            var monthComplexBudgetProjects = _provider.GetItems().Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal).ToList();
 
-            return budgets != null
-                       ? budgets.Where(b => !b.IsFinal)
-                                .GroupBy(b => new { b.Year, b.Month }, (key, group) => new UnapproveMonthBudget
-                                    {
-                                        Year = key.Year,
-                                        Month = key.Month,
-                                        RevisionCount = group.Count(),
-                                        WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
-                                    })
-                       : null;
-        
+            return
+                monthComplexBudgetProjects
+                         .GroupBy(b => new { b.Year, b.Month }, (key, group) => new UnapproveMonthBudget
+                         {
+                             LastApprovedBudgetId = group.Where(b => b.IsAccepted).MaxBy(b => b.Revision).Id,
+                             Year = key.Year,
+                             Month = key.Month,
+                             RevisionCount = group.Count(),
+                             WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
+                         });
         }
 
         public IEnumerable<MonthComplexBudgetProject> GetChildForQuarterBudget(int quarterBudgetId)
@@ -132,7 +122,7 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             var fcenterBudgets = GetBudgetProjects(year, month, fcenterId);
 
-            return fcenterBudgets.Count() != 0 ? fcenterBudgets.Max(p => p.Revision) : 0;
+            return fcenterBudgets.Any() ? fcenterBudgets.Max(p => p.Revision) + 1 : 0;
         }
     }
 }

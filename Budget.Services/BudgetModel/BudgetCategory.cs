@@ -13,6 +13,11 @@ namespace Budget.Services.BudgetModel
 {
     public class BudgetCategory : IDataRetriever<BudgetCategory>
     {
+        public BudgetCategory()
+        {
+            ComplexBudgetId = -1;
+        }
+
         private IEnumerable<TargetBudget> _targetBudgets;
 
         private Employe _responsibleEmploye;
@@ -20,7 +25,7 @@ namespace Budget.Services.BudgetModel
         private BudgetCategoryInfo _info;
 
         [Dependency]
-        public ITargetBudgetDataProvider BudgetCategoryDataProvider { get; set; }
+        public ITargetBudgetDataProvider TargetBudgetDataProvider { get; set; }
 
         [Dependency]
         public IEmployeDataProvider EmployeDataProvider { get; set; }
@@ -64,14 +69,7 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                if (_targetBudgets != null)
-                {
-                    return _targetBudgets;
-                }
-
-                var targetBudgets = BudgetCategoryDataProvider != null ? BudgetCategoryDataProvider.GetAll() : null;
-
-                return targetBudgets == null ? null : targetBudgets.Where(t => t.BudgetCategoryId == Id);
+                return _targetBudgets ?? TargetBudgetDataProvider.GetForCategory(Id);
             }
             set { _targetBudgets = value; }
         }

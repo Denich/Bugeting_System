@@ -17,7 +17,7 @@
                     <li>
                         <label class="checkbox">
                             @Model.Categories[i].Name
-                            @(Model.Categories[i].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].IsSelected))
+                            @(Model.Categories[i].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].IsAdded, new { onclick = "return false" }) : Html.CheckBoxFor(m => m.Categories[i].IsAdded))
                             @Html.HiddenFor(m => m.Categories[i].Id)
                         </label>
                     
@@ -33,8 +33,8 @@
                                 <li>
                                     <label class="checkbox">
                                         @Model.Categories[i].Targets[j].Name
-                                        @(Model.Categories[i].Targets[j].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsSelected))
-                                        @Html.HiddenFor(m => m.Categories[i].Targets[j].Name)
+                                        @(Model.Categories[i].Targets[j].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsAdded, new { onclick = "return false" }) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].IsAdded))
+                                        @Html.HiddenFor(m => m.Categories[i].Targets[j].Id)
                                     </label>
                             
                             
@@ -49,7 +49,7 @@
                                             <li>
                                                 <label class="checkbox">
                                                     @Model.Categories[i].Targets[j].Items[k].Name
-                                                    @(Model.Categories[i].Targets[j].Items[k].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsAdded, new {disabled = "disabled"}) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsSelected))
+                                                    @(Model.Categories[i].Targets[j].Items[k].IsAdded ? Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsAdded, new { onclick = "return false" }) : Html.CheckBoxFor(m => m.Categories[i].Targets[j].Items[k].IsAdded))
                                                     @Html.HiddenFor(m => m.Categories[i].Targets[j].Items[k].Id)
                                                 </label>
                                             </li>
@@ -64,6 +64,7 @@
             <div class="form-actions">
                 <button class="btn btn-primary" type="submit">Зберегти</button>
             </div>
+            @Html.HiddenFor(m => m.CompanyBaseYearBudgetId);
         </form>
     </div>
 </div>

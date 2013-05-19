@@ -10,8 +10,6 @@ namespace Budget.Web.Helpers.Converters
 
         public string Name { get; set; }
 
-        public int Value { get; set; }
-
         public IEnumerable<BudgetProjectItemViewModel> ChildItems { get; set; }
     }
 }

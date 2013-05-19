@@ -7,6 +7,7 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using System.Linq;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
@@ -44,6 +45,16 @@ namespace Budget.Services.BudgetServices.DataProviders
         public int Delete(int id)
         {
             return _provider.DeleteItem(id);
+        }
+
+        public TargetBudget GetTemplate()
+        {
+            return IocContainer.Instance.Resolve<TargetBudget>();
+        }
+
+        public IEnumerable<TargetBudget> GetForCategory(int categoryId)
+        {
+            return _provider.GetItems().Where(c => c.BudgetCategoryId == categoryId);
         }
     }
 }

@@ -7,10 +7,11 @@ namespace Budget.Web.Models
 {
     public class BudgetProjectFinancialCentersModel
     {
-        public BudgetProjectFinancialCentersModel(int year, IEnumerable<FinancialCenterSelectModel> financialCenters)
+        public BudgetProjectFinancialCentersModel(int year, int companyBaseYearBudgetId, IEnumerable<FinancialCenterSelectModel> financialCenters)
         {
             Year = year;
             FinancialCenters = financialCenters.ToList();
+            CompanyBaseYearBudgetId = companyBaseYearBudgetId;
         }
 
         public BudgetProjectFinancialCentersModel()
@@ -18,6 +19,8 @@ namespace Budget.Web.Models
         }
 
         public int Year { get; set; }
+
+        public int CompanyBaseYearBudgetId { get; set; }
 
         public List<FinancialCenterSelectModel> FinancialCenters { get; set; }
 

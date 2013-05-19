@@ -7,7 +7,5 @@
         public string Name { get; set; }
 
         public bool IsAdded { get; set; }
-
-        public bool IsSelected { get; set; }
     }
 }

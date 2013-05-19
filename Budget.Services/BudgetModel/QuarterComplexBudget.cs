@@ -8,7 +8,7 @@ namespace Budget.Services.BudgetModel
 {
     public class QuarterComplexBudget : ComplexBudget, IDataRetriever<QuarterComplexBudget>
     {
-        public QuarterComplexBudget() : base()
+        public QuarterComplexBudget()
         {
             YearBudgetID = -1;
         }
@@ -55,6 +55,16 @@ namespace Budget.Services.BudgetModel
             QuarterNumber = Convert.ToInt32(record["QuarterNumber"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
+        }
+
+        public override string GetPeriodName()
+        {
+            return QuarterNumber + "-й квартал " + Year + " рік";
+        }
+
+        public override string GetShortPeriodName()
+        {
+            return QuarterNumber + "-й квартал";
         }
     }
 }

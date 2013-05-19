@@ -12,6 +12,8 @@ namespace Budget.Services.BudgetModel
     {
         private AdministrativeUnit _administrativeUnit;
 
+        private IEnumerable<BudgetCategory> _budgetCategories;
+
         protected ComplexBudget()
         {
             MasterBudgetID = -1;
@@ -19,6 +21,9 @@ namespace Budget.Services.BudgetModel
 
         [Dependency]
         public IAdministrativeUnitDataProvider AdministrativeUnitDataProvider { get; set; }
+
+        [Dependency]
+        public IBudgetCategoryDataProvider BudgetCategoryDataProvider { get; set; }
 
         public int Id { get; set; }
 
@@ -39,9 +44,12 @@ namespace Budget.Services.BudgetModel
             }
         }
 
-        public IEnumerable<BudgetCategory> BudgetCategories { get; set; }
+        public IEnumerable<BudgetCategory> BudgetCategories
+        {
+            get { return _budgetCategories ?? BudgetCategoryDataProvider.GetForBudget(Id); }
+            set { _budgetCategories = value; }
+        }
 
-        
         public double TotalIncome
         {
             get { return BudgetCategories != null ? BudgetCategories.Where(c => c.Value > 0).Sum(c => c.Value) : 0; }
@@ -67,27 +75,45 @@ namespace Budget.Services.BudgetModel
             BudgetCategories.ForEach(b => b.Calulate());
         }
 
-        //TODO: Chek null reference exceptions
-        protected IEnumerable<BudgetCategory> GetValuesSumFormCategories(IEnumerable<BudgetCategory> budgetCategories, IEnumerable<IEnumerable<BudgetCategory>> categories)
+        public BudgetCategory FindCategoryByInfoId(int infoId)
         {
-            if (budgetCategories == null)
+            return BudgetCategories.FirstOrDefault(b => b.InfoId == infoId);
+        }
+
+        public TargetBudget FindTargetBudgetByInfoId(int infoId)
+        {
+            return BudgetCategories.SelectMany(c => c.TargetBudgets).FirstOrDefault(t => t.InfoId == infoId);
+        }
+
+        public BudgetItem FindBudgetItemByInfoId(int infoId)
+        {
+            return
+                BudgetCategories.SelectMany(c => c.TargetBudgets)
+                                .SelectMany(c => c.BudgetItems)
+                                .FirstOrDefault(t => t.InfoId == infoId);
+        }
+
+        //TODO: Chek null reference exceptions
+        protected IEnumerable<BudgetCategory> GetValuesSumFormCategories(IEnumerable<BudgetCategory> parentBudgetCategories, IEnumerable<BudgetCategory> childBudgetCategories)
+        {
+            if (parentBudgetCategories == null)
             {
                 return null;
             }
 
-            foreach (var budgetCategory in budgetCategories)
+            foreach (var parentCategory in parentBudgetCategories)
             {
-                IEnumerable<BudgetCategory> matchCategories = categories.Select(c => c.SingleOrDefault(b => b.InfoId == budgetCategory.InfoId));
+                IEnumerable<BudgetCategory> matchCategories = childBudgetCategories.Where(b => b.InfoId == parentCategory.InfoId);
 
-                budgetCategory.Value = matchCategories.Sum(c => c.Value);
+                parentCategory.Value = matchCategories.Sum(c => c.Value);
 
-                budgetCategory.TargetBudgets = GetValueFromTargetBudgets(budgetCategory.TargetBudgets, matchCategories.Select(c => c.TargetBudgets));
+                parentCategory.TargetBudgets = GetValueFromTargetBudgets(parentCategory.TargetBudgets, matchCategories.SelectMany(c => c.TargetBudgets));
             }
 
-            return budgetCategories;
+            return parentBudgetCategories;
         }
 
-        private IEnumerable<TargetBudget> GetValueFromTargetBudgets(IEnumerable<TargetBudget> targetBudgets, IEnumerable<IEnumerable<TargetBudget>> targets)
+        private IEnumerable<TargetBudget> GetValueFromTargetBudgets(IEnumerable<TargetBudget> targetBudgets, IEnumerable<TargetBudget> targets)
         {
             if (targetBudgets == null)
             {
@@ -96,17 +122,17 @@ namespace Budget.Services.BudgetModel
 
             foreach (var targetBudget in targetBudgets)
             {
-                var matchTargets = targets.Select(c => c.SingleOrDefault(b => b.InfoId == targetBudget.InfoId));
+                var matchTargets = targets.Where(b => b.InfoId == targetBudget.InfoId);
 
                 targetBudget.Value = matchTargets.Sum(c => c.Value);
 
-                targetBudget.BudgetItems = GetValueFromBudgetItems(targetBudget.BudgetItems, matchTargets.Select(c => c.BudgetItems));
+                targetBudget.BudgetItems = GetValueFromBudgetItems(targetBudget.BudgetItems, matchTargets.SelectMany(c => c.BudgetItems));
             }
 
             return targetBudgets;
         }
 
-        private IEnumerable<BudgetItem> GetValueFromBudgetItems(IEnumerable<BudgetItem> budgetItems, IEnumerable<IEnumerable<BudgetItem>> items)
+        private IEnumerable<BudgetItem> GetValueFromBudgetItems(IEnumerable<BudgetItem> budgetItems, IEnumerable<BudgetItem> items)
         {
             if (budgetItems == null)
             {
@@ -115,12 +141,16 @@ namespace Budget.Services.BudgetModel
 
             foreach (var budgetItem in budgetItems)
             {
-                var matchItems = items.Select(c => c.SingleOrDefault(b => b.InfoId == budgetItem.InfoId));
+                var matchItems = items.Where(b => b.InfoId == budgetItem.InfoId);
 
                 budgetItem.Value = matchItems.Sum(c => c.Value);
             }
 
             return budgetItems;
         }
+
+        public abstract string GetPeriodName();
+
+        public abstract string GetShortPeriodName();
     }
 }

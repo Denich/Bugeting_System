@@ -12,6 +12,11 @@ namespace Budget.Services.BudgetModel
 {
     public class TargetBudget : IDataRetriever<TargetBudget>
     {
+        public TargetBudget()
+        {
+            BudgetCategoryId = -1;
+        }
+
         private TargetBudgetInfo _info;
 
         private IEnumerable<BudgetItem> _budgetItems;
@@ -48,14 +53,7 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                if (_budgetItems != null)
-                {
-                    return _budgetItems;
-                }
-
-                var budgetItems = BudgetItemDataProvider != null ? BudgetItemDataProvider.GetAll() : null;//todo: remove this hack
-
-                return budgetItems == null ? null : budgetItems.Where(t => t.TargetBudgetId == Id);
+                return _budgetItems ?? BudgetItemDataProvider.GetForTarget(Id);
             }
             set { _budgetItems = value; }
         }

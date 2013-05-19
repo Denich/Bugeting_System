@@ -45,5 +45,15 @@ namespace Budget.Services.BudgetModel
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
         }
+
+        public override string GetPeriodName()
+        {
+            return Year + " рік";
+        }
+
+        public override string GetShortPeriodName()
+        {
+            return Year + "р.";
+        }
     }
 }

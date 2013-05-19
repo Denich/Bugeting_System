@@ -1,4 +1,5 @@
-﻿using Budget.Services.BudgetServices;
+﻿using System;
+using Budget.Services.BudgetServices;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
 using Microsoft.Practices.Unity;
@@ -34,6 +35,11 @@ namespace Budget.Services.Helpers
         public T Resolve<T>()
         {
             return _container.Resolve<T>();
+        }
+
+        public object Resolve(Type t)
+        {
+            return _container.Resolve(t);
         }
     }
 }

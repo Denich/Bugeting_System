@@ -5,14 +5,10 @@ namespace Budget.Services.BudgetServices.Management
 {
     public interface IBudgetOperationManagement
     {
-        void InsertBudgetRecursivly(YearComplexBudgetProject yearComplexBudgetProject);
-        
         IEnumerable<YearComplexBudget> GetUnresultedYearBudgets(int adminUnitId);
 
         IEnumerable<QuarterComplexBudget> GetUnresultedQuarterBudgets(int adminUnitId);
 
         IEnumerable<MonthComplexBudget> GetUnresultedMonthBudgets(int adminUnitId);
-        
-        IEnumerable<FinancialCenter> GetYearBudgetInvolvedFinancialCenters(int year);
     }
 }

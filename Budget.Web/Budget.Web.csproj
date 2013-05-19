@@ -50,6 +50,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\sdks\unity\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
+    <Reference Include="MoreLinq">
+      <HintPath>..\packages\morelinq.1.0.16006\lib\net35\MoreLinq.dll</HintPath>
+    </Reference>
     <Reference Include="MvcCheckBoxList">
       <HintPath>..\packages\MvcCheckBoxList.1.4.4.3-beta2\lib\net40\MvcCheckBoxList.dll</HintPath>
     </Reference>
@@ -109,13 +112,14 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Budget\ActiveBudgetsController.cs" />
+    <Compile Include="Controllers\FinancialCenterBudgetsController.cs" />
     <Compile Include="Helpers\Converters\FinancialCentersConverter.cs" />
-    <Compile Include="Models\BudgetModels\BudgetItemCollection.cs" />
     <Compile Include="Models\BudgetModels\BudgetProjectItemModel.cs" />
     <Compile Include="Models\BudgetModels\CommonComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\MonthComplexBudgetViewModel.cs" />
+    <Compile Include="Models\BudgetModels\ParentComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\QuarterComplexBudgetViewModel.cs" />
-    <Compile Include="Models\BudgetModels\YearCompanyComplexBudgetViewModel.cs" />
+    <Compile Include="Models\BudgetModels\YearBudgetEditModel.cs" />
     <Compile Include="Models\AdministrativeUnitModel.cs" />
     <Compile Include="Models\BudgetModels\ActiveBudgetsListViewModel.cs" />
     <Compile Include="Controllers\Budget\ApprovalBudgetsController.cs" />
@@ -294,9 +298,7 @@
     <Content Include="Views\ActiveBudgets\EditBudgetItems.cshtml" />
     <Content Include="Views\ActiveBudgets\EditBudgetCenters.cshtml" />
     <Content Include="Views\Shared\CustomErrorView.cshtml" />
-    <Content Include="Views\ActiveBudgets\YearBudgetProject.cshtml" />
-    <Content Include="Views\ActiveBudgets\QuarterBudgetProject.cshtml" />
-    <Content Include="Views\ActiveBudgets\MonthBudgetProject.cshtml" />
+    <Content Include="Views\FinancialCenterBudgets\ComplexBudgetProject.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

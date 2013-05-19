@@ -189,6 +189,11 @@
                                 <div class="btn-group">
                                     <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
                                     <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("MonthBudgetProject", "FinancialCenterBudgets", new { budgetId = monthBudget.LastApprovedBudgetId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -208,6 +213,11 @@
                                 <div class="btn-group">
                                     <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
                                     <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("QuarterBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = quarterBudget.LastApprovedBudgetId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -229,17 +239,17 @@
                                     <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="@Url.Action("YearBudgetProject", new { year = yearBudget.Year, adminUnitId = Model.CompanyId })">
+                                            <a href="@Url.Action("YearBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = yearBudget.LastApprovedBudgetId })">
                                                 <i class="icon-wrench"></i> Проект бюджету
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("EditBudgetCenters", new { year = yearBudget.Year })">
+                                            <a href="@Url.Action("EditBudgetCenters", new { companyBaseYearBudgetId = yearBudget.LastApprovedBudgetId })">
                                                 <i class="icon-tags"></i> ЦФВ-участники
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="@Url.Action("EditBudgetItems", new { year = yearBudget.Year })">
+                                            <a href="@Url.Action("EditBudgetItems", new { companyBaseYearBudgetId = yearBudget.LastApprovedBudgetId })">
                                                 <i class="icon-list-alt"></i> Бюджетні статті
                                             </a>
                                         </li>

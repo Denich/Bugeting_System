@@ -10,8 +10,7 @@ namespace Budget.Services.BudgetServices.Management
     {
         public static YearComplexBudgetProject Merge(this YearComplexBudgetProject baseProject, YearComplexBudgetProject secondaryProject)
         {
-            if (secondaryProject == null || secondaryProject.BudgetCategories == null || baseProject == null ||
-                baseProject.BudgetCategories == null)
+            if (secondaryProject == null || baseProject == null)
             {
                 return baseProject;
             }
@@ -20,7 +19,7 @@ namespace Budget.Services.BudgetServices.Management
 
             foreach (var secondaryCategory in secondaryProject.BudgetCategories)
             {
-                BudgetCategory category = baseProject.BudgetCategories.SingleOrDefault(c => c.InfoId == secondaryCategory.InfoId);
+                BudgetCategory category = mergeCategories.SingleOrDefault(c => c.InfoId == secondaryCategory.InfoId);
 
                 if (category == null)
                 {
@@ -34,23 +33,24 @@ namespace Budget.Services.BudgetServices.Management
             }
 
             baseProject.BudgetCategories = mergeCategories;
+            
+            baseProject.CalculateValues();
 
             return baseProject;
         }
 
         public static BudgetCategory Merge(this BudgetCategory baseCategory, BudgetCategory secondaryCategory)
         {
-            if (baseCategory == null || baseCategory.TargetBudgets == null || secondaryCategory == null ||
-                secondaryCategory.TargetBudgets == null)
+            if (baseCategory == null || secondaryCategory == null)
             {
                 return baseCategory;
             }
 
-            var mergeTargets = new List<TargetBudget>();
+            var mergeTargets = baseCategory.TargetBudgets.ToList();
 
             foreach (var secondaryTarget in secondaryCategory.TargetBudgets)
             {
-                TargetBudget target = baseCategory.TargetBudgets.SingleOrDefault(t => t.InfoId == secondaryTarget.InfoId);
+                TargetBudget target = mergeTargets.SingleOrDefault(t => t.InfoId == secondaryTarget.InfoId);
 
                 if (target == null)
                 {
@@ -80,7 +80,7 @@ namespace Budget.Services.BudgetServices.Management
 
             foreach (var secondaryItem in secondaryTarget.BudgetItems)
             {
-                BudgetItem item = baseTarget.BudgetItems.SingleOrDefault(i => i.InfoId == secondaryItem.InfoId);
+                BudgetItem item = mergeItems.SingleOrDefault(i => i.InfoId == secondaryItem.InfoId);
 
                 if (item == null)
                 {

@@ -22,11 +22,18 @@ namespace Budget.Services.Helpers
                 {
                     while (reader.Read())
                     {
-                        yield return source.Setup(reader);
+                        var t = source.GetType();
+                        yield return ((IDataRetriever<T>)IocContainer.Instance.Resolve(source.GetType())).Setup(reader);
                     }
                 }
             }
         }
+
+        public static T CastType<T>(object input)
+        {
+            return (T)input;
+        }
+
 
         public static T GetItemById<T>(this IDataRetriever<T> source, int id, string connectionString, string selectByIdProcedureName)
         {

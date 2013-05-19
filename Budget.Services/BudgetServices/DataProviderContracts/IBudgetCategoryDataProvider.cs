@@ -15,5 +15,9 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         int Update(BudgetCategory budgetCategory);
 
         int Delete(int budgetCategoryId);
+
+        IEnumerable<BudgetCategory> GetForBudget(int budgetId);
+        
+        BudgetCategory GetTemplate();
     }
 }

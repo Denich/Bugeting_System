@@ -10,9 +10,15 @@ namespace Budget.Web.Helpers.Converters
 {
     public static class FinancialCentersConverter
     {
-        public static FinancialCenterSelectModel ToModel(this FinancialCenter obj, int year)
+        public static FinancialCenterSelectModel ToSelectModel(this FinancialCenter obj, YearComplexBudgetProject companyYearBudget)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<FinancialCenter, FinancialCenterSelectModel>().Map(obj);
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<FinancialCenter, FinancialCenterSelectModel>().Map(obj);
+
+            var usedAdminUnitsIds = companyYearBudget.ChildBudgets.Select(b => b.AdministrativeUnitId).ToList();
+
+            model.IsSeleceted = usedAdminUnitsIds.Contains(model.Id);
+
+            return model;
         }
     }
 }

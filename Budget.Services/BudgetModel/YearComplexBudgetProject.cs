@@ -84,12 +84,12 @@ namespace Budget.Services.BudgetModel
             set { _quarterBudgets = value; }
         }
 
-        public bool HasQuarterMonthBudgets
+        public bool HasQuarterBudgets
         {
             get { return QuarterBudgets.Any(); }
         }
 
-        public bool HasQuarterBudgets
+        public bool HasQuarterMonthBudgets
         {
             get { return QuarterBudgets.Any() && QuarterBudgets.First().MonthBudgets.Any(); }
         }
@@ -134,7 +134,7 @@ namespace Budget.Services.BudgetModel
             {
                 ChildBudgets.ForEach(b => b.CalculateValues());
 
-                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.Select(b => b.BudgetCategories));
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
 
                 return;
             }
@@ -142,7 +142,7 @@ namespace Budget.Services.BudgetModel
             if (QuarterBudgets != null && QuarterBudgets.Any())
             {
                 QuarterBudgets.ForEach(b => b.CalculateValues());
-                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, QuarterBudgets.Select(b => b.BudgetCategories));
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, QuarterBudgets.SelectMany(b => b.BudgetCategories));
                 return;
             }
 

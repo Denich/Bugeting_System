@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using Budget.Services.BudgetModel;
 using Budget.Web.Models;
 using Budget.Web.Models.BudgetModels;
 using EmitMapper;
+using MoreLinq;
 
 namespace Budget.Web.Helpers.Converters
 {
@@ -46,46 +48,142 @@ namespace Budget.Web.Helpers.Converters
             return model;
         }
 
+
+        public static IList<string> ToValuesModel(this ComplexBudget obj, IEnumerable<BudgetCategory> infosBudgetCategories)
+        {
+            var values = new List<string>();
+
+            foreach (var category in infosBudgetCategories)
+            {
+                var foundCategory = obj.FindCategoryByInfoId(category.InfoId);
+                values.Add(foundCategory == null ? "-" : foundCategory.Value.ToString(CultureInfo.InvariantCulture));
+
+                foreach (var target in category.TargetBudgets)
+                {
+                    var foundTarget = obj.FindTargetBudgetByInfoId(target.InfoId);
+                    values.Add(foundTarget == null ? "-" : foundTarget.Value.ToString(CultureInfo.InvariantCulture));
+                    
+                    foreach (var item in target.BudgetItems)
+                    {
+                        var foundItem = obj.FindBudgetItemByInfoId(item.InfoId);
+                        values.Add(foundItem == null ? "-" : foundItem.Value.ToString(CultureInfo.InvariantCulture));    
+                    }
+                }
+            }
+
+            return values;
+        }
+
         #endregion
+
+        #region Convert ParentBudgets
+
+        public static ParentComplexBudgetViewModel ToAdminParentViewModel(this YearComplexBudgetProject obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, ParentComplexBudgetViewModel>().Map(obj);
+
+            model = obj.BaseToParentViewModel(model);
+            model.DerivedBudgets = obj.ChildBudgets.Select(b => b.ToViewModel(obj.BudgetCategories));
+
+            model.DerivedBudgets = model.DerivedBudgets.Select(c => { c.Caption = c.AdministrativeUnitName; return c; }).ToList();
+
+            model.Caption = model.AdministrativeUnitName;
+
+            return model;
+        }
+
+        public static ParentComplexBudgetViewModel ToAdminParentViewModel(this QuarterComplexBudgetProject obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, ParentComplexBudgetViewModel>().Map(obj);
+
+            model = obj.BaseToParentViewModel(model);
+            model.DerivedBudgets = obj.ChildBudgets.Select(b => b.ToViewModel(obj.BudgetCategories));
+
+            model.DerivedBudgets = model.DerivedBudgets.Select(c => { c.Caption = c.AdministrativeUnitName; return c; }).ToList();
+
+            model.Caption = model.AdministrativeUnitName;
+
+            return model;
+        }
+
+        public static ParentComplexBudgetViewModel ToAdminParentViewModel(this MonthComplexBudgetProject obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, ParentComplexBudgetViewModel>().Map(obj);
+
+            model = obj.BaseToParentViewModel(model);
+            model.DerivedBudgets = obj.ChildBudgets.Select(b => b.ToViewModel(obj.BudgetCategories));
+
+            model.DerivedBudgets = model.DerivedBudgets.Select(c => { c.Caption = c.AdministrativeUnitName; return c; }).ToList();
+
+            model.Caption = model.AdministrativeUnitName;
+
+            return model;
+        }
+
+        public static ParentComplexBudgetViewModel ToPeriodParentViewModel(this YearComplexBudgetProject obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, ParentComplexBudgetViewModel>().Map(obj);
+
+            model = obj.BaseToParentViewModel(model);
+            model.DerivedBudgets = obj.QuarterBudgets.Select(b => b.ToViewModel(obj.BudgetCategories));
+
+            model.DerivedBudgets = model.DerivedBudgets.Select(c => { c.Caption = c.Period; return c; }).ToList();
+            model.Caption = model.Period;
+
+            return model;
+        }
+
+        public static ParentComplexBudgetViewModel ToPeriodParentViewModel(this QuarterComplexBudgetProject obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, ParentComplexBudgetViewModel>().Map(obj);
+
+            model = obj.BaseToParentViewModel(model);
+            model.DerivedBudgets = obj.MonthBudgets.Select(b => b.ToViewModel(obj.BudgetCategories));
+
+            model.DerivedBudgets = model.DerivedBudgets.Select(c => { c.Caption = c.Period; return c; }).ToList();
+            model.Caption = model.Period;
+
+            return model;
+        }
+
+        public static ParentComplexBudgetViewModel BaseToParentViewModel(this ComplexBudget obj, ParentComplexBudgetViewModel baseModel)
+        {
+            baseModel.AdministrativeUnitName = obj.AdministrativeUnit.Name;
+            baseModel.Period = obj.GetPeriodName();
+            baseModel.BudgetItemValues = obj.ToValuesModel(obj.BudgetCategories);
+            baseModel.BudgetItems = obj.BudgetCategories.Select(b => b.ToProjectViewModel());
+            
+            return baseModel;
+        }
+        #endregion
+
+        #region Convert ComplexBudgets to use items values
+        public static CommonComplexBudgetViewModel ToViewModel(this YearComplexBudgetProject obj, IEnumerable<BudgetCategory> parentBudgetCategories)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, CommonComplexBudgetViewModel>().Map(obj);
+            return obj.BaseToViewModel(model, parentBudgetCategories);
+        }
         
-        public static YearComplexBudgetViewModel ToViewModel(this YearComplexBudgetProject obj)
+        public static CommonComplexBudgetViewModel ToViewModel(this QuarterComplexBudgetProject obj, IEnumerable<BudgetCategory> parentBudgetCategories)
         {
-            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, YearComplexBudgetViewModel>().Map(obj);
-
-            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
-
-            model.BudgetItems = obj.BudgetCategories != null
-                                    ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
-                                    : null;
-
-            return model;
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, CommonComplexBudgetViewModel>().Map(obj);
+            return obj.BaseToViewModel(model, parentBudgetCategories);
         }
 
-        public static QuarterComplexBudgetViewModel ToViewModel(this QuarterComplexBudgetProject obj)
+        public static CommonComplexBudgetViewModel ToViewModel(this MonthComplexBudgetProject obj, IEnumerable<BudgetCategory> parentBudgetCategories)
         {
-            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, QuarterComplexBudgetViewModel>().Map(obj);
-
-            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
-
-            model.BudgetItems = obj.BudgetCategories != null
-                        ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
-                        : null;
-
-            return model;
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, CommonComplexBudgetViewModel>().Map(obj);
+            return obj.BaseToViewModel(model, parentBudgetCategories);
         }
 
-        public static MonthComplexBudgetViewModel ToViewModel(this MonthComplexBudgetProject obj)
+        private static CommonComplexBudgetViewModel BaseToViewModel(this ComplexBudget obj, CommonComplexBudgetViewModel baseModel, IEnumerable<BudgetCategory> parentBudgetCategories)
         {
-            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, MonthComplexBudgetViewModel>().Map(obj);
-
-            model.AdministrativeUnitName = obj.AdministrativeUnit.Name;
-
-            model.BudgetItems = obj.BudgetCategories != null
-            ? obj.BudgetCategories.Select(b => b.ToProjectViewModel())
-            : null;
-
-            return model;
+            baseModel.AdministrativeUnitName = obj.AdministrativeUnit.Name;
+            baseModel.Period = obj.GetShortPeriodName();
+            baseModel.BudgetItemValues = obj.ToValuesModel(parentBudgetCategories);
+            return baseModel;
         }
+        #endregion
 
         public static YearComplexBudgetListViewModel ToListModel(this YearComplexBudgetProject obj)
         {
@@ -101,7 +199,6 @@ namespace Budget.Web.Helpers.Converters
         {
             return ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, MonthComplexBudgetListViewModel>().Map(obj);
         }
-
         #endregion
 
         public static YearComplexBudgetResultListViewModel ToListModel(this YearComplexBudget obj)
