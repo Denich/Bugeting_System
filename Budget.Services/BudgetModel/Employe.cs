@@ -107,6 +107,12 @@ namespace Budget.Services.BudgetModel
             return BudgetProjectStatus.Waiting;
         }
 
+        public bool CanFinallize(int adminUnitId)
+        {
+            //Todo: Implement checking for can finalize property
+            return true;
+        }
+
         public ICollection<SqlParameter> InsertSqlParameters {
             get
             {

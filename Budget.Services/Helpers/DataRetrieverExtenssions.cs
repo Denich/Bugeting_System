@@ -22,7 +22,6 @@ namespace Budget.Services.Helpers
                 {
                     while (reader.Read())
                     {
-                        var t = source.GetType();
                         yield return ((IDataRetriever<T>)IocContainer.Instance.Resolve(source.GetType())).Setup(reader);
                     }
                 }

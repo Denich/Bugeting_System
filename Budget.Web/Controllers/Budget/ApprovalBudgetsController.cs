@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Budget.Web.Controllers.Common;
+using Budget.Web.Helpers.Converters;
+using Budget.Web.Models.BudgetModels;
 
 namespace Budget.Web.Controllers
 {
-    public class ApprovalBudgetsController : Controller
+    public class ApprovalBudgetsController : BaseController
     {
         //
         // GET: /ApprovalBudgets/
 
         public ActionResult Index()
         {
-            return View();
+            var model = new ApprovedBudgetsModel();
+            model.MonthApprovedBudgets = GetBudgetClient().Data.MonthComplexBudgetProjects.GetApprovedBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            model.QuarterApprovedBudgets = GetBudgetClient().Data.QuarterComplexBudgetProjects.GetApprovedBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            model.YearApprovedBudgets = GetBudgetClient().Data.YearComplexBudgetProjects.GetApprovedBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            return View(model);
         }
 
         //

@@ -130,7 +130,11 @@ namespace Budget.Services.BudgetModel
                 return;
             }
 
-            TargetBudgets.ForEach(t => t.Calculate());
+            TargetBudgets = TargetBudgets.Select(t =>
+                {
+                    t.Calculate();
+                    return t;
+                });
 
             Value = TargetBudgets.Sum(t => t.Value);
         }

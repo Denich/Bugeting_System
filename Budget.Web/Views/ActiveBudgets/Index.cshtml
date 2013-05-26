@@ -16,7 +16,7 @@
                 <legend>Поточні планові бюджети</legend>
 
                 <table class="table table-bordered table-condensed table-hover table-striped">
-                    <caption>Річний бюджет</caption>
+                    <caption>Місячний бюджет</caption>
                     <thead>
                         <tr>
                             <th>Період</th>
@@ -29,7 +29,7 @@
                     <tr>
                         @if (Model.CurrentMonthBudget != null)
                         {
-                            <td>@Model.CurrentMonthBudget.Month -й місяць</td>
+                            <td>@Model.CurrentMonthBudget.Period</td>
                             <td>@Model.CurrentMonthBudget.TotalIncome</td>
                             <td>@Model.CurrentMonthBudget.TotalCosts</td>
                             <td>@Model.CurrentMonthBudget.Balance</td>
@@ -54,7 +54,7 @@
                     <tr>
                         @if (Model.CurrentQuarterBudget != null)
                         {
-                            <td>@Model.CurrentQuarterBudget.QuarterNumber -й квартал</td>
+                            <td>@Model.CurrentQuarterBudget.Period</td>
                             <td>@Model.CurrentQuarterBudget.TotalIncome</td>
                             <td>@Model.CurrentQuarterBudget.TotalCosts</td>
                             <td>@Model.CurrentQuarterBudget.Balance</td>
@@ -68,7 +68,7 @@
                 </table>
 
                 <table class="table table-bordered table-condensed table-hover table-striped">
-                    <caption>Місячний бюджет</caption>
+                    <caption>Річний бюджет</caption>
                     <thead>
                         <tr>
                             <th>Період</th>
@@ -80,12 +80,15 @@
                     <tr>
                         @if (Model.CurrentYearBudget != null)
                         {
-                            <td>@Model.CurrentYearBudget.Year рік</td>
+                            <td>@Model.CurrentYearBudget.Period</td>
                             <td>@Model.CurrentYearBudget.TotalIncome</td>
                             <td>@Model.CurrentYearBudget.TotalCosts</td>
                             <td>@Model.CurrentYearBudget.Balance</td>
                         }
-                        <td colspan="4">Немає даних</td>
+                        else
+                        {
+                            <td colspan="4">Немає даних</td>    
+                        }
                     </tr>
                 </table>
             </fieldset>
@@ -182,7 +185,8 @@
                             foreach (var monthBudget in Model.ApprovalProccesMonthBudgets)
                             {
                         <tr>
-                            <td>@monthBudget.Month -й місяць @monthBudget.Year рік</td>
+                            <!--<td>@monthBudget.Month -й місяць @monthBudget.Year рік</td>-->
+                            <td>@monthBudget.Period</td>
                             <td>@monthBudget.RevisionCount</td>
                             <td>@monthBudget.WaitingOfferCount</td>
                             <td>

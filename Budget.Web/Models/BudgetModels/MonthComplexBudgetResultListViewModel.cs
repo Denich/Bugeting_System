@@ -1,3 +1,5 @@
+using Budget.Web.Models.BudgetModels;
+
 namespace Budget.Web.Models
 {
     public class MonthComplexBudgetResultListViewModel : MonthComplexBudgetListViewModel, IBaseBudgetResultViewModel

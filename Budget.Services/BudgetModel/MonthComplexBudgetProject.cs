@@ -74,9 +74,9 @@ namespace Budget.Services.BudgetModel
 
         public override void CalculateValues()
         {
-            if (ChildBudgets != null && ChildBudgets.Any())
+            if (ChildBudgets.Any())
             {
-                ChildBudgets.ForEach(b => b.CalculateValues());
+                //ChildBudgets = ChildBudgets.Select(c => { c.CalculateValues(); return c; });
 
                 BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
 
@@ -100,7 +100,12 @@ namespace Budget.Services.BudgetModel
 
         public override ICollection<SqlParameter> UpdateSqlParameters
         {
-            get { return InsertSqlParameters; }
+            get
+            {
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
+                return sqlParams;
+            }
         }
 
         public new MonthComplexBudgetProject Setup(IDataRecord record)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Budget.Services.BudgetModel;
 
 namespace Budget.Services.BudgetServices.DataProviderContracts
@@ -28,5 +29,11 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         IEnumerable<MonthComplexBudgetProject> GetByMaster(int masterBudgetId);
         
         MonthComplexBudgetProject GetTemplate();
+
+        void FinilizeBudget(int budgetId);
+
+        void ReviewBudget(int budgetId);
+        
+        IEnumerable<MonthComplexBudgetProject> GetApprovedBudgets(DateTime nowDate, int adminUnitId);
     }
 }

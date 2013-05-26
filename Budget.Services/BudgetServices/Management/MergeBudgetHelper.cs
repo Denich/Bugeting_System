@@ -8,7 +8,7 @@ namespace Budget.Services.BudgetServices.Management
 {
     public static class MergeBudgetHelper
     {
-        public static YearComplexBudgetProject Merge(this YearComplexBudgetProject baseProject, YearComplexBudgetProject secondaryProject)
+        public static ComplexBudget Merge(this ComplexBudget baseProject, ComplexBudget secondaryProject)
         {
             if (secondaryProject == null || baseProject == null)
             {

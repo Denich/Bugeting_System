@@ -8,6 +8,7 @@ using Budget.Services.BudgetServices.DataProviders;
 using Budget.Services.Helpers;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
+using Budget.Services.BudgetServices.Management;
 
 namespace Budget.Services.BudgetModel
 {
@@ -108,7 +109,12 @@ namespace Budget.Services.BudgetModel
 
         public override ICollection<SqlParameter> UpdateSqlParameters
         {
-            get { return InsertSqlParameters; }
+            get
+            {
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
+                return sqlParams;
+            }
         }
 
         public new YearComplexBudgetProject Setup(IDataRecord record)
@@ -128,25 +134,91 @@ namespace Budget.Services.BudgetModel
             GenerateQuarterBudgets(true);
         }
 
+        public void PopulateCategoriesOnPeriodsBudgets()
+        {
+            if (HasQuarterBudgets)
+            {
+                QuarterBudgets = QuarterBudgets.Select(q =>
+                    {
+                        q.BudgetCategories = q.Merge(this).BudgetCategories;
+                        return q;
+                    }).ToList();
+            }
+
+            if (HasQuarterMonthBudgets)
+            {
+                QuarterBudgets = QuarterBudgets.Select(q =>
+                    {
+                        q.PopulateCategoriesOnPeriodsBudgets();
+                        return q;
+                    });
+            }
+        }
+
         public override void CalculateValues()
         {
-            if (ChildBudgets != null && ChildBudgets.Any())
+            /*if (ChildBudgets != null && ChildBudgets.Any())
             {
-                ChildBudgets.ForEach(b => b.CalculateValues());
+                //ChildBudgets = ChildBudgets.Select(b => { b.CalculateValues(); return b; });
 
                 BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
 
                 return;
-            }
+            }*/
 
             if (QuarterBudgets != null && QuarterBudgets.Any())
             {
-                QuarterBudgets.ForEach(b => b.CalculateValues());
+                //QuarterBudgets = QuarterBudgets.Select(q => { q.CalculateValues(); return q; });
+
                 BudgetCategories = GetValuesSumFormCategories(BudgetCategories, QuarterBudgets.SelectMany(b => b.BudgetCategories));
+
                 return;
             }
 
             base.CalculateValues();
+        }
+
+        public void UpdateMonthBudget(MonthComplexBudgetProject monthBudget)
+        {
+            QuarterBudgets = QuarterBudgets.Select(q =>
+                {
+                    bool isInserted = false;
+                    q.MonthBudgets = q.MonthBudgets.Select(m =>
+                        {
+                            if (m.Month == monthBudget.Month)
+                            {
+                                isInserted = true;
+                                return monthBudget;
+                            }
+                            return m;
+                        }).ToList();
+
+                    if (isInserted)
+                    {
+                        q.CalculateValues();
+                    }
+                    return q;
+                }).ToList();
+
+            CalculateValues();
+        }
+
+        public void PopulateQuarterBudgetsFromChilds()
+        {
+            if (!ChildBudgets.Any() || !QuarterBudgets.Any()) //Todo: check maybe set to 0
+            {
+                return;
+            }
+
+            var childQuarterBudgets = ChildBudgets.SelectMany(b => b.QuarterBudgets);
+
+            QuarterBudgets = QuarterBudgets.Select(b =>
+                {
+                    b.ChildBudgets = childQuarterBudgets.Where(q => q.QuarterNumber == b.QuarterNumber);
+                    b.PopulateMonthBudgetsFromChilds(); //Todo: check is it realy need?> Change fro populateMinth
+                    b.CalculateValues();
+                    return b;
+                });
         }
 
         private void GenerateQuarterBudgets(bool includeMonthBudgets)

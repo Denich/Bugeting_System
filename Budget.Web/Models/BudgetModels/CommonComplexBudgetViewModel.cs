@@ -22,6 +22,8 @@ namespace Budget.Web.Models.BudgetModels
 
         public DateTime RevisionDate { get; set; }
 
+        public bool IsFinal { get; set; }
+
         public IList<string> BudgetItemValues { get; set; }
 
         public double TotalIncome { get; set; }

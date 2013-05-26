@@ -234,6 +234,17 @@ namespace Budget.Web.Controllers
             if (selectedProject.BudgetCategories.Any())
             {
                 companyYearBudget.Merge(selectedProject);
+                companyYearBudget.PopulateCategoriesOnPeriodsBudgets();
+
+                if (companyYearBudget.ChildBudgets.Any())
+                {
+                    companyYearBudget.ChildBudgets = companyYearBudget.ChildBudgets.Select(p =>
+                        {
+                            p.Merge(selectedProject);
+                            p.PopulateCategoriesOnPeriodsBudgets();
+                            return p;
+                        }).ToList();
+                }
 
                 GetBudgetClient().Data.YearComplexBudgetProjects.Insert(companyYearBudget);
             }

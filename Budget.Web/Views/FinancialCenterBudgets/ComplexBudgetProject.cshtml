@@ -1,0 +1,154 @@
+﻿@model Budget.Web.Models.BudgetModels.ParentComplexBudgetViewModel
+@{
+    ViewBag.Title = "Проект бюджету " + Model.AdministrativeUnitName + " на " + Model.Period;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <h2>Проект бюджету "@Model.AdministrativeUnitName" на @Model.Period
+        @if (Model.IsFinal)
+        {
+            <span class="text-success">(Затвердженно)</span>
+        }
+        else
+        {
+            <span class="text-info">(Формування)</span>
+        }
+    </h2>
+    <h5>Ревізія  №@Model.Revision від @Model.RevisionDate.ToShortDateString()</h5>
+    <p class="text-right">
+        <a href="@Url.Action(Model.SwitchToOtherTypeAction, Model.SwitchToOtherTypeController, new { budgetId = Model.Id })">@Model.SwitchtoOtherTypeName</a>
+        <br/>
+        @if (Model.ResultsBudgetId != -1)
+        {
+            <a href="@Url.Action(Model.ViewBudgetResultAction, Model.ViewBudgetResultController, new { budgetId = Model.ResultsBudgetId })">Переглянути результати</a>   
+        }
+    </p>
+</div>
+<div class="row-fluid">
+    <div class="span10 offset1">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Статті</th>
+                    <th>@Model.Caption</th>
+
+                    @foreach (var finCenterBudget in Model.DerivedBudgets)
+                    {
+                        <th>@finCenterBudget.Caption 
+                            <a href="@Url.Action(Model.EditChildBudgetsAction, Model.EditChildBudgetsController, new { budgetId = @finCenterBudget.Id })">
+                                <i class="icon-cog"></i>
+                            </a>
+                            @if (finCenterBudget.IsFinal)
+                            {
+                                <span class="badge badge-success">Затверджено</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-info">Формування</span>
+                            }
+                        </th>
+                    }
+
+                </tr>
+            </thead>
+            @{ int i = 0; }
+            @foreach (var category in Model.BudgetItems)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@Model.BudgetItemValues[i]</td>
+                    @foreach (var finCenterBudget in Model.DerivedBudgets)
+                    {
+                        <td>@finCenterBudget.BudgetItemValues[i]</td>
+                    }
+                </tr>
+                
+                    i++;
+
+                    foreach (var target in category.ChildItems)
+                    {
+                <tr>
+                    <td>----- @target.Name</td>
+                    <td>@Model.BudgetItemValues[i]</td>
+                    @foreach (var finCenterBudget in Model.DerivedBudgets)
+                    {
+                        <td>@finCenterBudget.BudgetItemValues[i]</td>
+                    }
+                </tr>
+                    
+                    i++;
+
+                    foreach (var item in target.ChildItems)
+                    {
+                <tr>
+                    <td>---------- @item.Name</td>
+                    <td>@Model.BudgetItemValues[i]</td>
+                    @foreach (var finCenterBudget in Model.DerivedBudgets)
+                    {
+                        <td>@finCenterBudget.BudgetItemValues[i]</td>
+                    }
+                </tr>
+                
+                    i++;
+                    }
+                    }
+            }
+            <tr>
+                <td><strong>Доходи / Видатки</strong></td>
+                <td>@Model.TotalIncome / @Model.TotalCosts</td>
+                @foreach (var finCenterBudget in Model.DerivedBudgets)
+                {
+                    <td>@finCenterBudget.TotalIncome / @finCenterBudget.TotalCosts</td>
+                }
+            </tr>
+            <tr>
+                <td><strong>Баланс</strong></td>
+                <td>@Model.Balance</td>
+                @foreach (var finCenterBudget in Model.DerivedBudgets)
+                {
+                    <td>@finCenterBudget.Balance</td>
+                }
+            </tr>
+        </table>
+        @if (Model.CanEdit && !Model.IsFinal)
+        {
+            <a href="@Url.Action(Model.EditAction, Model.EditController, new { budgetId = Model.Id })" class="btn btn-large btn-primary">Редагувати проект
+            </a>
+        }
+        @if (Model.CanEdit && Model.IsFinal)
+        {
+            <a href="#" class="btn btn-large btn-primary disabled">Редагувати проект
+            </a>
+        }
+
+        @if (Model.IsFinal)
+        {
+            if (Model.CanReview)
+            {
+                <a href="@Url.Action(Model.ReviewAction, Model.ReviewController, new {budgetId = Model.Id})" class="btn btn-large btn-info">Почати перегляд бюджету</a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-large btn-info disabled">Почати перегляд бюджету</a>
+            }
+        }
+
+        @if(!Model.IsFinal)
+        {
+            if (Model.CanFinalize)
+            {
+                <a href="@Url.Action(Model.FinilizeAction, Model.FinilizeController, new { budgetId = Model.Id })" class="btn btn-large btn-success">Затвердити як остаточний</a>
+            }
+            else
+            {
+                <a href="#" class="btn btn-large btn-success">Затвердити як остаточний</a>
+            }
+        }
+        
+        @if(Model.CanStartResults)
+        {
+            <a href="@Url.Action(Model.StartResultAction, Model.StartResultController, new { budgetId = Model.Id })" class="btn btn-large btn-success">Почати отримання результатів</a>
+        }
+    </div>
+</div>

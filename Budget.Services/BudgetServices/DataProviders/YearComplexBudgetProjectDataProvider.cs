@@ -132,10 +132,8 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public YearComplexBudgetProject GetLatestAcceptedBudgetProject(int year, int fcenterId)
         {
-            return
-                GetAll()
-                    .Where(b => b.AdministrativeUnitId == fcenterId && b.Year == year && b.IsAccepted)
-                    .MinBy(p => p.Id);
+            return GetAll().Where(b => b.AdministrativeUnitId == fcenterId && b.Year == year && b.IsAccepted)
+                    .MaxBy(b => b.Revision);
         }
 
         public YearComplexBudgetProject GetFinalFor(int adminUnitId, int year)
@@ -145,14 +143,14 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public IEnumerable<UnapproveYearBudget> GetUnapprovalBudgets(int adminUnitId)
         {
-            var yearComplexBudgetProjects = _provider.GetItems().Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal).ToList();
+            var yearComplexBudgetProjects = _provider.GetItems().Where(b => b.AdministrativeUnitId == adminUnitId).ToList();
 
             return
                 yearComplexBudgetProjects
-                         .GroupBy(b => b.Year, (key, group) => new UnapproveYearBudget
+                         .GroupBy(b => b.Year).Where(group => !group.Any(g => g.IsFinal)).Select(group => new UnapproveYearBudget
                              {
                                  LastApprovedBudgetId = group.Where(b => b.IsAccepted).MaxBy(b => b.Revision).Id,
-                                 Year = key,
+                                 Year = group.Key,
                                  RevisionCount = group.Count(),
                                  WaitingOfferCount = group.Count(x => x.Status == BudgetProjectStatus.Waiting)
                              });
@@ -166,6 +164,48 @@ namespace Budget.Services.BudgetServices.DataProviders
         public YearComplexBudgetProject GetTemplate()
         {
             return IocContainer.Instance.Resolve<YearComplexBudgetProject>();
+        }
+
+        public void FinilizeBudget(int budgetId)
+        {
+            var yearBudgetProject = Get(budgetId);
+            yearBudgetProject.IsFinal = true;
+            Update(yearBudgetProject);
+
+            yearBudgetProject.ChildBudgets.ForEach(c => FinilizeBudget(c.Id));
+
+            yearBudgetProject.QuarterBudgets.ForEach(b => QuarterComplexBudgetProjectDataProvider.FinilizeBudget(b.Id));
+        }
+
+        public void ReviewBudget(int budgetId)
+        {
+            var yearBudgetProject = Get(budgetId);
+
+            if (!yearBudgetProject.IsFinal)
+            {
+                return;
+            }
+
+            yearBudgetProject.IsFinal = false;
+
+            Update(yearBudgetProject);
+
+            GetAll().Where(b => b.ChildBudgets.Any(c => c.Id == budgetId)).ForEach(b => ReviewBudget(b.Id));
+        }
+
+        public void ReviewByQuarterBudget(int quarterBudgetId)
+        {
+            GetAll().Where(b => b.QuarterBudgets.Any(q => q.Id == quarterBudgetId)).ForEach(b => ReviewBudget(b.Id));
+        }
+
+        public IEnumerable<YearComplexBudgetProject> GetApprovedBudgets(DateTime nowDate, int adminUnitId)
+        {
+            return GetAll().Where(b => b.Year == nowDate.Year && b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+        }
+
+        public void ReviewByMonthBudget(int monthBudgetId)
+        {
+            GetAll().Where(b => b.QuarterBudgets.SelectMany(q => q.MonthBudgets).Any(m => m.Id == monthBudgetId)).ForEach(b => ReviewBudget(b.Id));
         }
 
         private int GetBudgetNextRevision(int year, int fcenterId)

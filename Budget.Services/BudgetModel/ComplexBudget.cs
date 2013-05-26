@@ -72,7 +72,11 @@ namespace Budget.Services.BudgetModel
 
         public virtual void CalculateValues()
         {
-            BudgetCategories.ForEach(b => b.Calulate());
+            BudgetCategories = BudgetCategories.Select(c =>
+                {
+                    c.Calulate();
+                    return c;
+                });
         }
 
         public BudgetCategory FindCategoryByInfoId(int infoId)
@@ -101,6 +105,8 @@ namespace Budget.Services.BudgetModel
                 return null;
             }
 
+            var resultCategories = new List<BudgetCategory>();
+
             foreach (var parentCategory in parentBudgetCategories)
             {
                 IEnumerable<BudgetCategory> matchCategories = childBudgetCategories.Where(b => b.InfoId == parentCategory.InfoId);
@@ -108,9 +114,11 @@ namespace Budget.Services.BudgetModel
                 parentCategory.Value = matchCategories.Sum(c => c.Value);
 
                 parentCategory.TargetBudgets = GetValueFromTargetBudgets(parentCategory.TargetBudgets, matchCategories.SelectMany(c => c.TargetBudgets));
+
+                resultCategories.Add(parentCategory);
             }
 
-            return parentBudgetCategories;
+            return resultCategories;
         }
 
         private IEnumerable<TargetBudget> GetValueFromTargetBudgets(IEnumerable<TargetBudget> targetBudgets, IEnumerable<TargetBudget> targets)
@@ -120,6 +128,8 @@ namespace Budget.Services.BudgetModel
                 return null;
             }
 
+            var resultTargets = new List<TargetBudget>();
+
             foreach (var targetBudget in targetBudgets)
             {
                 var matchTargets = targets.Where(b => b.InfoId == targetBudget.InfoId);
@@ -127,9 +137,11 @@ namespace Budget.Services.BudgetModel
                 targetBudget.Value = matchTargets.Sum(c => c.Value);
 
                 targetBudget.BudgetItems = GetValueFromBudgetItems(targetBudget.BudgetItems, matchTargets.SelectMany(c => c.BudgetItems));
+
+                resultTargets.Add(targetBudget);
             }
 
-            return targetBudgets;
+            return resultTargets;
         }
 
         private IEnumerable<BudgetItem> GetValueFromBudgetItems(IEnumerable<BudgetItem> budgetItems, IEnumerable<BudgetItem> items)
@@ -139,14 +151,18 @@ namespace Budget.Services.BudgetModel
                 return null;
             }
 
+            var resultItems = new List<BudgetItem>();
+
             foreach (var budgetItem in budgetItems)
             {
                 var matchItems = items.Where(b => b.InfoId == budgetItem.InfoId);
 
                 budgetItem.Value = matchItems.Sum(c => c.Value);
+
+                resultItems.Add(budgetItem);
             }
 
-            return budgetItems;
+            return resultItems;
         }
 
         public abstract string GetPeriodName();

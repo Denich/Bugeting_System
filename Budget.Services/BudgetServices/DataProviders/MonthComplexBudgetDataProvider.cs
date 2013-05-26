@@ -47,5 +47,30 @@ namespace Budget.Services.BudgetServices.DataProviders
         {
             return _provider.DeleteItem(id);
         }
+
+        public MonthComplexBudget GetFor(int year, int month, int adminUnitId)
+        {
+            return GetAll().FirstOrDefault(b => b.Year == year && b.Month == month && b.AdministrativeUnitId == adminUnitId);
+        }
+
+        public void StartBudgetResultForProject(MonthComplexBudgetProject budgetProject)
+        {
+            var budget = IocContainer.Instance.Resolve<MonthComplexBudget>();
+
+            budget.BudgetCategories = budgetProject.BudgetCategories.Select(c => { c.ClearValues(); return c; });
+        }
+
+        private MonthComplexBudget GetFromProject(MonthComplexBudgetProject budgetProject)
+        {
+            var budget = IocContainer.Instance.Resolve<MonthComplexBudget>();
+
+            budget.BudgetCategories = budgetProject.BudgetCategories.Select(c => { c.ClearValues(); return c; });
+
+            budget.AdministrativeUnitId = budgetProject.AdministrativeUnitId;
+            budget.Month = budgetProject.Month;
+            budget.Year = budgetProject.Year;
+
+            return budget;
+        }
     }
 }

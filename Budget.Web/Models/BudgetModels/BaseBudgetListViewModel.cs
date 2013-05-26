@@ -4,6 +4,8 @@ namespace Budget.Web.Models
     {
         public int Id { get; set; }
 
+        public string Period { get; set; }
+
         public int AdministrativeUnitId { get; set; }
 
         public double TotalIncome { get; set; }

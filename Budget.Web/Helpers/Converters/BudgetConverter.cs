@@ -187,18 +187,39 @@ namespace Budget.Web.Helpers.Converters
 
         public static YearComplexBudgetListViewModel ToListModel(this YearComplexBudgetProject obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, YearComplexBudgetListViewModel>().Map(obj);
+            if (obj == null)
+            {
+                return null;
+            }
+            
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, YearComplexBudgetListViewModel>().Map(obj);
+            
+            model.Period = obj.GetPeriodName();
+            return model;
         }
 
         public static QuarterComplexBudgetListViewModel ToListModel(this QuarterComplexBudgetProject obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, QuarterComplexBudgetListViewModel>().Map(obj);
+            if (obj == null)
+            {
+                return null;
+            }
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudgetProject, QuarterComplexBudgetListViewModel>().Map(obj);
+            model.Period = obj.GetPeriodName();
+            return model;
         }
 
         public static MonthComplexBudgetListViewModel ToListModel(this MonthComplexBudgetProject obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, MonthComplexBudgetListViewModel>().Map(obj);
+            if (obj == null)
+            {
+                return null;
+            }
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, MonthComplexBudgetListViewModel>().Map(obj);
+            model.Period = obj.GetPeriodName();
+            return model;
         }
+
         #endregion
 
         public static YearComplexBudgetResultListViewModel ToListModel(this YearComplexBudget obj)

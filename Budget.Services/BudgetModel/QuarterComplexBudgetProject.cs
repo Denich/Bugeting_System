@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.BudgetServices.DataProviders;
+using Budget.Services.BudgetServices.Management;
 using Budget.Services.Helpers;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
@@ -113,7 +114,12 @@ namespace Budget.Services.BudgetModel
 
         public override ICollection<SqlParameter> UpdateSqlParameters
         {
-            get { return InsertSqlParameters; }
+            get
+            {
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
+                return sqlParams;
+            }
         }
 
         public void GenerateMonthBudgets()
@@ -136,18 +142,18 @@ namespace Budget.Services.BudgetModel
 
         public override void CalculateValues()
         {
-            if (ChildBudgets != null && ChildBudgets.Any())
+            if (ChildBudgets.Any())
             {
-                ChildBudgets.ForEach(b => b.CalculateValues());
+                //ChildBudgets = ChildBudgets.Select(c => { c.CalculateValues(); return c; });
 
                 BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
-
                 return;
             }
 
-            if (MonthBudgets != null && MonthBudgets.Any())
+            if (MonthBudgets.Any())
             {
-                MonthBudgets.ForEach(b => b.CalculateValues());
+                //MonthBudgets = MonthBudgets.Select(b => { b.CalculateValues(); return b; });
+
                 BudgetCategories = GetValuesSumFormCategories(BudgetCategories, MonthBudgets.SelectMany(b => b.BudgetCategories));
                 return;
             }
@@ -168,6 +174,32 @@ namespace Budget.Services.BudgetModel
                                                ? BudgetCategories.Select(b => b.ClearValues())
                                                : null;
             return monthBudget;
+        }
+
+        public void PopulateMonthBudgetsFromChilds()
+        {
+            if (!ChildBudgets.Any() || !MonthBudgets.Any()) //Todo: check maybe set to 0
+            {
+                return;
+            }
+
+            var childMonthBudgets = ChildBudgets.SelectMany(b => b.MonthBudgets);
+
+            MonthBudgets = MonthBudgets.Select(b =>
+            {
+                b.ChildBudgets = childMonthBudgets.Where(q => q.Month == b.Month);
+                b.CalculateValues(); //Todo: check is it realy need?> Change fro populateMinth
+                return b;
+            });
+        }
+
+        public void PopulateCategoriesOnPeriodsBudgets()
+        {
+            MonthBudgets = MonthBudgets.Select(m =>
+                {
+                    m.BudgetCategories = m.Merge(this).BudgetCategories;
+                    return m;
+                });
         }
     }
 }
