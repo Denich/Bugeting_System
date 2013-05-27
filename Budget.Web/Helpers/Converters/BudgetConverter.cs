@@ -222,19 +222,55 @@ namespace Budget.Web.Helpers.Converters
 
         #endregion
 
-        public static YearComplexBudgetResultListViewModel ToListModel(this YearComplexBudget obj)
+        public static YearComplexBudgetResultListViewModel ToListModel(this KeyValuePair<YearComplexBudget, YearComplexBudgetProject> obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudget, YearComplexBudgetResultListViewModel>().Map(obj);
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudget, YearComplexBudgetResultListViewModel>().Map(obj.Key);
+
+            model.ResultBudgetId = obj.Key.Id;
+            model.ProjectBudgetId = obj.Value.Id;
+            model.TotalCostsPlan = obj.Value.TotalCosts;
+            model.TotalIncomePlan = obj.Value.TotalIncome;
+            model.Period = obj.Value.GetPeriodName();
+
+            model.ProjectItemsCount = obj.Value.BudgetCategories.Count();
+
+            model.ProcessedItemsCount = obj.Key.BudgetCategories.Count(b => b.Value != 0);
+
+            return model;
         }
 
-        public static QuarterComplexBudgetResultListViewModel ToListModel(this QuarterComplexBudget obj)
+        public static QuarterComplexBudgetResultListViewModel ToListModel(this KeyValuePair<QuarterComplexBudget, QuarterComplexBudgetProject> obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudget, QuarterComplexBudgetResultListViewModel>().Map(obj);
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<QuarterComplexBudget, QuarterComplexBudgetResultListViewModel>().Map(obj.Key);
+
+            model.ResultBudgetId = obj.Key.Id;
+            model.ProjectBudgetId = obj.Value.Id;
+            model.TotalCostsPlan = obj.Value.TotalCosts;
+            model.TotalIncomePlan = obj.Value.TotalIncome;
+            model.Period = obj.Value.GetPeriodName();
+
+            model.ProjectItemsCount = obj.Value.BudgetCategories.Count();
+
+            model.ProcessedItemsCount = obj.Key.BudgetCategories.Count(b => b.Value != 0);
+
+            return model;
         }
 
-        public static MonthComplexBudgetResultListViewModel ToListModel(this MonthComplexBudget obj)
+        public static MonthComplexBudgetResultListViewModel ToListModel(this KeyValuePair<MonthComplexBudget, MonthComplexBudgetProject> obj)
         {
-            return ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudget, MonthComplexBudgetResultListViewModel>().Map(obj);
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudget, MonthComplexBudgetResultListViewModel>().Map(obj.Key);
+
+            model.ResultBudgetId = obj.Key.Id;
+            model.ProjectBudgetId = obj.Value.Id;
+            model.TotalCostsPlan = obj.Value.TotalCosts;
+            model.TotalIncomePlan = obj.Value.TotalIncome;
+            model.Period = obj.Value.GetPeriodName();
+
+            model.ProjectItemsCount = obj.Value.BudgetCategories.Count();
+
+            model.ProcessedItemsCount = obj.Key.BudgetCategories.Count(b => b.Value != 0);
+
+            return model;
         }
 
         public static YearUnapproveBudgetModel ToListModel(this UnapproveYearBudget obj)

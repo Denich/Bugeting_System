@@ -2,11 +2,15 @@ namespace Budget.Web.Models
 {
     public interface IBaseBudgetResultViewModel
     {
-        double TotalIncomeActual { get; set; }
+        int ProjectBudgetId { get; set; }
 
-        double TotalCostsActual { get; set; }
+        int ResultBudgetId { get; set; }
 
-        double BalanceActual { get; set; }
+        double TotalIncomePlan { get; set; }
+
+        double TotalCostsPlan { get; set; }
+
+        double BalancePlan { get; set; }
 
         int ProjectItemsCount { get; set; }
 

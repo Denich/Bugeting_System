@@ -10,6 +10,15 @@ namespace Budget.Web.Helpers.Converters
 {
     public static class DefaultConverter
     {
+        public static EmployeModel ToModel(this Employe obj)
+        {
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<Employe, EmployeModel>().Map(obj);
+
+            model.PositionName = obj.Position != null ? obj.Position.Name : "";
+
+            return model;
+        }
+
         public static FinancialCenterModel ToModel(this FinancialCenter obj)
         {
             var model = ObjectMapperManager.DefaultInstance.GetMapper<FinancialCenter, FinancialCenterModel>().Map(obj);

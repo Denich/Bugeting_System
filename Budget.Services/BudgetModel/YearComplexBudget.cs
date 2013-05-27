@@ -5,12 +5,19 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
 
 namespace Budget.Services.BudgetModel
 {
     public class YearComplexBudget : ComplexBudget, IDataRetriever<YearComplexBudget>
     {
+        private IEnumerable<YearComplexBudget> _childBudgets;
+
+        [Dependency]
+        public IYearComplexBudgetDataProvider YearComplexBudgetDataProvider { get; set; }
+
         public int Year { get; set; }
 
         public virtual ICollection<SqlParameter> InsertSqlParameters {
@@ -44,6 +51,18 @@ namespace Budget.Services.BudgetModel
             Year = Convert.ToInt32(record["Year"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
+        }
+
+        public IEnumerable<YearComplexBudget> ChildBudgets
+        {
+            get
+            {
+                return _childBudgets ?? YearComplexBudgetDataProvider.GetByMaster(Id);
+            }
+            set
+            {
+                _childBudgets = value;
+            }
         }
 
         public override string GetPeriodName()

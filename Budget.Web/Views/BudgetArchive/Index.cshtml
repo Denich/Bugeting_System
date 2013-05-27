@@ -1,8 +1,146 @@
-﻿@model dynamic
+﻿@model Budget.Web.Models.BudgetModels.ArchiveBudgetsModel
 
 @{
     Layout = "~/Views/Shared/_BudgetLayout.cshtml";
     ViewBag.Title = "Бюджетний архів";
 }
 
-<h2>Бюджетний архів</h2>
+<div class="page-header">
+    <h2>Бюджетний архів</h2>
+</div>
+<div class="row-fluid">
+    <div class="span11">
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <caption>Місячні бюджети</caption>
+            <thead>
+                <tr>
+                    <th>Період</th>
+                    <th>Доходи план. (грн.)</th>
+                    <th>Видатки план. (грн.)</th>
+                    <th>Баланс план. (грн.)</th>
+                </tr>
+            </thead>
+
+
+            @if (Model.MonthArchiveBudgets != null)
+            {
+                foreach (var monthBudget in Model.MonthArchiveBudgets)
+                {
+                    <tr>
+                        <td>@monthBudget.Period</td>
+                        <td>@monthBudget.TotalIncome</td>
+                        <td>@monthBudget.TotalCosts</td>
+                        <td>@monthBudget.Balance</td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="@Url.Action("MonthBudgetProject", "FinancialCenterBudgets", new { budgetId = monthBudget.Id })">
+                                            <i class="icon-wrench"></i>Проект бюджету
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">Немає даних</td>
+                </tr>
+            }
+
+        </table>
+
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <caption>Квартальні бюджети</caption>
+            <thead>
+                <tr>
+                    <th>Період</th>
+                    <th>Доходи план. (грн.)</th>
+                    <th>Видатки план. (грн.)</th>
+                    <th>Баланс план. (грн.)</th>
+                </tr>
+            </thead>
+
+
+            @if (Model.QuarterArchiveBudgets != null)
+            {
+                foreach (var quarterBudget in Model.QuarterArchiveBudgets)
+                {
+                    <tr>
+                        <td>@quarterBudget.Period</td>
+                        <td>@quarterBudget.TotalIncome</td>
+                        <td>@quarterBudget.TotalCosts</td>
+                        <td>@quarterBudget.Balance</td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="@Url.Action("QuarterBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = quarterBudget.Id })">
+                                            <i class="icon-wrench"></i>Проект бюджету
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">Немає даних</td>
+                </tr>
+            }
+        </table>
+
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <caption>Річні бюджети</caption>
+            <thead>
+                <tr>
+                    <th>Період</th>
+                    <th>Доходи план. (грн.)</th>
+                    <th>Видатки план. (грн.)</th>
+                    <th>Баланс план. (грн.)</th>
+                </tr>
+            </thead>
+
+
+            @if (Model.YearArchiveBudgets != null)
+            {
+                foreach (var yearBudget in Model.YearArchiveBudgets)
+                {
+                    <tr>
+                        <td>@yearBudget.Period</td>
+                        <td>@yearBudget.TotalIncome</td>
+                        <td>@yearBudget.TotalCosts</td>
+                        <td>@yearBudget.Balance</td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="@Url.Action("YearBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = yearBudget.Id })">
+                                            <i class="icon-wrench"></i> Проект бюджету
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">Немає даних</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

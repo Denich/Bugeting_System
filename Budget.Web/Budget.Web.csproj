@@ -114,12 +114,18 @@
     <Compile Include="Controllers\Budget\ActiveBudgetsController.cs" />
     <Compile Include="Controllers\Budget\BudgetResultsController.cs" />
     <Compile Include="Controllers\FinancialCenterBudgetsController.cs" />
+    <Compile Include="Controllers\WaitApproveBudgetsController.cs" />
+    <Compile Include="Helpers\CommonHelper.cs" />
     <Compile Include="Helpers\Converters\BudgetEditConverter.cs" />
     <Compile Include="Helpers\Converters\FinancialCentersConverter.cs" />
+    <Compile Include="Helpers\Converters\GraphConverter.cs" />
     <Compile Include="Models\BudgetModels\ApprovedBudgetsModel.cs" />
+    <Compile Include="Models\BudgetModels\ArchiveBudgetsModel.cs" />
     <Compile Include="Models\BudgetModels\BudgetProjectItemModel.cs" />
+    <Compile Include="Models\BudgetModels\BudgetResultModel.cs" />
     <Compile Include="Models\BudgetModels\CommonComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\ComplexBudgetProjectEditModel.cs" />
+    <Compile Include="Models\BudgetModels\EditComplexBudgetResultModel.cs" />
     <Compile Include="Models\BudgetModels\MonthComplexBudgetListViewModel.cs" />
     <Compile Include="Models\BudgetModels\MonthComplexBudgetViewModel.cs" />
     <Compile Include="Models\BudgetModels\ParentComplexBudgetViewModel.cs" />
@@ -161,6 +167,7 @@
     <Compile Include="Helpers\Converters\BudgetInfoConverter.cs" />
     <Compile Include="Helpers\Converters\DefaultConverter.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\EmployeModel.cs" />
     <Compile Include="Models\FinancialCenterModel.cs" />
     <Compile Include="Models\BudgetInfoModels\BudgetCategoryInfoModels.cs" />
     <Compile Include="Models\BudgetInfoModels\BudgetCategoryInfoSelectModel.cs" />
@@ -170,6 +177,9 @@
     <Compile Include="Models\BudgetModels\NewBudgetModel.cs" />
     <Compile Include="Models\BudgetProjectFinancialCentersModel.cs" />
     <Compile Include="Models\FinancialCenterSelectModel.cs" />
+    <Compile Include="Models\GraphModels\BudgetShareGraphModel.cs" />
+    <Compile Include="Models\GraphModels\IncomeGraphModel.cs" />
+    <Compile Include="Models\GraphModels\LineralGraphModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -305,6 +315,14 @@
     <Content Include="Views\FinancialCenterBudgets\ComplexBudgetProject.cshtml" />
     <Content Include="Views\FinancialCenterBudgets\EditMonthBudgetProject.cshtml" />
     <Content Include="Views\FinancialCenterBudgets\ViewComplareBudgetProject.cshtml" />
+    <Content Include="Views\BudgetResults\ComplexBudgetResult.cshtml" />
+    <Content Include="Views\BudgetResults\EditComplexBudgetResult.cshtml" />
+    <Content Include="Views\Shared\_GraphLayout.cshtml" />
+    <Content Include="Views\Home\IncomeGraph.cshtml" />
+    <Content Include="Views\Home\DrawLineralGraph.cshtml" />
+    <Content Include="Views\Home\CostsGraph.cshtml" />
+    <Content Include="Views\Home\BudgetShareGraph.cshtml" />
+    <Content Include="Views\WaitApproveBudgets\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

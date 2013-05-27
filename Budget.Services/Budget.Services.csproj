@@ -70,7 +70,7 @@
     <Compile Include="BudgetServices\IBudgetDataManagement.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\IBudgetItemDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\IBudgetItemInfoDataProvider.cs" />
-    <Compile Include="BudgetServices\DataProviderContracts\IComplexBudgetDataProvider.cs" />
+    <Compile Include="BudgetServices\DataProviderContracts\IYearComplexBudgetDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\IEmployDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\IEmployeContactDataProvider.cs" />
     <Compile Include="BudgetServices\DataProviderContracts\IMonthComplexBudgetProjectDataProvider.cs" />

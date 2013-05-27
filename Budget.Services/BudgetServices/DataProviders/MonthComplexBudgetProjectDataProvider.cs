@@ -122,8 +122,11 @@ namespace Budget.Services.BudgetServices.DataProviders
         public void FinilizeBudget(int budgetId)
         {
             var monthBudgetProject = Get(budgetId);
+
             monthBudgetProject.IsFinal = true;
+
             Update(monthBudgetProject);
+
             monthBudgetProject.ChildBudgets.ForEach(c => FinilizeBudget(c.Id));
         }
 
@@ -143,9 +146,14 @@ namespace Budget.Services.BudgetServices.DataProviders
             GetAll().Where(b => b.ChildBudgets.Any(c => c.Id == budgetId)).ForEach(b => ReviewBudget(b.Id));
         }
 
-        public IEnumerable<MonthComplexBudgetProject> GetApprovedBudgets(DateTime nowDate, int adminUnitId)
+        public IEnumerable<MonthComplexBudgetProject> GetApprovedBudgets(int year, int adminUnitId)
         {
-            return GetAll().Where(b => b.Year == nowDate.Year && b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+            return GetAll().Where(b => b.Year == year && b.IsFinal && b.AdministrativeUnitId == adminUnitId).GroupBy(b => new { b.Year, b.Month }).Select(b => b.MaxBy(c => c.Revision));
+        }
+
+        public IEnumerable<MonthComplexBudgetProject> GetArchiveBudgets(DateTime nowDate, int adminUnitId)
+        {
+            return GetAll().Where(b => b.Year < nowDate.Year && b.IsFinal && b.AdministrativeUnitId == adminUnitId).GroupBy(b => new { b.Year, b.Month }).Select(b => b.MaxBy(c => c.Revision));
         }
 
         private int GetBudgetNextRevision(int year, int month, int fcenterId)

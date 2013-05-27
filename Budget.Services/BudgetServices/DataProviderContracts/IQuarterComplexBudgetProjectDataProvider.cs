@@ -34,8 +34,10 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         
         void ReviewBudget(int budgetId);
 
-        IEnumerable<QuarterComplexBudgetProject> GetApprovedBudgets(DateTime nowDate, int adminUnitId);
+        IEnumerable<QuarterComplexBudgetProject> GetApprovedBudgets(int year, int adminUnitId);
         
         void ReviewByMonthBudget(int monthBudgetId);
+
+        IEnumerable<QuarterComplexBudgetProject> GetArchiveBudgets(DateTime nowDate, int adminUnitId);
     }
 }

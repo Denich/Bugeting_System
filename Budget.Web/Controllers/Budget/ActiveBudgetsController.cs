@@ -31,7 +31,7 @@ namespace Budget.Web.Controllers
 
             model.CurrentQuarterBudget =
                 GetBudgetClient()
-                    .Data.QuarterComplexBudgetProjects.GetFinalFor(CompanyId, nowDate.Year, (nowDate.Month%4) + 1)
+                    .Data.QuarterComplexBudgetProjects.GetFinalFor(CompanyId, nowDate.Year, (nowDate.Month/4) + 1)
                     .ToListModel();
 
             model.CurrentMonthBudget =

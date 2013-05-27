@@ -22,6 +22,15 @@ namespace Budget.Web.Controllers
             model.CanFinalize = GetCurrentUser().EmployeInfo.CanFinallize(yearBudget.AdministrativeUnitId);
             model.CanReview = DateTime.Now.Year <= yearBudget.Year;
 
+            var yearResultBudget = GetBudgetClient().Data.YearComplexBudgets.GetFor(yearBudget.Year, yearBudget.AdministrativeUnitId);
+            model.ResultsBudgetId = yearResultBudget == null ? -1 : yearResultBudget.Id;
+            model.CanStartResults = DateTime.Now.Year > yearBudget.Year &&
+                                    GetCurrentUser().EmployeInfo.CanFinallize(yearBudget.AdministrativeUnitId) &&
+                                    model.ResultsBudgetId == -1 &&
+                                    yearBudget.AdministrativeUnitId == CompanyId;
+
+            model.ViewBudgetResultController = "BudgetResults";
+            model.ViewBudgetResultAction = "YearBudgetResult";
             model.FinilizeController = "FinancialCenterBudgets";
             model.FinilizeAction = "FinilizeYearBudget";
             model.ReviewController = "FinancialCenterBudgets";
@@ -62,6 +71,17 @@ namespace Budget.Web.Controllers
             model.CanFinalize = GetCurrentUser().EmployeInfo.CanFinallize(yearBudget.AdministrativeUnitId);
             model.CanReview = DateTime.Now.Year <= yearBudget.Year;
 
+            var yearResultBudget = GetBudgetClient().Data.YearComplexBudgets.GetFor(yearBudget.Year, yearBudget.AdministrativeUnitId);
+            model.ResultsBudgetId = yearResultBudget == null ? -1 : yearResultBudget.Id;
+            model.CanStartResults = DateTime.Now.Year > yearBudget.Year &&
+                                    GetCurrentUser().EmployeInfo.CanFinallize(yearBudget.AdministrativeUnitId) &&
+                                    model.ResultsBudgetId == -1 &&
+                                    yearBudget.AdministrativeUnitId == CompanyId;
+
+            model.ViewBudgetResultController = "BudgetResults";
+            model.ViewBudgetResultAction = "YearBudgetResult";
+            model.StartResultController = "BudgetResults";
+            model.StartResultAction = "StartYearBudgetResults";
             model.FinilizeController = "FinancialCenterBudgets";
             model.FinilizeAction = "FinilizeYearBudget";
             model.ReviewController = "FinancialCenterBudgets";
@@ -99,8 +119,20 @@ namespace Budget.Web.Controllers
             var quarterBudget = GetBudgetClient().Data.QuarterComplexBudgetProjects.Get(budgetId);
             var model = quarterBudget.ToAdminParentViewModel();
             model.CanFinalize = GetCurrentUser().EmployeInfo.CanFinallize(quarterBudget.AdministrativeUnitId);
-            model.CanReview = DateTime.Now.Year <= quarterBudget.Year && DateTime.Now.Month % 4 + 1 <= quarterBudget.QuarterNumber;
+            model.CanReview = DateTime.Now.Year <= quarterBudget.Year && DateTime.Now.Month / 4 + 1 <= quarterBudget.QuarterNumber;
 
+            var quarterResultBudget = GetBudgetClient().Data.QuarterComplexBudgets.GetFor(quarterBudget.Year, quarterBudget.QuarterNumber, quarterBudget.AdministrativeUnitId);
+            model.ResultsBudgetId = quarterResultBudget == null ? -1 : quarterResultBudget.Id;
+            model.CanStartResults = DateTime.Now.Year >= quarterBudget.Year &&
+                                    DateTime.Now.Month / 4 + 1 > quarterBudget.QuarterNumber &&
+                                    GetCurrentUser().EmployeInfo.CanFinallize(quarterBudget.AdministrativeUnitId) &&
+                                    model.ResultsBudgetId == -1 &&
+                                    quarterBudget.AdministrativeUnitId == CompanyId;
+
+            model.ViewBudgetResultController = "BudgetResults";
+            model.ViewBudgetResultAction = "QuarterBudgetResult";
+            model.StartResultController = "BudgetResults";
+            model.StartResultAction = "StartQuarterBudgetResults";
             model.FinilizeController = "FinancialCenterBudgets";
             model.FinilizeAction = "FinilizeQuarterBudget";
             model.ReviewController = "FinancialCenterBudgets";
@@ -139,8 +171,20 @@ namespace Budget.Web.Controllers
             var model = quarterBudget.ToPeriodParentViewModel();
 
             model.CanFinalize = GetCurrentUser().EmployeInfo.CanFinallize(quarterBudget.AdministrativeUnitId);
-            model.CanReview = DateTime.Now.Year <= quarterBudget.Year && DateTime.Now.Month % 4 + 1 <= quarterBudget.QuarterNumber;
+            model.CanReview = DateTime.Now.Year <= quarterBudget.Year && DateTime.Now.Month / 4 + 1 <= quarterBudget.QuarterNumber;
 
+            var quarterResultBudget = GetBudgetClient().Data.QuarterComplexBudgets.GetFor(quarterBudget.Year, quarterBudget.QuarterNumber, quarterBudget.AdministrativeUnitId);
+            model.ResultsBudgetId = quarterResultBudget == null ? -1 : quarterResultBudget.Id;
+            model.CanStartResults = DateTime.Now.Year >= quarterBudget.Year &&
+                                    DateTime.Now.Month / 4 +1 > quarterBudget.QuarterNumber &&
+                                    GetCurrentUser().EmployeInfo.CanFinallize(quarterBudget.AdministrativeUnitId) &&
+                                    model.ResultsBudgetId == -1 &&
+                                    quarterBudget.AdministrativeUnitId == CompanyId;
+
+            model.ViewBudgetResultController = "BudgetResults";
+            model.ViewBudgetResultAction = "QuarterBudgetResult";
+            model.StartResultController = "BudgetResults";
+            model.StartResultAction = "StartQuarterBudgetResults";
             model.FinilizeController = "FinancialCenterBudgets";
             model.FinilizeAction = "FinilizeQuarterBudget";
             model.ReviewController = "FinancialCenterBudgets";
@@ -188,7 +232,7 @@ namespace Budget.Web.Controllers
                                     model.ResultsBudgetId == -1 &&
                                     monthBudget.AdministrativeUnitId == CompanyId;
 
-            model.ViewBudgetResultController = "FinancialCenterBudgets";
+            model.ViewBudgetResultController = "BudgetResults";
             model.ViewBudgetResultAction = "MonthBudgetResult";
             model.StartResultController = "BudgetResults";
             model.StartResultAction = "StartMonthBudgetResults";

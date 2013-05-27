@@ -5,10 +5,10 @@ namespace Budget.Services.BudgetServices.Management
 {
     public interface IBudgetOperationManagement
     {
-        IEnumerable<YearComplexBudget> GetUnresultedYearBudgets(int adminUnitId);
+        Dictionary<YearComplexBudget, YearComplexBudgetProject> GetUnresultedYearBudgets(int adminUnitId);
 
-        IEnumerable<QuarterComplexBudget> GetUnresultedQuarterBudgets(int adminUnitId);
+        Dictionary<QuarterComplexBudget, QuarterComplexBudgetProject> GetUnresultedQuarterBudgets(int adminUnitId);
 
-        IEnumerable<MonthComplexBudget> GetUnresultedMonthBudgets(int adminUnitId);
+        Dictionary<MonthComplexBudget, MonthComplexBudgetProject> GetUnresultedMonthBudgets(int adminUnitId);
     }
 }

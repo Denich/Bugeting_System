@@ -74,8 +74,8 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                var sqlParams = InsertSqlParameters;
-                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }
         }

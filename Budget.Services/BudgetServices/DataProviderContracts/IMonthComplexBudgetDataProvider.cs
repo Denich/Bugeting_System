@@ -18,5 +18,11 @@ namespace Budget.Services.BudgetServices.DataProviderContracts
         MonthComplexBudget GetFor(int year, int month, int adminUnitId);
         
         void StartBudgetResultForProject(MonthComplexBudgetProject budgetProject);
+        
+        IEnumerable<MonthComplexBudget> GetByMaster(int masterBudgetId);
+
+        IEnumerable<MonthComplexBudget> GetForQuarter(int year, int quarterNumber, int adminUnitId);
+        
+        void FinalizeBudget(int budgetId);
     }
 }

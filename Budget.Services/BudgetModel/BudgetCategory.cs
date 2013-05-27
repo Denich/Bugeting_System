@@ -92,7 +92,7 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                var sqlParams = InsertSqlParameters;
+                var sqlParams = InsertSqlParameters.ToList();
                 sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }

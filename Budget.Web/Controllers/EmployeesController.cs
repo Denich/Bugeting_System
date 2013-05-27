@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Budget.Web.Controllers.Common;
+using Budget.Web.Helpers.Converters;
 
 namespace Budget.Web.Controllers
 {
-    public class EmployeesController : Controller
+    public class EmployeesController : BaseController
     {
         //
         // GET: /Employees/
 
         public ActionResult Index()
         {
-            return View();
+            var employes = GetBudgetClient().Data.Employes.GetAll();
+
+            var model = employes.Select(m => m.ToModel());
+
+            return View(model);
         }
 
         //

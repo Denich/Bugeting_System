@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
 
@@ -16,10 +18,15 @@ namespace Budget.Services.BudgetModel
                 "Грудень"
             };
 
+        private IEnumerable<MonthComplexBudget> _childBudgets;
+
         public MonthComplexBudget()
         {
             QuarterBudgetID = -1;
         }
+
+        [Dependency]
+        public IMonthComplexBudgetDataProvider MonthComplexBudgetDataProvider { get; set; }
 
         public int Year { get; set; }
 
@@ -46,10 +53,23 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                var sqlParams = InsertSqlParameters;
-                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }
+        }
+
+        public IEnumerable<MonthComplexBudget> ChildBudgets
+        {
+            get
+            {
+                return _childBudgets ?? MonthComplexBudgetDataProvider.GetByMaster(Id);
+            }
+            set
+            {
+                _childBudgets = value;
+            }
+        
         }
 
         public virtual MonthComplexBudget Setup(IDataRecord record)
@@ -62,6 +82,20 @@ namespace Budget.Services.BudgetModel
             Month = Convert.ToInt32(record["Month"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
+        }
+
+        public override void CalculateValues()
+        {
+            if (ChildBudgets.Any())
+            {
+                //ChildBudgets = ChildBudgets.Select(c => { c.CalculateValues(); return c; });
+
+                BudgetCategories = GetValuesSumFormCategories(BudgetCategories, ChildBudgets.SelectMany(b => b.BudgetCategories));
+
+                return;
+            }
+
+            base.CalculateValues();
         }
 
         public override string GetPeriodName()

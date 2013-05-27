@@ -98,7 +98,7 @@ namespace Budget.Services.BudgetModel
         }
 
         //TODO: Chek null reference exceptions
-        protected IEnumerable<BudgetCategory> GetValuesSumFormCategories(IEnumerable<BudgetCategory> parentBudgetCategories, IEnumerable<BudgetCategory> childBudgetCategories)
+        public IEnumerable<BudgetCategory> GetValuesSumFormCategories(IEnumerable<BudgetCategory> parentBudgetCategories, IEnumerable<BudgetCategory> childBudgetCategories)
         {
             if (parentBudgetCategories == null)
             {

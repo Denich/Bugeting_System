@@ -2,16 +2,24 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
+using Microsoft.Practices.Unity;
+using System.Linq;
 
 namespace Budget.Services.BudgetModel
 {
     public class QuarterComplexBudget : ComplexBudget, IDataRetriever<QuarterComplexBudget>
     {
+        private IEnumerable<QuarterComplexBudget> _childBudgets;
+
         public QuarterComplexBudget()
         {
             YearBudgetID = -1;
         }
+
+        [Dependency]
+        public IQuarterComplexBudgetDataProvider QuarterComplexBudgetDataProvider { get; set; }
 
         public int QuarterNumber { get; set; }
 
@@ -39,8 +47,8 @@ namespace Budget.Services.BudgetModel
         {
             get
             {
-                var sqlParams = InsertSqlParameters;
-                InsertSqlParameters.Add(new SqlParameter("Id", Id));
+                var sqlParams = InsertSqlParameters.ToList();
+                sqlParams.Add(new SqlParameter("Id", Id));
                 return sqlParams;
             }
         }
@@ -55,6 +63,18 @@ namespace Budget.Services.BudgetModel
             QuarterNumber = Convert.ToInt32(record["QuarterNumber"]);
             IsFinal = Convert.ToBoolean(record["IsFinal"]);
             return this;
+        }
+
+        public IEnumerable<QuarterComplexBudget> ChildBudgets
+        {
+            get
+            {
+                return _childBudgets ?? QuarterComplexBudgetDataProvider.GetByMaster(Id);
+            }
+            set
+            {
+                _childBudgets = value;
+            }
         }
 
         public override string GetPeriodName()

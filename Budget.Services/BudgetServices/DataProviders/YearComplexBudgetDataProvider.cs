@@ -9,10 +9,11 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using MoreLinq;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class YearComplexBudgetDataProvider : IYearComplexBudgetDataProvider
+    public class YearComplexBudgetDataProvider : BaseComplexBudgetProjectDataProvider, IYearComplexBudgetDataProvider
     {
         private readonly CustomDataProvider<YearComplexBudget> _provider;
 
@@ -35,7 +36,21 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public int Insert(YearComplexBudget yearComplexBudget)
         {
-            return _provider.AddItem(yearComplexBudget);
+            var yearBudgetId = _provider.AddItem(yearComplexBudget);
+
+            InsertCategoriesRecursivly(yearComplexBudget.BudgetCategories, yearBudgetId);
+
+            //Insert child budgets
+            if (yearComplexBudget.ChildBudgets != null)
+            {
+                foreach (var childBudget in yearComplexBudget.ChildBudgets)
+                {
+                    childBudget.MasterBudgetID = yearBudgetId;
+                    Insert(childBudget);
+                }
+            }
+
+            return yearBudgetId;
         }
 
         public int Update(YearComplexBudget yearComplexBudget)
@@ -46,6 +61,48 @@ namespace Budget.Services.BudgetServices.DataProviders
         public int Delete(int id)
         {
             return _provider.DeleteItem(id);
+        }
+
+        public IEnumerable<YearComplexBudget> GetByMaster(int masterBudgetId)
+        {
+            return GetAll().Where(b => b.MasterBudgetID == masterBudgetId);
+        }
+
+        public void StartBudgetResultForProject(YearComplexBudgetProject budgetProject)
+        {
+            var budget = GetFromProject(budgetProject);
+
+            Insert(budget);
+        }
+
+        public YearComplexBudget GetFor(int year, int adminUnitId)
+        {
+            return GetAll().FirstOrDefault(b => b.Year == year && b.AdministrativeUnitId == adminUnitId);
+        }
+
+        public void FinalizeBudget(int budgetId)
+        {
+            var monthBudgetProject = Get(budgetId);
+
+            monthBudgetProject.IsFinal = true;
+
+            Update(monthBudgetProject);
+
+            monthBudgetProject.ChildBudgets.ForEach(c => FinalizeBudget(c.Id));
+        }
+
+        private YearComplexBudget GetFromProject(YearComplexBudgetProject budgetProject)
+        {
+            var budget = IocContainer.Instance.Resolve<YearComplexBudget>();
+
+            budget.BudgetCategories = budgetProject.BudgetCategories.Select(c => { c.ClearValues(); return c; });
+
+            budget.AdministrativeUnitId = budgetProject.AdministrativeUnitId;
+            budget.Year = budgetProject.Year;
+
+            budget.ChildBudgets = budgetProject.ChildBudgets.Select(GetFromProject);
+
+            return budget;
         }
     }
 }

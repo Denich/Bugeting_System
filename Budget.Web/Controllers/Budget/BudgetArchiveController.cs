@@ -3,103 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Budget.Web.Controllers.Common;
+using Budget.Web.Helpers.Converters;
+using Budget.Web.Models.BudgetModels;
 
 namespace Budget.Web.Controllers
 {
-    public class BudgetArchiveController : Controller
+    public class BudgetArchiveController : BaseController
     {
-        //
-        // GET: /BudgetArchive/
-
         public ActionResult Index()
         {
-            return View();
-        }
-
-        //
-        // GET: /BudgetArchive/Details/5
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        //
-        // GET: /BudgetArchive/Create
-
-        public ActionResult Create()
-        {
-            return View();
-        } 
-
-        //
-        // POST: /BudgetArchive/Create
-
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-        
-        //
-        // GET: /BudgetArchive/Edit/5
- 
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /BudgetArchive/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
- 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        //
-        // GET: /BudgetArchive/Delete/5
- 
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /BudgetArchive/Delete/5
-
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
- 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            var model = new ArchiveBudgetsModel();
+            model.MonthArchiveBudgets = GetBudgetClient().Data.MonthComplexBudgetProjects.GetArchiveBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            model.QuarterArchiveBudgets = GetBudgetClient().Data.QuarterComplexBudgetProjects.GetArchiveBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            model.YearArchiveBudgets = GetBudgetClient().Data.YearComplexBudgetProjects.GetArchiveBudgets(DateTime.Now.Date, CompanyId).Select(b => b.ToListModel());
+            return View(model);
         }
     }
 }

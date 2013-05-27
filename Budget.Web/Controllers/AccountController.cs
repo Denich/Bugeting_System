@@ -11,7 +11,6 @@ namespace Budget.Web.Controllers
 {
     public class AccountController : Controller
     {
-
         //
         // GET: /Account/LogOn
 
@@ -43,7 +42,7 @@ namespace Budget.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                    ModelState.AddModelError("", "Ви ввели не правильний логін або пароль.");
                 }
             }
 

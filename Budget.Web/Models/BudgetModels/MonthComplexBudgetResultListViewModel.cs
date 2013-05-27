@@ -4,11 +4,15 @@ namespace Budget.Web.Models
 {
     public class MonthComplexBudgetResultListViewModel : MonthComplexBudgetListViewModel, IBaseBudgetResultViewModel
     {
-        public double TotalIncomeActual { get; set; }
+        public int ProjectBudgetId { get; set; }
 
-        public double TotalCostsActual { get; set; }
+        public int ResultBudgetId { get; set; }
 
-        public double BalanceActual { get; set; }
+        public double TotalIncomePlan { get; set; }
+
+        public double TotalCostsPlan { get; set; }
+
+        public double BalancePlan { get; set; }
 
         public int ProjectItemsCount { get; set; }
 

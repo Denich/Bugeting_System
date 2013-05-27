@@ -15,22 +15,50 @@ namespace Budget.Services.BudgetServices.Management
             _data = budgetDataManagement;
         }
        
-        public IEnumerable<YearComplexBudget> GetUnresultedYearBudgets(int adminUnitId)
+
+        public Dictionary<YearComplexBudget, YearComplexBudgetProject> GetUnresultedYearBudgets(int adminUnitId)
         {
-            var budgets = _data.YearComplexBudgets.GetAll();
-            return budgets != null ? budgets.Where(b => !b.IsFinal && b.AdministrativeUnitId == adminUnitId) : null;
+            var dictinary = new Dictionary<YearComplexBudget, YearComplexBudgetProject>();
+            
+            var yearBudgets = _data.YearComplexBudgets.GetAll().Where(b => !b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+
+            foreach (var yearBudget in yearBudgets)
+            {
+                var budgetProject = _data.YearComplexBudgetProjects.GetFinalFor(yearBudget.AdministrativeUnitId, yearBudget.Year);
+                dictinary.Add(yearBudget, budgetProject);
+            }
+
+            return dictinary;
         }
 
-        public IEnumerable<QuarterComplexBudget> GetUnresultedQuarterBudgets(int adminUnitId)
+        public Dictionary<QuarterComplexBudget, QuarterComplexBudgetProject> GetUnresultedQuarterBudgets(int adminUnitId)
         {
-            var budgets = _data.QuarterComplexBudgets.GetAll();
-            return budgets != null ? budgets.Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal) : null;
+            var dictinary = new Dictionary<QuarterComplexBudget, QuarterComplexBudgetProject>();
+
+            var resultBudgets = _data.QuarterComplexBudgets.GetAll().Where(b => !b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+
+            foreach (var resultBudget in resultBudgets)
+            {
+                var budgetProject = _data.QuarterComplexBudgetProjects.GetFinalFor(resultBudget.AdministrativeUnitId, resultBudget.Year, resultBudget.QuarterNumber);
+                dictinary.Add(resultBudget, budgetProject);
+            }
+
+            return dictinary;
         }
 
-        public IEnumerable<MonthComplexBudget> GetUnresultedMonthBudgets(int adminUnitId)
+        public Dictionary<MonthComplexBudget, MonthComplexBudgetProject> GetUnresultedMonthBudgets(int adminUnitId)
         {
-            var budgets = _data.MonthComplexBudgets.GetAll();
-            return budgets != null ? budgets.Where(b => b.AdministrativeUnitId == adminUnitId && !b.IsFinal) : null;
+            var dictinary = new Dictionary<MonthComplexBudget, MonthComplexBudgetProject>();
+
+            var resultBudgets = _data.MonthComplexBudgets.GetAll().Where(b => !b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+
+            foreach (var resultBudget in resultBudgets)
+            {
+                var budgetProject = _data.MonthComplexBudgetProjects.GetFinalFor(resultBudget.AdministrativeUnitId, resultBudget.Year, resultBudget.Month);
+                dictinary.Add(resultBudget, budgetProject);
+            }
+
+            return dictinary;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Budget.Web.Models.BudgetModels
 
     public class ComplexBudgetProjectEditModel
     {
+        public int Id { get; set; }
+
         public int BaseBudgetId { get; set; }
 
         public int AdministrativeUnitId { get; set; }
@@ -30,21 +32,28 @@ namespace Budget.Web.Models.BudgetModels
 
         public double Balance { get; set; }
 
+        public bool IsFinal { get; set; }
+
         public IList<BudgetCategoryEditModel> Categories { get; set; }
     }
 
     public class BudgetCategoryEditModel : BaseBudgetItemEditModel
     {
+        public int ComplexBudgetId { get; set; }
+
         public IList<TargetBudgetEditModel> Targets { get; set; } 
     }
 
     public class TargetBudgetEditModel : BaseBudgetItemEditModel
     {
+        public int BudgetCategoryId { get; set; }
+
         public IList<BudgetItemEditModel> Items { get; set; }
     }
 
     public class BudgetItemEditModel : BaseBudgetItemEditModel
     {
+        public int TargetBudgetId { get; set; }
     }
 
     public class BaseBudgetItemEditModel

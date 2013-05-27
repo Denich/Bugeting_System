@@ -1,6 +1,6 @@
 ﻿@if(Request.IsAuthenticated) {
-    <text >Welcome <strong>@User.Identity.Name</strong>!
-    @Html.ActionLink("[Вийти]", "LogOff", "Account", null,  new { @class = "btn" }) </text>
+    <span class="text-info">Вітаємо <strong>@User.Identity.Name</strong>!
+    @Html.ActionLink("[Вийти]", "LogOff", "Account", null,  new { @class = "btn btn-inverse" }) </span>
 }
 else {
     @: @Html.ActionLink("Ввійти", "LogOn", "Account", null,  new { @class = "btn btn-inverse" }) 

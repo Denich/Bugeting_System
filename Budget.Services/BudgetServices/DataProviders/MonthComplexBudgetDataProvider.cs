@@ -9,10 +9,11 @@ using Budget.Services.BudgetModel;
 using Budget.Services.BudgetServices.DataProviderContracts;
 using Budget.Services.Helpers;
 using Microsoft.Practices.Unity;
+using MoreLinq;
 
 namespace Budget.Services.BudgetServices.DataProviders
 {
-    public class MonthComplexBudgetDataProvider : IMonthComplexBudgetDataProvider
+    public class MonthComplexBudgetDataProvider : BaseComplexBudgetProjectDataProvider, IMonthComplexBudgetDataProvider
     {
         private readonly CustomDataProvider<MonthComplexBudget> _provider;
 
@@ -35,12 +36,30 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public int Insert(MonthComplexBudget monthComplexBudget)
         {
-            return _provider.AddItem(monthComplexBudget);
+            var monthBudgetId = _provider.AddItem(monthComplexBudget);
+
+            InsertCategoriesRecursivly(monthComplexBudget.BudgetCategories, monthBudgetId);
+
+            //Insert child budgets
+            if (monthComplexBudget.ChildBudgets != null)
+            {
+                foreach (var childBudget in monthComplexBudget.ChildBudgets)
+                {
+                    childBudget.MasterBudgetID = monthBudgetId;
+                    Insert(childBudget);
+                }
+            }
+
+            return monthBudgetId;
         }
 
         public int Update(MonthComplexBudget monthComplexBudget)
         {
-            return _provider.UpdateItem(monthComplexBudget);
+            var updateItem = _provider.UpdateItem(monthComplexBudget);
+
+            UpdateCategoriesRecursivly(monthComplexBudget.BudgetCategories);
+
+            return updateItem;
         }
 
         public int Delete(int id)
@@ -55,9 +74,30 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         public void StartBudgetResultForProject(MonthComplexBudgetProject budgetProject)
         {
-            var budget = IocContainer.Instance.Resolve<MonthComplexBudget>();
+            var budget = GetFromProject(budgetProject);
 
-            budget.BudgetCategories = budgetProject.BudgetCategories.Select(c => { c.ClearValues(); return c; });
+            Insert(budget);
+        }
+
+        public IEnumerable<MonthComplexBudget> GetByMaster(int masterBudgetId)
+        {
+            return GetAll().Where(b => b.MasterBudgetID == masterBudgetId);
+        }
+
+        public IEnumerable<MonthComplexBudget> GetForQuarter(int year, int quarterNumber, int adminUnitId)
+        {
+            return GetAll().Where(b => b.Month/4 + 1 == quarterNumber && b.Year == year && b.AdministrativeUnitId == adminUnitId);
+        }
+
+        public void FinalizeBudget(int budgetId)
+        {
+            var monthBudget = Get(budgetId);
+
+            monthBudget.IsFinal = true;
+
+            Update(monthBudget);
+
+            monthBudget.ChildBudgets.ForEach(b => FinalizeBudget(b.Id));
         }
 
         private MonthComplexBudget GetFromProject(MonthComplexBudgetProject budgetProject)
@@ -69,6 +109,8 @@ namespace Budget.Services.BudgetServices.DataProviders
             budget.AdministrativeUnitId = budgetProject.AdministrativeUnitId;
             budget.Month = budgetProject.Month;
             budget.Year = budgetProject.Year;
+
+            budget.ChildBudgets = budgetProject.ChildBudgets.Select(GetFromProject);
 
             return budget;
         }

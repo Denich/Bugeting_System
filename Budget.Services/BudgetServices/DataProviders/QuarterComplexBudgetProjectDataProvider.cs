@@ -173,14 +173,19 @@ namespace Budget.Services.BudgetServices.DataProviders
 
         }
 
-        public IEnumerable<QuarterComplexBudgetProject> GetApprovedBudgets(DateTime nowDate, int adminUnitId)
+        public IEnumerable<QuarterComplexBudgetProject> GetApprovedBudgets(int year, int adminUnitId)
         {
-            return GetAll().Where(b => b.Year == nowDate.Year && b.IsFinal && b.AdministrativeUnitId == adminUnitId);
+            return GetAll().Where(b => b.Year == year && b.IsFinal && b.AdministrativeUnitId == adminUnitId).GroupBy(b => new { b.Year, b.QuarterNumber }).Select(b => b.MaxBy(c => c.Revision));
         }
 
         public void ReviewByMonthBudget(int monthBudgetId)
         {
             GetAll().Where(b => b.MonthBudgets.Any(m => m.Id == monthBudgetId)).ForEach(b => ReviewBudget(b.Id));
+        }
+
+        public IEnumerable<QuarterComplexBudgetProject> GetArchiveBudgets(DateTime nowDate, int adminUnitId)
+        {
+            return GetAll().Where(b => b.Year < nowDate.Year && b.IsFinal && b.AdministrativeUnitId == adminUnitId).GroupBy(b => new { b.Year, b.QuarterNumber }).Select(b => b.MaxBy(c => c.Revision));
         }
 
         private int GetBudgetNextRevision(int year, int quarter, int fcenterId)

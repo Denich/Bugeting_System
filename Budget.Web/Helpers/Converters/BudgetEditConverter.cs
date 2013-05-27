@@ -19,6 +19,8 @@ namespace Budget.Web.Helpers.Converters
             var obj = data.BudgetCategories.GetTemplate();
             obj.InfoId = model.InfoId;
             obj.Value = model.NewValue;
+            obj.Id = model.Id;
+            obj.ComplexBudgetId = model.ComplexBudgetId;
 
             if (model.Targets != null)
             {
@@ -33,6 +35,8 @@ namespace Budget.Web.Helpers.Converters
             var obj = data.TargetBudgets.GetTemplate();
             obj.InfoId = model.InfoId;
             obj.Value = model.NewValue;
+            obj.Id = model.Id;
+            obj.BudgetCategoryId = model.BudgetCategoryId;
 
             if (model.Items != null)
             {
@@ -47,6 +51,8 @@ namespace Budget.Web.Helpers.Converters
             var obj = data.BudgetItems.GetTemplate();
             obj.InfoId = model.InfoId;
             obj.Value = model.NewValue;
+            obj.Id = model.Id;
+            obj.TargetBudgetId = model.TargetBudgetId;
             return obj;
         }
 
@@ -54,10 +60,10 @@ namespace Budget.Web.Helpers.Converters
 
         #region Budgets ToEditModel
 
-        public static ComplexBudgetProjectEditModel ToEditModel(this YearComplexBudgetProject obj)
+        public static ComplexBudgetProjectEditModel ToEditModel(this YearComplexBudget obj)
         {
             var model =
-                ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudgetProject, ComplexBudgetProjectEditModel>()
+                ObjectMapperManager.DefaultInstance.GetMapper<YearComplexBudget, ComplexBudgetProjectEditModel>()
                                    .Map(obj);
 
             model.Categories = obj.BudgetCategories.Select(c => c.ToEditModel()).ToList();
@@ -68,11 +74,11 @@ namespace Budget.Web.Helpers.Converters
             return model;
         }
 
-        public static ComplexBudgetProjectEditModel ToEditModel(this QuarterComplexBudgetProject obj)
+        public static ComplexBudgetProjectEditModel ToEditModel(this QuarterComplexBudget obj)
         {
             var model =
                 ObjectMapperManager.DefaultInstance
-                                   .GetMapper<QuarterComplexBudgetProject, ComplexBudgetProjectEditModel>().Map(obj);
+                                   .GetMapper<QuarterComplexBudget, ComplexBudgetProjectEditModel>().Map(obj);
 
             model.Categories = obj.BudgetCategories.Select(c => c.ToEditModel()).ToList();
             model.BaseBudgetId = obj.Id;
@@ -82,10 +88,9 @@ namespace Budget.Web.Helpers.Converters
             return model;
         }
 
-        public static ComplexBudgetProjectEditModel ToEditModel(this MonthComplexBudgetProject obj)
+        public static ComplexBudgetProjectEditModel ToEditModel(this MonthComplexBudget obj)
         {
-            var model =
-                ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudgetProject, ComplexBudgetProjectEditModel>()
+            var model = ObjectMapperManager.DefaultInstance.GetMapper<MonthComplexBudget, ComplexBudgetProjectEditModel>()
                                    .Map(obj);
 
             model.Categories = obj.BudgetCategories.Select(c => c.ToEditModel()).ToList();
@@ -100,7 +105,7 @@ namespace Budget.Web.Helpers.Converters
         {
             var model = ObjectMapperManager.DefaultInstance.GetMapper<BudgetCategory, BudgetCategoryEditModel>()
                                            .Map(obj);
-
+            
             model.Name = obj.Info.Name;
             model.IsEditable = !obj.TargetBudgets.Any();
             model.NewValue = model.Value;

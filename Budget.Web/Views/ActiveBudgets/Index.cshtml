@@ -20,9 +20,9 @@
                     <thead>
                         <tr>
                             <th>Період</th>
-                            <th>Доходи план.</th>
-                            <th>Видатки план.</th>
-                            <th>Баланс план.</th>
+                            <th>Доходи план. (грн.)</th>
+                            <th>Видатки план. (грн.)</th>
+                            <th>Баланс план. (грн.)</th>
                         </tr>
                     </thead>
 
@@ -33,6 +33,18 @@
                             <td>@Model.CurrentMonthBudget.TotalIncome</td>
                             <td>@Model.CurrentMonthBudget.TotalCosts</td>
                             <td>@Model.CurrentMonthBudget.Balance</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("MonthBudgetProject", "FinancialCenterBudgets", new { budgetId = Model.CurrentMonthBudget.Id })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         }
                         else
                         {
@@ -46,9 +58,9 @@
                     <thead>
                         <tr>
                             <th>Період</th>
-                            <th>Доходи план.</th>
-                            <th>Видатки план.</th>
-                            <th>Баланс план.</th>
+                            <th>Доходи план. (грн.)</th>
+                            <th>Видатки план. (грн.)</th>
+                            <th>Баланс план. (грн.)</th>
                         </tr>
                     </thead>
                     <tr>
@@ -58,6 +70,18 @@
                             <td>@Model.CurrentQuarterBudget.TotalIncome</td>
                             <td>@Model.CurrentQuarterBudget.TotalCosts</td>
                             <td>@Model.CurrentQuarterBudget.Balance</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("QuarterBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = Model.CurrentQuarterBudget.Id })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         }
                         else
                         {
@@ -72,9 +96,9 @@
                     <thead>
                         <tr>
                             <th>Період</th>
-                            <th>Доходи план.</th>
-                            <th>Видатки план.</th>
-                            <th>Баланс план.</th>
+                            <th>Доходи план. (грн.)</th>
+                            <th>Видатки план. (грн.)</th>
+                            <th>Баланс план. (грн.)</th>
                         </tr>
                     </thead>
                     <tr>
@@ -84,6 +108,18 @@
                             <td>@Model.CurrentYearBudget.TotalIncome</td>
                             <td>@Model.CurrentYearBudget.TotalCosts</td>
                             <td>@Model.CurrentYearBudget.Balance</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("YearBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = Model.CurrentYearBudget.Id })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         }
                         else
                         {
@@ -102,10 +138,10 @@
                     <thead>
                         <tr>
                             <th>Період</th>
-                            <th>Доходи поточні/план.</th>
-                            <th>Видатки поточні/план.</th>
-                            <th>Баланс поточний/план.</th>
-                            <th>Отримано по статтям</th>
+                            <th>Доходи поточні/план. (грн.)</th>
+                            <th>Видатки поточні/план. (грн.)</th>
+                            <th>Баланс поточний/план. (грн.)</th>
+                            <th>Отримано по статтям </th>
                         </tr>
                     </thead>
 
@@ -118,11 +154,28 @@
                             foreach (var monthBudget in Model.GetResultsMonthBudgets)
                             {
                         <tr>
-                            <td>@monthBudget.Month -й місяць @monthBudget.Year рік</td>
-                            <td>@monthBudget.TotalIncomeActual / @monthBudget.TotalIncome</td>
-                            <td>@monthBudget.TotalCostsActual / @monthBudget.TotalCosts</td>
-                            <td>@monthBudget.BalanceActual / @monthBudget.Balance</td>
+                            <td>@monthBudget.Period</td>
+                            <td>@monthBudget.TotalIncome / @monthBudget.TotalIncomePlan</td>
+                            <td>@monthBudget.TotalCosts / @monthBudget.TotalCostsPlan</td>
+                            <td>@monthBudget.Balance / @monthBudget.BalancePlan</td>
                             <td>@monthBudget.ProcessedItemsCount з @monthBudget.ProjectItemsCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("MonthBudgetProject", "FinancialCenterBudgets", new { budgetId = monthBudget.ProjectBudgetId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("MonthBudgetResult", "BudgetResults", new { budgetId = monthBudget.ResultBudgetId })">
+                                                <i class="icon-hand-up"></i> Бюджетні результати
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                             }
                         }
@@ -132,11 +185,28 @@
                             foreach (var quarterBudget in Model.GetResultsQuarterBudgets)
                             {
                         <tr>
-                            <td>@quarterBudget.QuarterNumber -й квaртал @quarterBudget.Year рік</td>
-                            <td>@quarterBudget.TotalIncomeActual / @quarterBudget.TotalIncome</td>
-                            <td>@quarterBudget.TotalCostsActual / @quarterBudget.TotalCosts</td>
-                            <td>@quarterBudget.BalanceActual / @quarterBudget.Balance</td>
+                            <td>@quarterBudget.Period</td>
+                            <td>@quarterBudget.TotalIncome / @quarterBudget.TotalIncomePlan</td>
+                            <td>@quarterBudget.TotalCosts / @quarterBudget.TotalCostsPlan</td>
+                            <td>@quarterBudget.Balance / @quarterBudget.BalancePlan</td>
                             <td>@quarterBudget.ProcessedItemsCount з @quarterBudget.ProjectItemsCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("QuarterBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = quarterBudget.ProjectBudgetId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("QuarterBudgetResult", "BudgetResults", new { budgetId = quarterBudget.ResultBudgetId })">
+                                                <i class="icon-hand-up"></i> Бюджетні результати
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                             }
                         }
@@ -146,11 +216,28 @@
                             foreach (var yearBudget in Model.GetResultsYearBudgets)
                             {
                         <tr>
-                            <td>@yearBudget.Year рік</td>
-                            <td>@yearBudget.TotalIncomeActual / @yearBudget.TotalIncome</td>
-                            <td>@yearBudget.TotalCostsActual / @yearBudget.TotalCosts</td>
-                            <td>@yearBudget.BalanceActual / @yearBudget.Balance</td>
+                            <td>@yearBudget.Period</td>
+                            <td>@yearBudget.TotalIncome / @yearBudget.TotalIncomePlan</td>
+                            <td>@yearBudget.TotalCosts / @yearBudget.TotalCostsPlan</td>
+                            <td>@yearBudget.Balance / @yearBudget.BalancePlan</td>
                             <td>@yearBudget.ProcessedItemsCount з @yearBudget.ProjectItemsCount</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><span class="icon-edit"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="@Url.Action("YearBudgetProjectByAdminUnits", "FinancialCenterBudgets", new { budgetId = yearBudget.ProjectBudgetId })">
+                                                <i class="icon-wrench"></i> Проект бюджету
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("YearBudgetResult", "BudgetResults", new { budgetId = yearBudget.ResultBudgetId })">
+                                                <i class="icon-hand-up"></i> Бюджетні результати
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
                             }
                         }
